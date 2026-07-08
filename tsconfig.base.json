@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": false,
+    "incremental": true,
+    "paths": {
+      "@flowfinance/shared": ["./packages/shared/src"],
+      "@flowfinance/shared/*": ["./packages/shared/src/*"],
+      "@flowfinance/ui": ["./packages/ui/src"],
+      "@flowfinance/ui/*": ["./packages/ui/src/*"],
+      "@flowfinance/finn": ["./packages/finn/src"],
+      "@flowfinance/finn/*": ["./packages/finn/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", ".next", "build"]
+}

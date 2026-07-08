@@ -1,0 +1,29 @@
+{
+  "name": "@flowfinance/finn",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts",
+    "./prompts/*": "./src/prompts/*.ts",
+    "./tools/*": "./src/tools/*.ts"
+  },
+  "scripts": {
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf .turbo"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "@flowfinance/shared": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  }
+}

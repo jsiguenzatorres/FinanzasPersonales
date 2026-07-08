@@ -1,0 +1,45 @@
+{
+  "name": "flowfinance",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FlowFinance — Personal finance platform for LATAM. SV-first, USD-based.",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,sql}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,sql}\"",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:push": "supabase db push",
+    "db:reset": "supabase db reset",
+    "db:diff": "supabase db diff",
+    "db:types": "supabase gen types typescript --local > packages/shared/src/types/database.ts",
+    "docker:build": "docker compose -f vps/docker-compose.yml build",
+    "docker:up": "docker compose -f vps/docker-compose.yml up -d",
+    "docker:down": "docker compose -f vps/docker-compose.yml down",
+    "deploy:prod": "bash vps/scripts/deploy.sh"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "prettier": "^3.4.0",
+    "prettier-plugin-tailwindcss": "^0.6.9",
+    "supabase": "^2.0.0",
+    "turbo": "^2.3.0",
+    "typescript": "^5.7.0"
+  }
+}

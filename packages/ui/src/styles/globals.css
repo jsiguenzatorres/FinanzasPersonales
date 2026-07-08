@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── FlowFinance design tokens (paleta del doc maestro) ──────────────── */
+@layer base {
+  :root {
+    /* Surfaces */
+    --bg: 7 8 10;
+    --s1: 15 17 23;
+    --s2: 22 25 34;
+    --s3: 28 33 48;
+    --border: 255 255 255 / 0.07;
+    --border-2: 255 255 255 / 0.12;
+
+    /* Brand */
+    --g: 0 229 160;        /* green primary */
+    --b: 91 110 255;       /* blue accent */
+    --r: 255 107 107;      /* red alert */
+    --y: 255 209 102;      /* yellow warning */
+    --o: 255 159 67;       /* orange */
+    --p: 192 132 252;      /* purple */
+
+    /* Text */
+    --text: 232 234 240;
+    --muted: 107 114 128;
+    --white: 255 255 255;
+
+    /* shadcn tokens (mapeo HSL) */
+    --background: 220 13% 4%;
+    --foreground: 220 9% 92%;
+    --card: 220 14% 8%;
+    --card-foreground: 220 9% 92%;
+    --primary: 158 100% 45%;
+    --primary-foreground: 220 13% 4%;
+    --secondary: 232 100% 68%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 9% 19%;
+    --muted-foreground: 220 9% 56%;
+    --destructive: 0 100% 71%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 14%;
+    --input: 220 13% 14%;
+    --ring: 158 100% 45%;
+    --radius: 0.625rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+  }
+  code, .mono {
+    font-family: 'DM Mono', ui-monospace, monospace;
+  }
+}

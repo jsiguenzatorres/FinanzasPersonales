@@ -1,0 +1,65 @@
+# Dependencies
+node_modules/
+.pnp.*
+.yarn/cache
+.yarn/install-state.gz
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# Testing
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+.idea/
+*.swp
+*.swo
+
+# Supabase
+supabase/.branches/
+supabase/.temp/
+supabase/seed.sql.bak
+
+# Docker
+.docker/
+
+# Secrets
+*.pem
+*.key
+!**/example.key
+service-account*.json
+
+# Sentry
+.sentryclirc
+
+# Local artifacts
+*.local
