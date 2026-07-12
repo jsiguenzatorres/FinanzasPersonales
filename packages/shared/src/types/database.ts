@@ -1,4 +1,3 @@
-WARN: config section [inbucket] is deprecated. Please use [local_smtp] instead.
 export type Json =
   | string
   | number
@@ -219,6 +218,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "alert_rules_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attachments: {
+        Row: {
+          caption: string | null
+          created_at: string
+          entity_id: string
+          entity_type: string
+          file_size_bytes: number | null
+          file_type: string
+          id: string
+          mime_type: string | null
+          original_filename: string | null
+          storage_path: string
+          user_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          file_size_bytes?: number | null
+          file_type: string
+          id?: string
+          mime_type?: string | null
+          original_filename?: string | null
+          storage_path: string
+          user_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          file_size_bytes?: number | null
+          file_type?: string
+          id?: string
+          mime_type?: string | null
+          original_filename?: string | null
+          storage_path?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attachments_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -3148,7 +3197,7 @@ export type Database = {
       }
       transactions: {
         Row: {
-          account_id: string
+          account_id: string | null
           ai_category_id: string | null
           ai_confidence: number | null
           amount: number
@@ -3193,7 +3242,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          account_id: string
+          account_id?: string | null
           ai_category_id?: string | null
           ai_confidence?: number | null
           amount: number
@@ -3238,7 +3287,7 @@ export type Database = {
           user_id: string
         }
         Update: {
-          account_id?: string
+          account_id?: string | null
           ai_category_id?: string | null
           ai_confidence?: number | null
           amount?: number
@@ -3763,6 +3812,7 @@ export type Database = {
           email: string
           flow_score: number
           id: string
+          is_superadmin: boolean
           language: string
           marketing_consent: boolean
           monthly_income_est: number | null
@@ -3789,6 +3839,7 @@ export type Database = {
           email: string
           flow_score?: number
           id: string
+          is_superadmin?: boolean
           language?: string
           marketing_consent?: boolean
           monthly_income_est?: number | null
@@ -3815,6 +3866,7 @@ export type Database = {
           email?: string
           flow_score?: number
           id?: string
+          is_superadmin?: boolean
           language?: string
           marketing_consent?: boolean
           monthly_income_est?: number | null
@@ -3840,6 +3892,18 @@ export type Database = {
       }
     }
     Views: {
+      v_net_worth_current: {
+        Row: {
+          assets_breakdown: Json | null
+          currency: string | null
+          liabilities_breakdown: Json | null
+          net_worth: number | null
+          total_assets: number | null
+          total_liabilities: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
       v_user_categories: {
         Row: {
           archived_at: string | null
@@ -3912,13 +3976,40 @@ export type Database = {
       }
     }
     Functions: {
+      cc_balance_delta: {
+        Args: {
+          p_amount: number
+          p_kind: Database["public"]["Enums"]["transaction_kind"]
+        }
+        Returns: number
+      }
       get_fx_rate: {
         Args: { p_date: string; p_from: string; p_to: string }
         Returns: number
       }
       is_collab_member: { Args: { p_space_id: string }; Returns: boolean }
+      resolve_budget_category_id: {
+        Args: { p_category_id: string }
+        Returns: string
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      to_base_currency: {
+        Args: {
+          p_amount: number
+          p_currency: string
+          p_date: string
+          p_user_id: string
+        }
+        Returns: number
+      }
+      transaction_balance_delta: {
+        Args: {
+          p_amount: number
+          p_kind: Database["public"]["Enums"]["transaction_kind"]
+        }
+        Returns: number
+      }
     }
     Enums: {
       account_status: "active" | "closed" | "archived"
@@ -3953,6 +4044,21 @@ export type Database = {
         | "large_transaction"
         | "income_received"
         | "achievement_unlocked"
+        | "budget_projection"
+        | "budget_completed"
+        | "savings_opportunity"
+        | "month_start"
+        | "spending_increase"
+        | "streak_achievement"
+        | "rollover_available"
+        | "crisis_mode"
+        | "subscription_price_change"
+        | "subscription_unused"
+        | "goal_completed"
+        | "investment_maturing"
+        | "anomaly_detected"
+        | "debt_minimum_risk"
+        | "tax_deadline"
       alert_severity: "info" | "warning" | "critical"
       asset_type:
         | "cash"
@@ -4726,6 +4832,21 @@ export const Constants = {
         "large_transaction",
         "income_received",
         "achievement_unlocked",
+        "budget_projection",
+        "budget_completed",
+        "savings_opportunity",
+        "month_start",
+        "spending_increase",
+        "streak_achievement",
+        "rollover_available",
+        "crisis_mode",
+        "subscription_price_change",
+        "subscription_unused",
+        "goal_completed",
+        "investment_maturing",
+        "anomaly_detected",
+        "debt_minimum_risk",
+        "tax_deadline",
       ],
       alert_severity: ["info", "warning", "critical"],
       asset_type: [
