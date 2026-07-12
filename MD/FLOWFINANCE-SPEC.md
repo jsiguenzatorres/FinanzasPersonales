@@ -203,9 +203,16 @@ Capacidades:
 
 Sin interés. Control de dinero prestado a familia/amigos.
 
-Campos: nombre del deudor, relación, monto, moneda, fecha de entrega, modalidad (efectivo/transferencia/débito/tarjeta crédito/Bitcoin/cripto), cuenta de origen, categoría destino, foto de comprobante, notas, fecha de pago acordada.
+Campos: nombre del deudor, relación, monto, moneda, fecha de entrega, modalidad de entrega, cuenta u origen, categoría destino, foto de comprobante, notas, fecha de pago acordada.
 
-Abonos: fecha, monto, modalidad recibida (puede diferir de la entrega), cuenta destino, saldo resultante, foto comprobante.
+**Modalidad de entrega (`delivery_method`) — 6 opciones, dos de ellas requieren distinguir tarjeta:**
+- `cash`, `transfer`, `debit`, `bitcoin`, `crypto` — entrega directa, sin implicación de intereses para el usuario.
+- `credit_purchase` — el usuario paga algo con su tarjeta directamente para el familiar (ej. supermercado, colegiatura). Tiene período de gracia, como cualquier compra normal de MOD-15.
+- `credit_cash_advance` — el usuario retira efectivo con su tarjeta para dárselo al familiar. **Sin período de gracia — interés desde el día 1**, más comisión de retiro (3-5% + $2-$5 fijo en SV). FINN advierte activamente cuando detecta este patrón: es la forma más cara de prestar dinero.
+
+**Vínculo con MOD-04/MOD-15:** cada préstamo entregado vía tarjeta o cuenta genera automáticamente su `transaction_id` real (`cc_charge` para compra, tipo dedicado para retiro de efectivo) — el saldo de la tarjeta en MOD-15 y el préstamo en MOD-13 son la misma operación, nunca se duplica el monto ni se cuenta como gasto personal del usuario. Alternativamente, un gasto ya registrado en MOD-04 se puede vincular retroactivamente a un préstamo existente o nuevo vía el campo "Vincular a préstamo MOD-13" (categoría "Campos de Split").
+
+Abonos: fecha, monto, modalidad recibida (puede diferir de la entrega), cuenta destino, saldo resultante, foto comprobante. Cada abono genera su propia `transaction_id` (`income_type = 'loan_payment'`), tratado como **ingreso contingente** — nunca se cuenta en el presupuesto hasta recibirse de verdad (regla ya establecida en §Reglas de negocio).
 
 12 categorías de destino: alimentos, reparación hogar, reparación carro, colegiatura, recibos/servicios, gastos médicos, deudas/créditos, ropa, evento/celebración, herramientas/negocio, viaje/transporte, otro.
 
@@ -565,6 +572,13 @@ CREATE TABLE investments (
 -- ============================================
 -- FAMILY_LOANS (MOD-13) — sin interés
 -- ============================================
+-- v2 (2026-07-12): agrega transaction_id + origin_card_id + delivery_method
+-- distinguiendo credit_purchase de credit_cash_advance. Sin esto, un
+-- préstamo entregado con tarjeta no tenía forma de reflejarse en el saldo
+-- real de la tarjeta (MOD-15) sin duplicar el monto, y no se podía advertir
+-- que un retiro de efectivo con tarjeta no tiene período de gracia (interés
+-- desde el día 1) mientras que una compra normal sí lo tiene. Ver spec
+-- completa en docs/modules/mod-13-prestamos-familiares.md.
 CREATE TABLE family_loans (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id uuid REFERENCES users(id) ON DELETE CASCADE,
@@ -572,16 +586,28 @@ CREATE TABLE family_loans (
   relationship text,
   original_amount numeric NOT NULL,
   balance numeric NOT NULL,
-  currency text DEFAULT 'MXN',
+  currency text DEFAULT 'USD',
   delivery_date date NOT NULL,
-  payment_method text CHECK (payment_method IN ('cash','transfer','debit','credit','bitcoin','crypto')),
+  delivery_method text CHECK (delivery_method IN (
+    'cash', 'transfer', 'debit',
+    'credit_purchase',       -- compra con tarjeta para el familiar: tiene período de gracia
+    'credit_cash_advance',   -- retiro de efectivo con tarjeta: interés desde el día 1, sin gracia
+    'bitcoin', 'crypto'
+  )),
   origin_account_id uuid REFERENCES accounts(id),
+  origin_card_id uuid REFERENCES credit_cards(id),
+  transaction_id uuid REFERENCES transactions(id),  -- el cargo/retiro/transferencia real que originó el préstamo
+  linked_amount numeric,  -- NULL = el préstamo es el 100% de transaction_id; si tiene valor, es un split parcial (ver mod-13 spec §3)
   category text,
   evidence_url text,
   agreed_payment_date date,
   notes text,
   status text CHECK (status IN ('active','paid','written_off')) DEFAULT 'active',
-  created_at timestamptz DEFAULT now()
+  created_at timestamptz DEFAULT now(),
+  CONSTRAINT chk_family_loan_origin CHECK (
+    (delivery_method IN ('credit_purchase','credit_cash_advance') AND origin_card_id IS NOT NULL)
+    OR (delivery_method NOT IN ('credit_purchase','credit_cash_advance'))
+  )
 );
 
 CREATE TABLE family_loan_payments (
@@ -590,6 +616,7 @@ CREATE TABLE family_loan_payments (
   amount numeric NOT NULL,
   payment_method text,
   destination_account_id uuid REFERENCES accounts(id),
+  transaction_id uuid REFERENCES transactions(id),  -- el abono real que recibe el usuario (income_type='loan_payment')
   resulting_balance numeric,
   evidence_url text,
   notes text,

@@ -1277,65 +1277,53 @@ export type Database = {
       family_loan_payments: {
         Row: {
           amount: number
-          amount_base: number | null
-          balance_after: number
           created_at: string
-          currency: string
-          description: string | null
-          fx_rate: number | null
+          destination_account_id: string | null
+          evidence_url: string | null
           id: string
-          in_kind_details: Json | null
           loan_id: string
-          method: Database["public"]["Enums"]["family_payment_method"]
           notes: string | null
-          payment_date: string
-          receipt_url: string | null
+          paid_at: string
+          payment_method: string | null
+          resulting_balance: number
           transaction_id: string | null
           user_id: string
         }
         Insert: {
           amount: number
-          amount_base?: number | null
-          balance_after: number
           created_at?: string
-          currency?: string
-          description?: string | null
-          fx_rate?: number | null
+          destination_account_id?: string | null
+          evidence_url?: string | null
           id?: string
-          in_kind_details?: Json | null
           loan_id: string
-          method: Database["public"]["Enums"]["family_payment_method"]
           notes?: string | null
-          payment_date: string
-          receipt_url?: string | null
+          paid_at: string
+          payment_method?: string | null
+          resulting_balance: number
           transaction_id?: string | null
           user_id: string
         }
         Update: {
           amount?: number
-          amount_base?: number | null
-          balance_after?: number
           created_at?: string
-          currency?: string
-          description?: string | null
-          fx_rate?: number | null
+          destination_account_id?: string | null
+          evidence_url?: string | null
           id?: string
-          in_kind_details?: Json | null
           loan_id?: string
-          method?: Database["public"]["Enums"]["family_payment_method"]
           notes?: string | null
-          payment_date?: string
-          receipt_url?: string | null
+          paid_at?: string
+          payment_method?: string | null
+          resulting_balance?: number
           transaction_id?: string | null
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "family_loan_payments_currency_fkey"
-            columns: ["currency"]
+            foreignKeyName: "family_loan_payments_destination_account_id_fkey"
+            columns: ["destination_account_id"]
             isOneToOne: false
-            referencedRelation: "currencies"
-            referencedColumns: ["code"]
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "family_loan_payments_loan_id_fkey"
@@ -1362,97 +1350,99 @@ export type Database = {
       }
       family_loans: {
         Row: {
-          account_id: string | null
-          agreed_return_date: string | null
+          agreed_payment_date: string | null
           balance: number
           category: string | null
-          contract_url: string | null
           created_at: string
           currency: string
-          deleted_at: string | null
+          delivery_date: string
+          delivery_method: string
+          evidence_url: string | null
           id: string
-          is_visible_to_lender: boolean
-          last_contact_date: string | null
-          loan_date: string
-          next_reminder_date: string | null
+          linked_amount: number | null
           notes: string | null
+          origin_account_id: string | null
+          origin_card_id: string | null
           original_amount: number
-          payment_method: Database["public"]["Enums"]["family_payment_method"]
           person_name: string
-          person_phone: string | null
           relationship: string | null
-          reminder_frequency_days: number | null
-          status: Database["public"]["Enums"]["loan_status"]
-          trust_score: number | null
+          status: string
+          transaction_id: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
-          account_id?: string | null
-          agreed_return_date?: string | null
+          agreed_payment_date?: string | null
           balance: number
           category?: string | null
-          contract_url?: string | null
           created_at?: string
           currency?: string
-          deleted_at?: string | null
+          delivery_date: string
+          delivery_method: string
+          evidence_url?: string | null
           id?: string
-          is_visible_to_lender?: boolean
-          last_contact_date?: string | null
-          loan_date: string
-          next_reminder_date?: string | null
+          linked_amount?: number | null
           notes?: string | null
+          origin_account_id?: string | null
+          origin_card_id?: string | null
           original_amount: number
-          payment_method?: Database["public"]["Enums"]["family_payment_method"]
           person_name: string
-          person_phone?: string | null
           relationship?: string | null
-          reminder_frequency_days?: number | null
-          status?: Database["public"]["Enums"]["loan_status"]
-          trust_score?: number | null
+          status?: string
+          transaction_id?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
-          account_id?: string | null
-          agreed_return_date?: string | null
+          agreed_payment_date?: string | null
           balance?: number
           category?: string | null
-          contract_url?: string | null
           created_at?: string
           currency?: string
-          deleted_at?: string | null
+          delivery_date?: string
+          delivery_method?: string
+          evidence_url?: string | null
           id?: string
-          is_visible_to_lender?: boolean
-          last_contact_date?: string | null
-          loan_date?: string
-          next_reminder_date?: string | null
+          linked_amount?: number | null
           notes?: string | null
+          origin_account_id?: string | null
+          origin_card_id?: string | null
           original_amount?: number
-          payment_method?: Database["public"]["Enums"]["family_payment_method"]
           person_name?: string
-          person_phone?: string | null
           relationship?: string | null
-          reminder_frequency_days?: number | null
-          status?: Database["public"]["Enums"]["loan_status"]
-          trust_score?: number | null
+          status?: string
+          transaction_id?: string | null
           updated_at?: string
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "family_loans_account_id_fkey"
-            columns: ["account_id"]
-            isOneToOne: false
-            referencedRelation: "accounts"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "family_loans_currency_fkey"
             columns: ["currency"]
             isOneToOne: false
             referencedRelation: "currencies"
             referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "family_loans_origin_account_id_fkey"
+            columns: ["origin_account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "family_loans_origin_card_id_fkey"
+            columns: ["origin_card_id"]
+            isOneToOne: false
+            referencedRelation: "credit_cards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "family_loans_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "family_loans_user_id_fkey"
@@ -4202,6 +4192,7 @@ export type Database = {
         | "transfer_in"
         | "cc_payment"
         | "cc_charge"
+        | "cc_cash_advance"
         | "fee"
         | "interest_earned"
         | "interest_paid"
@@ -5005,6 +4996,7 @@ export const Constants = {
         "transfer_in",
         "cc_payment",
         "cc_charge",
+        "cc_cash_advance",
         "fee",
         "interest_earned",
         "interest_paid",
