@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { Button, Card, CardContent } from '@flowfinance/ui';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { computeDashboardAlerts, type DashboardAlert } from '@/lib/dashboard/alerts';
+import { AnimatedNumber } from '@/components/animated-number';
+import { AnimatedRing } from '@/components/animated-ring';
 
 const ALERT_STYLES: Record<DashboardAlert['severity'], { border: string; bg: string; text: string; icon: string }> = {
   critical: { border: 'border-ff-red/30', bg: 'bg-ff-red/10', text: 'text-ff-red', icon: '🔴' },
@@ -110,7 +112,7 @@ export default async function AppHomePage() {
 
       {/* ── 1. Qué necesita tu atención hoy ─────────────────────────── */}
       {alerts.length > 0 && (
-        <div className="space-y-2">
+        <div className="animate-fade-in-up space-y-2" style={{ animationDelay: '0ms' }}>
           {alerts.map((alert, i) => {
             const style = ALERT_STYLES[alert.severity];
             return (
@@ -131,13 +133,13 @@ export default async function AppHomePage() {
       )}
 
       {/* ── 2. El número más importante: patrimonio neto ────────────── */}
-      <Card>
+      <Card className="animate-fade-in-up" style={{ animationDelay: '60ms' }}>
         <CardContent className="py-6 text-center">
           <p className="text-sm text-muted-foreground">Patrimonio neto</p>
           <p
             className={`font-mono text-4xl ${(netWorth?.net_worth ?? 0) >= 0 ? 'text-ff-green' : 'text-ff-red'}`}
           >
-            {fmt(netWorth?.net_worth ?? 0)}
+            <AnimatedNumber value={netWorth?.net_worth ?? 0} format={fmt} />
           </p>
           {netWorthDelta !== null && (
             <p className={`mt-1 text-xs ${netWorthDelta >= 0 ? 'text-ff-green' : 'text-ff-red'}`}>
@@ -152,19 +154,23 @@ export default async function AppHomePage() {
 
       {/* ── 3. Flujo del mes: ¿ganas más de lo que gastas? ──────────── */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
+        <Card className="animate-fade-in-up" style={{ animationDelay: '120ms' }}>
           <CardContent className="py-5 text-center">
             <p className="text-sm text-muted-foreground">Ingresos del mes</p>
-            <p className="font-mono text-xl text-ff-green">{fmt(totalIncome)}</p>
+            <p className="font-mono text-xl text-ff-green">
+              <AnimatedNumber value={totalIncome} format={fmt} />
+            </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="animate-fade-in-up" style={{ animationDelay: '170ms' }}>
           <CardContent className="py-5 text-center">
             <p className="text-sm text-muted-foreground">Gastos del mes</p>
-            <p className="font-mono text-xl text-ff-red">{fmt(totalExpenses)}</p>
+            <p className="font-mono text-xl text-ff-red">
+              <AnimatedNumber value={totalExpenses} format={fmt} />
+            </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="animate-fade-in-up" style={{ animationDelay: '220ms' }}>
           <CardContent className="py-5 text-center">
             <p className="text-sm text-muted-foreground">Tasa de ahorro</p>
             <p
@@ -178,7 +184,11 @@ export default async function AppHomePage() {
                       : 'text-ff-red'
               }`}
             >
-              {savingsRate === null ? '—' : `${savingsRate.toFixed(0)}%`}
+              {savingsRate === null ? (
+                '—'
+              ) : (
+                <AnimatedNumber value={savingsRate} format={(n) => `${n.toFixed(0)}%`} />
+              )}
             </p>
           </CardContent>
         </Card>
@@ -186,11 +196,13 @@ export default async function AppHomePage() {
 
       {/* ── 4. Resumen por módulo ────────────────────────────────────── */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
+        <Card className="animate-fade-in-up" style={{ animationDelay: '270ms' }}>
           <CardContent className="flex items-center justify-between py-5">
             <div>
               <p className="font-medium">Liquidez disponible</p>
-              <p className="font-mono text-sm text-ff-green">{fmt(liquidBalance)}</p>
+              <p className="font-mono text-sm text-ff-green">
+                <AnimatedNumber value={liquidBalance} format={fmt} />
+              </p>
             </div>
             <Button asChild variant="outline" size="sm">
               <Link href="/app/cuentas">Ver cuentas</Link>
@@ -198,25 +210,18 @@ export default async function AppHomePage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="animate-fade-in-up" style={{ animationDelay: '320ms' }}>
           <CardContent className="flex items-center justify-between py-5">
-            <div>
-              <p className="font-medium">Presupuesto</p>
-              {budgetExecutionPct === null ? (
-                <p className="text-sm text-muted-foreground">Sin presupuesto activo</p>
-              ) : (
-                <p
-                  className={`font-mono text-sm ${
-                    budgetExecutionPct >= 100
-                      ? 'text-ff-red'
-                      : budgetExecutionPct >= 80
-                        ? 'text-ff-yellow'
-                        : 'text-ff-green'
-                  }`}
-                >
-                  {budgetExecutionPct.toFixed(0)}% ejecutado
-                </p>
-              )}
+            <div className="flex items-center gap-4">
+              {budgetExecutionPct !== null && <AnimatedRing percent={budgetExecutionPct} />}
+              <div>
+                <p className="font-medium">Presupuesto</p>
+                {budgetExecutionPct === null ? (
+                  <p className="text-sm text-muted-foreground">Sin presupuesto activo</p>
+                ) : (
+                  <p className="text-xs text-muted-foreground">ejecutado del mes</p>
+                )}
+              </div>
             </div>
             <Button asChild variant="outline" size="sm">
               <Link href={activeBudget ? '/app/presupuesto' : '/app/presupuesto/nuevo'}>
@@ -226,12 +231,12 @@ export default async function AppHomePage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="animate-fade-in-up" style={{ animationDelay: '370ms' }}>
           <CardContent className="flex items-center justify-between py-5">
             <div>
               <p className="font-medium">Deuda en tarjetas</p>
               <p className={`font-mono text-sm ${totalCardDebt > 0 ? 'text-ff-red' : 'text-ff-green'}`}>
-                {fmt(totalCardDebt)}
+                <AnimatedNumber value={totalCardDebt} format={fmt} />
               </p>
             </div>
             <Button asChild variant="outline" size="sm">
@@ -242,7 +247,7 @@ export default async function AppHomePage() {
       </div>
 
       {/* ── 5. CTA a FINN ─────────────────────────────────────────────── */}
-      <Card className="border-ff-green/20 bg-ff-green/5">
+      <Card className="animate-fade-in-up border-ff-green/20 bg-ff-green/5" style={{ animationDelay: '420ms' }}>
         <CardContent className="flex items-center justify-between py-5">
           <div>
             <p className="font-medium">🤖 ¿Dudas sobre tus finanzas?</p>
