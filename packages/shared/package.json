@@ -12,7 +12,9 @@
     "./types": "./src/types/index.ts",
     "./types/*": "./src/types/*.ts",
     "./utils": "./src/utils/index.ts",
-    "./utils/*": "./src/utils/*.ts"
+    "./utils/*": "./src/utils/*.ts",
+    "./config": "./src/config/index.ts",
+    "./config/*": "./src/config/*.ts"
   },
   "scripts": {
     "lint": "eslint src",
