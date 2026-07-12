@@ -23,7 +23,7 @@
     "db:push": "supabase db push",
     "db:reset": "supabase db reset",
     "db:diff": "supabase db diff",
-    "db:types": "supabase gen types typescript --local > packages/shared/src/types/database.ts",
+    "db:types": "supabase gen types typescript --linked 2>/dev/null | grep -v '^WARN:' > packages/shared/src/types/database.ts",
     "docker:build": "docker compose -f vps/docker-compose.yml build",
     "docker:up": "docker compose -f vps/docker-compose.yml up -d",
     "docker:down": "docker compose -f vps/docker-compose.yml down",

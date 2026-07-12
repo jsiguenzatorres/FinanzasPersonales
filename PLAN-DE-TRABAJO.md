@@ -3,8 +3,8 @@
 > **Stack confirmado:** Supabase (BDD + Auth + Storage + Edge Functions) · Hostinger VPS (cómputo pesado y jobs) · Gemini 2.5 Flash / Flash-Lite (asistente FINN, OCR, ML conversacional) · Next.js 15 (web) · React Native + Expo (móvil, Fase 2)
 >
 > **Doc de producto fuente:** `flowfinance-maestro-completo-1.html` (20 módulos)
-> **País de lanzamiento:** México (MXN). LATAM en Fase 3.
-> **Última actualización:** 2026-06-29
+> **País de lanzamiento:** El Salvador (USD nativo). LATAM (MX/GT/HN/CO/AR/ES/BR) en Fase 3.
+> **Última actualización:** 2026-07-09
 
 ---
 
@@ -114,7 +114,7 @@ Diseñar y migrar **las 28 tablas** del sistema completo. Aunque solo se usen 12
 
 ## 0.6 i18n + formato regional (Semana 3)
 - [ ] `next-intl` configurado, locale `es-MX` por defecto
-- [ ] Helpers de formato: moneda MXN, fechas, números
+- [ ] Helpers de formato: moneda USD, fechas, números (locale es-SV)
 - [ ] Catálogo de strings en JSON (preparar estructura multi-locale)
 
 ## 0.7 Observabilidad (Semana 3)
@@ -191,7 +191,7 @@ Diseñar y migrar **las 28 tablas** del sistema completo. Aunque solo se usen 12
 - Function calling: FINN puede consultar tablas, no inventar
 - Sistema de prompts versionado en `packages/finn/prompts/`
 - Tools que FINN puede invocar: `get_budget_status`, `get_recent_transactions`, `get_account_balance`, `calculate_savings_rate`
-- Límite por plan: Starter 10 mensajes/día, Pro 100/día, Elite ilimitado
+- Personalidad y capacidades de FINN escaladas por plan (ver `docs/modules/mod-08-finn.md`): Free "FINN Básico" · Starter "Tu Compañero" · Pro "Tu Asesor Personal" (ejecuta acciones, memoria de contexto) · Elite "Tu Socio Estratégico" (+ protocolo de bienestar financiero)
 
 ### Onboarding conversacional con FINN
 - Reemplazar wizard estático por conversación guiada
@@ -199,7 +199,7 @@ Diseñar y migrar **las 28 tablas** del sistema completo. Aunque solo se usen 12
 - Crea registros en BDD mientras conversa
 
 ### Monetización (Stripe)
-- 3 planes: Starter $99 MXN, Pro $249 MXN, Elite $499 MXN
+- 4 planes: Free (gratis) · Starter $4.99 USD · Pro $11.99 USD · Elite $24.99 USD
 - Stripe Checkout + Customer Portal
 - Webhooks en Edge Function para actualizar `users.plan`
 - Trial 14 días sin tarjeta
@@ -366,7 +366,7 @@ Diseñar y migrar **las 28 tablas** del sistema completo. Aunque solo se usen 12
 - Open Banking adoption: ≥50% de Pro users
 
 **Fase 3:**
-- ARR: $50K MXN/mes
+- ARR: $50K USD/mes
 - Presencia en 3+ países
 - Churn mensual <5%
 
