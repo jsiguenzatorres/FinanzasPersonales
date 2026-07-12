@@ -57,6 +57,8 @@ async function main() {
   console.log(`Sembrando datos para ${user.display_name} (${TARGET_EMAIL})...\n`);
 
   // ─── Limpieza de un run previo (idempotente) ────────────────────────────
+  await admin.from('family_loan_payments').delete().eq('user_id', user.id);
+  await admin.from('family_loans').delete().eq('user_id', user.id);
   await admin.from('budget_categories').delete().in(
     'budget_id',
     (await admin.from('budgets').select('id').eq('user_id', user.id)).data?.map((b) => b.id) ?? [],
@@ -232,7 +234,10 @@ async function main() {
     merchant_name: merchant,
     capture_source: 'manual',
   }));
-  const { error: expError } = await admin.from('transactions').insert(expenseRows);
+  const { data: insertedExpenses, error: expError } = await admin
+    .from('transactions')
+    .insert(expenseRows)
+    .select('id, transaction_date, merchant_name, amount');
   if (expError) throw expError;
   console.log(`  ✓ ${expenseRows.length} gastos registrados (jun-jul)`);
 
@@ -257,6 +262,241 @@ async function main() {
   if (ccError) throw ccError;
   console.log(`  ✓ ${ccRows.length} cargos a tarjeta registrados`);
 
+  // ─── Préstamos familiares (MOD-13) — cubre las 3 modalidades + vínculo
+  // retroactivo parcial, para poder probar el módulo completo ────────────
+
+  // Préstamo 1: efectivo a "Mario" (hermano) — vencido, con abono parcial.
+  {
+    const { data: tx, error: txErr } = await admin
+      .from('transactions')
+      .insert({
+        user_id: user.id,
+        account_id: checking,
+        kind: 'transfer_out',
+        amount: 100,
+        currency: 'USD',
+        transaction_date: '2026-06-20',
+        merchant_name: 'Mario',
+        description: 'Préstamo familiar — Mario',
+        capture_source: 'manual',
+      })
+      .select('id')
+      .single();
+    if (txErr) throw txErr;
+
+    const { data: loan, error: loanErr } = await admin
+      .from('family_loans')
+      .insert({
+        user_id: user.id,
+        person_name: 'Mario',
+        relationship: 'Hermano',
+        original_amount: 100,
+        balance: 100,
+        currency: 'USD',
+        delivery_date: '2026-06-20',
+        delivery_method: 'cash',
+        origin_account_id: checking,
+        transaction_id: tx.id,
+        category: 'Deudas / créditos',
+        agreed_payment_date: '2026-07-01', // ya pasó → aparece vencido
+      })
+      .select('id')
+      .single();
+    if (loanErr) throw loanErr;
+
+    // Abono parcial de $40 el 2026-07-05
+    const { data: payTx, error: payTxErr } = await admin
+      .from('transactions')
+      .insert({
+        user_id: user.id,
+        account_id: checking,
+        kind: 'income',
+        amount: 40,
+        currency: 'USD',
+        transaction_date: '2026-07-05',
+        description: 'Abono de préstamo — Mario',
+        capture_source: 'manual',
+      })
+      .select('id')
+      .single();
+    if (payTxErr) throw payTxErr;
+
+    await admin.from('family_loan_payments').insert({
+      user_id: user.id,
+      loan_id: loan.id,
+      amount: 40,
+      destination_account_id: checking,
+      transaction_id: payTx.id,
+      resulting_balance: 60,
+      paid_at: '2026-07-05',
+    });
+    await admin.from('family_loans').update({ balance: 60 }).eq('id', loan.id);
+  }
+
+  // Préstamo 2: compra con tarjeta para "Ana" (hermana) — activo, sin abonar aún.
+  {
+    const { data: tx, error: txErr } = await admin
+      .from('transactions')
+      .insert({
+        user_id: user.id,
+        card_id: card.id,
+        kind: 'cc_charge',
+        amount: 65,
+        currency: 'USD',
+        transaction_date: '2026-07-03',
+        merchant_name: 'Ana',
+        description: 'Préstamo familiar — Ana',
+        capture_source: 'manual',
+      })
+      .select('id')
+      .single();
+    if (txErr) throw txErr;
+
+    await admin.from('family_loans').insert({
+      user_id: user.id,
+      person_name: 'Ana',
+      relationship: 'Hermana',
+      original_amount: 65,
+      balance: 65,
+      currency: 'USD',
+      delivery_date: '2026-07-03',
+      delivery_method: 'credit_purchase',
+      origin_card_id: card.id,
+      transaction_id: tx.id,
+      category: 'Alimentos',
+    });
+  }
+
+  // Préstamo 3: retiro de efectivo con tarjeta para "Carlos" (primo) — el
+  // caso caro que FINN debe advertir: sin período de gracia.
+  {
+    const { data: tx, error: txErr } = await admin
+      .from('transactions')
+      .insert({
+        user_id: user.id,
+        card_id: card.id,
+        kind: 'cc_cash_advance',
+        amount: 150,
+        currency: 'USD',
+        transaction_date: '2026-06-25',
+        merchant_name: 'Carlos',
+        description: 'Préstamo familiar — Carlos (retiro de efectivo)',
+        capture_source: 'manual',
+      })
+      .select('id')
+      .single();
+    if (txErr) throw txErr;
+
+    await admin.from('family_loans').insert({
+      user_id: user.id,
+      person_name: 'Carlos',
+      relationship: 'Primo',
+      original_amount: 150,
+      balance: 150,
+      currency: 'USD',
+      delivery_date: '2026-06-25',
+      delivery_method: 'credit_cash_advance',
+      origin_card_id: card.id,
+      transaction_id: tx.id,
+      category: 'Gastos médicos',
+    });
+  }
+
+  // Préstamo 4: vínculo retroactivo PARCIAL — la mitad del súper del
+  // 2026-07-02 ($72.10) era para "Mamá". Prueba linked_amount + que el
+  // presupuesto solo excluya esa porción, no el gasto completo.
+  {
+    const target = insertedExpenses.find(
+      (e) => e.transaction_date === '2026-07-02' && e.merchant_name === 'Super Selectos',
+    );
+    if (!target) throw new Error('No encontré el gasto de referencia para el vínculo retroactivo parcial');
+
+    const linkedAmount = Math.round((target.amount / 2) * 100) / 100;
+    await admin.from('family_loans').insert({
+      user_id: user.id,
+      person_name: 'Mamá',
+      relationship: 'Madre',
+      original_amount: linkedAmount,
+      balance: linkedAmount,
+      currency: 'USD',
+      delivery_date: target.transaction_date,
+      delivery_method: 'debit',
+      origin_account_id: checking,
+      transaction_id: target.id,
+      linked_amount: linkedAmount,
+      category: 'Alimentos',
+      notes: 'Mitad del súper del 2 de julio — la otra mitad es gasto propio',
+    });
+  }
+
+  // Préstamo 5: ya pagado — para ver el estado "Pagado" en la lista.
+  {
+    const { data: tx, error: txErr } = await admin
+      .from('transactions')
+      .insert({
+        user_id: user.id,
+        account_id: checking,
+        kind: 'transfer_out',
+        amount: 50,
+        currency: 'USD',
+        transaction_date: '2026-06-01',
+        merchant_name: 'Sofía',
+        description: 'Préstamo familiar — Sofía',
+        capture_source: 'manual',
+      })
+      .select('id')
+      .single();
+    if (txErr) throw txErr;
+
+    const { data: loan, error: loanErr } = await admin
+      .from('family_loans')
+      .insert({
+        user_id: user.id,
+        person_name: 'Sofía',
+        relationship: 'Amiga',
+        original_amount: 50,
+        balance: 50,
+        currency: 'USD',
+        delivery_date: '2026-06-01',
+        delivery_method: 'transfer',
+        origin_account_id: checking,
+        transaction_id: tx.id,
+        category: 'Otro',
+      })
+      .select('id')
+      .single();
+    if (loanErr) throw loanErr;
+
+    const { data: payTx, error: payTxErr } = await admin
+      .from('transactions')
+      .insert({
+        user_id: user.id,
+        account_id: checking,
+        kind: 'income',
+        amount: 50,
+        currency: 'USD',
+        transaction_date: '2026-06-15',
+        description: 'Abono de préstamo — Sofía',
+        capture_source: 'manual',
+      })
+      .select('id')
+      .single();
+    if (payTxErr) throw payTxErr;
+
+    await admin.from('family_loan_payments').insert({
+      user_id: user.id,
+      loan_id: loan.id,
+      amount: 50,
+      destination_account_id: checking,
+      transaction_id: payTx.id,
+      resulting_balance: 0,
+      paid_at: '2026-06-15',
+    });
+    await admin.from('family_loans').update({ balance: 0, status: 'paid' }).eq('id', loan.id);
+  }
+
+  console.log('  ✓ 5 préstamos familiares registrados (efectivo, compra con tarjeta, retiro de efectivo, vínculo parcial, pagado)');
+
   // ─── Resumen final ───────────────────────────────────────────────────────
   const { data: finalAccounts } = await admin.from('accounts').select('name, balance').eq('user_id', user.id);
   const { data: finalCard } = await admin
@@ -267,12 +507,19 @@ async function main() {
     .from('budget_categories')
     .select('category_id, allocated_amount, spent_amount, status')
     .eq('budget_id', budget.id);
+  const { data: finalLoans } = await admin
+    .from('family_loans')
+    .select('person_name, delivery_method, original_amount, linked_amount, balance, status')
+    .eq('user_id', user.id)
+    .order('delivery_date', { ascending: true });
 
   console.log('\n=== Saldos resultantes ===');
   console.table(finalAccounts);
   console.table(finalCard);
-  console.log('=== Presupuesto de julio (spent_amount debe reflejar los gastos ya insertados) ===');
+  console.log('=== Presupuesto de julio (Alimentación debe reflejar el vínculo parcial de Mamá) ===');
   console.table(finalBudget);
+  console.log('=== Préstamos familiares ===');
+  console.table(finalLoans);
 
   console.log(`\nListo. Inicia sesión como ${TARGET_EMAIL} para ver el escenario completo.`);
 }
