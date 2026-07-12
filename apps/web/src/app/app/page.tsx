@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { computeDashboardAlerts, type DashboardAlert } from '@/lib/dashboard/alerts';
 import { AnimatedNumber } from '@/components/animated-number';
 import { AnimatedRing } from '@/components/animated-ring';
+import { computePersonalExpenseTotal } from '@/lib/expenses/personal-spend';
 
 const ALERT_STYLES: Record<DashboardAlert['severity'], { border: string; bg: string; text: string; icon: string }> = {
   critical: { border: 'border-ff-red/30', bg: 'bg-ff-red/10', text: 'text-ff-red', icon: '🔴' },
@@ -36,7 +37,7 @@ export default async function AppHomePage() {
     { data: netWorth },
     { data: lastSnapshot },
     { data: monthIncomes },
-    { data: monthExpenses },
+    totalExpenses,
     { data: liquidAccounts },
     { data: cardsDebt },
     { data: activeBudget },
@@ -58,13 +59,7 @@ export default async function AppHomePage() {
       .is('deleted_at', null)
       .eq('is_collected', true)
       .gte('income_date', startStr),
-    supabase
-      .from('transactions')
-      .select('amount')
-      .eq('user_id', userId)
-      .eq('kind', 'expense')
-      .is('deleted_at', null)
-      .gte('transaction_date', startStr),
+    computePersonalExpenseTotal(supabase, userId, startStr),
     supabase
       .from('accounts')
       .select('balance')
@@ -87,7 +82,6 @@ export default async function AppHomePage() {
   ]);
 
   const totalIncome = (monthIncomes ?? []).reduce((sum, i) => sum + i.net_amount, 0);
-  const totalExpenses = (monthExpenses ?? []).reduce((sum, e) => sum + e.amount, 0);
   const savingsRate = totalIncome > 0 ? ((totalIncome - totalExpenses) / totalIncome) * 100 : null;
   const liquidBalance = (liquidAccounts ?? []).reduce((sum, a) => sum + a.balance, 0);
   const totalCardDebt = (cardsDebt ?? []).reduce((sum, c) => sum + c.current_balance, 0);

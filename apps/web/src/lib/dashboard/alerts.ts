@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@flowfinance/shared/types';
+import { computePersonalExpenseTotal } from '@/lib/expenses/personal-spend';
 
 export interface DashboardAlert {
   severity: 'info' | 'warning' | 'critical';
@@ -109,6 +110,26 @@ export async function computeDashboardAlerts(
     }
   }
 
+  // ─── Préstamos familiares vencidos ─────────────────────────────────────
+  const { data: overdueLoans } = await supabase
+    .from('family_loans')
+    .select('person_name')
+    .eq('user_id', userId)
+    .eq('status', 'active')
+    .lt('agreed_payment_date', todayStr);
+
+  if (overdueLoans && overdueLoans.length > 0) {
+    alerts.push({
+      severity: 'warning',
+      title:
+        overdueLoans.length === 1
+          ? `${overdueLoans[0]!.person_name} no ha abonado su préstamo vencido`
+          : `${overdueLoans.length} préstamos familiares vencidos sin abonar`,
+      actionLabel: 'Ver préstamos',
+      actionHref: '/app/prestamos',
+    });
+  }
+
   // ─── Liquidez vs. gasto promedio ──────────────────────────────────────
   const { data: accounts } = await supabase
     .from('accounts')
@@ -121,15 +142,13 @@ export async function computeDashboardAlerts(
 
   const threeMonthsAgo = new Date();
   threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-  const { data: pastExpenses } = await supabase
-    .from('transactions')
-    .select('amount')
-    .eq('user_id', userId)
-    .eq('kind', 'expense')
-    .is('deleted_at', null)
-    .gte('transaction_date', threeMonthsAgo.toISOString().slice(0, 10));
+  const pastExpensesTotal = await computePersonalExpenseTotal(
+    supabase,
+    userId,
+    threeMonthsAgo.toISOString().slice(0, 10),
+  );
 
-  const avgMonthlyExpense = (pastExpenses ?? []).reduce((sum, e) => sum + e.amount, 0) / 3;
+  const avgMonthlyExpense = pastExpensesTotal / 3;
 
   if (avgMonthlyExpense > 0 && liquidBalance < avgMonthlyExpense * 0.5) {
     alerts.push({
