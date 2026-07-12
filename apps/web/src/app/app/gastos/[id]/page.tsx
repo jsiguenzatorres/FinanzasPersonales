@@ -18,11 +18,16 @@ export default async function ExpenseDetailPage({ params }: { params: Promise<{ 
 
   if (!expense) notFound();
 
-  const [{ data: category }, attachments] = await Promise.all([
+  const [{ data: category }, attachments, { data: linkedLoan }] = await Promise.all([
     expense.category_id
       ? supabase.from('categories').select('name').eq('id', expense.category_id).single()
       : Promise.resolve({ data: null as { name: string } | null }),
     listAttachments('transaction', id),
+    supabase
+      .from('family_loans')
+      .select('id, person_name, linked_amount')
+      .eq('transaction_id', id)
+      .maybeSingle(),
   ]);
 
   const amountFmt = new Intl.NumberFormat('es-SV', {
@@ -52,6 +57,23 @@ export default async function ExpenseDetailPage({ params }: { params: Promise<{ 
             <p className="text-sm">{expense.description}</p>
           )}
           {expense.notes && <p className="text-sm text-muted-foreground">{expense.notes}</p>}
+
+          {linkedLoan ? (
+            <p className="rounded-md border border-ff-yellow/30 bg-ff-yellow/10 px-3 py-2 text-xs text-ff-yellow">
+              {linkedLoan.linked_amount
+                ? `${new Intl.NumberFormat('es-SV', { style: 'currency', currency: expense.currency }).format(linkedLoan.linked_amount)} de este gasto`
+                : 'Este gasto completo'}{' '}
+              es un préstamo a {linkedLoan.person_name} —{' '}
+              <Link href={`/app/prestamos/${linkedLoan.id}`} className="underline">
+                ver préstamo
+              </Link>
+            </p>
+          ) : (
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/app/prestamos/nuevo?existing_transaction_id=${id}`}>Vincular a préstamo</Link>
+            </Button>
+          )}
+
           <Button asChild variant="outline" size="sm">
             <Link href={`/app/gastos/${id}/editar`}>Editar</Link>
           </Button>

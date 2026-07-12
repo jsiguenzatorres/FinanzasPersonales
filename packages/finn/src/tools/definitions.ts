@@ -59,4 +59,20 @@ export const FINN_TOOLS: FunctionDeclaration[] = [
     description: 'Obtiene el patrimonio neto actual del usuario (activos menos pasivos) con su desglose.',
     parameters: { type: SchemaType.OBJECT, properties: {} },
   },
+  {
+    name: 'get_family_loans',
+    description:
+      'Obtiene los préstamos familiares del usuario (dinero prestado a familia/amigos, sin interés): quién debe, cuánto, desde cuándo, y si está vencido.',
+    parameters: {
+      type: SchemaType.OBJECT,
+      properties: {
+        status: {
+          type: SchemaType.STRING,
+          format: 'enum',
+          enum: ['active', 'paid', 'written_off', 'all'],
+          description: 'Filtro de estado, por defecto "active"',
+        },
+      },
+    },
+  },
 ];

@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: '/app/ingresos', label: 'Ingresos' },
   { href: '/app/gastos', label: 'Gastos' },
   { href: '/app/tarjetas', label: 'Tarjetas' },
+  { href: '/app/prestamos', label: 'Préstamos' },
   { href: '/app/patrimonio', label: 'Patrimonio' },
   { href: '/app/presupuesto', label: 'Presupuesto' },
   { href: '/app/finn', label: '🤖 FINN' },

@@ -40,6 +40,7 @@ export default async function AppHomePage() {
     { data: liquidAccounts },
     { data: cardsDebt },
     { data: activeBudget },
+    { data: activeLoans },
   ] = await Promise.all([
     computeDashboardAlerts(supabase, userId),
     supabase.from('v_net_worth_current').select('net_worth').eq('user_id', userId).single(),
@@ -82,6 +83,7 @@ export default async function AppHomePage() {
       .lte('period_start', new Date().toISOString().slice(0, 10))
       .gte('period_end', new Date().toISOString().slice(0, 10))
       .maybeSingle(),
+    supabase.from('family_loans').select('balance').eq('user_id', userId).eq('status', 'active'),
   ]);
 
   const totalIncome = (monthIncomes ?? []).reduce((sum, i) => sum + i.net_amount, 0);
@@ -90,6 +92,7 @@ export default async function AppHomePage() {
   const liquidBalance = (liquidAccounts ?? []).reduce((sum, a) => sum + a.balance, 0);
   const totalCardDebt = (cardsDebt ?? []).reduce((sum, c) => sum + c.current_balance, 0);
   const netWorthDelta = lastSnapshot ? (netWorth?.net_worth ?? 0) - (lastSnapshot.net_worth ?? 0) : null;
+  const totalLoansPending = (activeLoans ?? []).reduce((sum, l) => sum + l.balance, 0);
 
   let budgetExecutionPct: number | null = null;
   if (activeBudget) {
@@ -245,6 +248,23 @@ export default async function AppHomePage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* ── 4b. Préstamos activos (solo si tiene) ────────────────────── */}
+      {totalLoansPending > 0 && (
+        <Card className="animate-fade-in-up" style={{ animationDelay: '395ms' }}>
+          <CardContent className="flex items-center justify-between py-5">
+            <div>
+              <p className="font-medium">Préstamos activos</p>
+              <p className="font-mono text-sm text-ff-yellow">
+                <AnimatedNumber value={totalLoansPending} format={fmt} />
+              </p>
+            </div>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/app/prestamos">Ver préstamos</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* ── 5. CTA a FINN ─────────────────────────────────────────────── */}
       <Card className="animate-fade-in-up border-ff-green/20 bg-ff-green/5" style={{ animationDelay: '420ms' }}>

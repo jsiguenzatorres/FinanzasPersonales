@@ -127,6 +127,31 @@ export async function executeFinnTool(
       );
     }
 
+    case 'get_family_loans': {
+      const status = String(args.status ?? 'active');
+      let query = supabase
+        .from('family_loans')
+        .select('person_name, relationship, balance, original_amount, currency, delivery_date, agreed_payment_date, status')
+        .eq('user_id', userId)
+        .order('balance', { ascending: false });
+
+      if (status !== 'all') {
+        query = query.eq('status', status);
+      }
+
+      const { data } = await query;
+      const today = new Date().toISOString().slice(0, 10);
+      const loans = (data ?? []).map((l) => ({
+        ...l,
+        is_overdue: l.status === 'active' && !!l.agreed_payment_date && l.agreed_payment_date < today,
+      }));
+
+      return {
+        loans,
+        total_pending: loans.filter((l) => l.status === 'active').reduce((sum, l) => sum + l.balance, 0),
+      };
+    }
+
     default:
       return { error: `Herramienta desconocida: ${toolName}` };
   }
