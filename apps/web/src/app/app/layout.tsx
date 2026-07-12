@@ -1,19 +1,8 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Button } from '@flowfinance/ui';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { signOutAction } from '@/lib/auth/actions';
-
-const NAV_ITEMS = [
-  { href: '/app', label: 'Inicio' },
-  { href: '/app/cuentas', label: 'Cuentas' },
-  { href: '/app/ingresos', label: 'Ingresos' },
-  { href: '/app/gastos', label: 'Gastos' },
-  { href: '/app/tarjetas', label: 'Tarjetas' },
-  { href: '/app/patrimonio', label: 'Patrimonio' },
-  { href: '/app/presupuesto', label: 'Presupuesto' },
-  { href: '/app/finn', label: '🤖 FINN' },
-];
+import { AppNav } from '@/components/app-nav';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createSupabaseServerClient();
@@ -32,17 +21,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <span className="font-display text-lg">
             Flow<span className="text-ff-green">Finance</span>
           </span>
-          <nav className="flex items-center gap-5">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
+          <AppNav />
         </div>
         <form action={signOutAction}>
           <Button type="submit" variant="ghost" size="sm">
