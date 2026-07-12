@@ -1,6 +1,10 @@
 import { GoogleGenerativeAI, type Content, type FunctionDeclaration } from '@google/generative-ai';
+import { nimJsonCascade, NIM_CLASSIFY_CASCADE, NIM_OCR_CASCADE } from './nim-fallback';
 
-export type FinnModel = 'gemini-2.5-flash' | 'gemini-2.5-flash-lite';
+// Alias "latest" de Google — apuntan siempre al modelo flash vigente, evita
+// romperse cuando Google retira una versión fija (ej. gemini-2.5-flash dejó
+// de estar disponible para API keys nuevas sin aviso previo en el código).
+export type FinnModel = 'gemini-flash-latest' | 'gemini-flash-lite-latest';
 
 export interface ChatWithToolsParams {
   systemPrompt: string;
@@ -35,6 +39,13 @@ export interface FinnClient {
 interface CreateOptions {
   apiKey: string;
   defaultModel?: FinnModel;
+  /**
+   * Opcional — si se provee, classifyJson() y extractFromImage() caen a una
+   * cascada de modelos NVIDIA NIM cuando Gemini falla. chatWithTools() NO usa
+   * este respaldo (ver nim-fallback.ts). Sin esta key, el comportamiento es
+   * idéntico al anterior: un fallo de Gemini simplemente se propaga.
+   */
+  nvidiaApiKey?: string;
 }
 
 /**
@@ -44,7 +55,8 @@ interface CreateOptions {
  */
 export function createFinnClient(opts: CreateOptions): FinnClient {
   const genAI = new GoogleGenerativeAI(opts.apiKey);
-  const defaultModel = opts.defaultModel ?? 'gemini-2.5-flash';
+  const defaultModel = opts.defaultModel ?? 'gemini-flash-latest';
+  const nvidiaApiKey = opts.nvidiaApiKey;
 
   async function chat(prompt: string, model?: FinnModel): Promise<string> {
     const m = genAI.getGenerativeModel({ model: model ?? defaultModel });
@@ -53,17 +65,28 @@ export function createFinnClient(opts: CreateOptions): FinnClient {
   }
 
   async function classifyJson<T>(prompt: string, model?: FinnModel): Promise<T> {
-    const m = genAI.getGenerativeModel({
-      model: model ?? 'gemini-2.5-flash-lite',
-      generationConfig: {
-        responseMimeType: 'application/json',
-        temperature: 0.1,
-        maxOutputTokens: 200,
-      },
-    });
-    const result = await m.generateContent(prompt);
-    const text = result.response.text();
-    return JSON.parse(text) as T;
+    try {
+      const m = genAI.getGenerativeModel({
+        model: model ?? 'gemini-flash-lite-latest',
+        generationConfig: {
+          responseMimeType: 'application/json',
+          temperature: 0.1,
+          maxOutputTokens: 200,
+        },
+      });
+      const result = await m.generateContent(prompt);
+      const text = result.response.text();
+      return JSON.parse(text) as T;
+    } catch (err) {
+      if (!nvidiaApiKey) throw err;
+      console.warn('[FINN] Gemini falló en classifyJson, probando cascada NIM:', err);
+      return nimJsonCascade<T>({
+        apiKey: nvidiaApiKey,
+        models: NIM_CLASSIFY_CASCADE,
+        content: prompt,
+        maxTokens: 200,
+      });
+    }
   }
 
   /**
@@ -118,22 +141,36 @@ export function createFinnClient(opts: CreateOptions): FinnClient {
    * lectura de imágenes con texto denso.
    */
   async function extractFromImage<T>(params: ExtractFromImageParams): Promise<T> {
-    const m = genAI.getGenerativeModel({
-      model: params.model ?? 'gemini-2.5-flash',
-      generationConfig: {
-        responseMimeType: 'application/json',
-        temperature: 0.1,
-        maxOutputTokens: 1500,
-      },
-    });
+    try {
+      const m = genAI.getGenerativeModel({
+        model: params.model ?? 'gemini-flash-latest',
+        generationConfig: {
+          responseMimeType: 'application/json',
+          temperature: 0.1,
+          maxOutputTokens: 1500,
+        },
+      });
 
-    const result = await m.generateContent([
-      { inlineData: { data: params.imageBase64, mimeType: params.mimeType } },
-      { text: params.prompt },
-    ]);
+      const result = await m.generateContent([
+        { inlineData: { data: params.imageBase64, mimeType: params.mimeType } },
+        { text: params.prompt },
+      ]);
 
-    const text = result.response.text();
-    return JSON.parse(text) as T;
+      const text = result.response.text();
+      return JSON.parse(text) as T;
+    } catch (err) {
+      if (!nvidiaApiKey) throw err;
+      console.warn('[FINN] Gemini falló en extractFromImage, probando cascada NIM:', err);
+      return nimJsonCascade<T>({
+        apiKey: nvidiaApiKey,
+        models: NIM_OCR_CASCADE,
+        maxTokens: 1500,
+        content: [
+          { type: 'text', text: params.prompt },
+          { type: 'image_url', image_url: { url: `data:${params.mimeType};base64,${params.imageBase64}` } },
+        ],
+      });
+    }
   }
 
   return { chat, classifyJson, chatWithTools, extractFromImage };

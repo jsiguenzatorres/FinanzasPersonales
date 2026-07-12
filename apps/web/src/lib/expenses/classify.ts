@@ -31,7 +31,10 @@ export async function classifyExpenseCategory(input: {
 
   const names = categories.map((c) => c.name);
 
-  const client = createFinnClient({ apiKey: process.env.GEMINI_API_KEY });
+  const client = createFinnClient({
+    apiKey: process.env.GEMINI_API_KEY,
+    nvidiaApiKey: process.env.NVIDIA_API_KEY,
+  });
   const prompt = buildClassifyExpensePrompt({
     merchant_name: input.merchant_name,
     description: input.description,

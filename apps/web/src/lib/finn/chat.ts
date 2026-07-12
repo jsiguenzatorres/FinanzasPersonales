@@ -65,7 +65,7 @@ export async function sendFinnMessageAction(formData: FormData) {
   if (!conversationId) {
     const { data: conv } = await supabase
       .from('finn_conversations')
-      .insert({ user_id: user.id, session_kind: 'chat', model_used: 'gemini-2.5-flash' })
+      .insert({ user_id: user.id, session_kind: 'chat', model_used: 'gemini-flash-latest' })
       .select('id')
       .single();
     conversationId = conv?.id ?? null;
@@ -131,9 +131,10 @@ export async function sendFinnMessageAction(formData: FormData) {
       content: result.text,
       tokens_in: result.tokensIn,
       tokens_out: result.tokensOut,
-      model: 'gemini-2.5-flash',
+      model: 'gemini-flash-latest',
     });
-  } catch {
+  } catch (err) {
+    console.error('[FINN chat] error en chatWithTools:', err);
     redirect(
       `/app/finn?conversation_id=${conversationId}&error=` +
         encodeURIComponent('FINN está tomando una siesta. Reintenta en un momento.'),

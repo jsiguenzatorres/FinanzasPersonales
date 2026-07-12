@@ -66,7 +66,10 @@ export async function scanReceiptAction(formData: FormData): Promise<ScanReceipt
   const arrayBuffer = await file.arrayBuffer();
   const base64 = Buffer.from(arrayBuffer).toString('base64');
 
-  const client = createFinnClient({ apiKey: process.env.GEMINI_API_KEY });
+  const client = createFinnClient({
+    apiKey: process.env.GEMINI_API_KEY,
+    nvidiaApiKey: process.env.NVIDIA_API_KEY,
+  });
 
   let extracted: unknown;
   try {
