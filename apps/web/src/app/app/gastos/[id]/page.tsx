@@ -52,6 +52,9 @@ export default async function ExpenseDetailPage({ params }: { params: Promise<{ 
             <p className="text-sm">{expense.description}</p>
           )}
           {expense.notes && <p className="text-sm text-muted-foreground">{expense.notes}</p>}
+          <Button asChild variant="outline" size="sm">
+            <Link href={`/app/gastos/${id}/editar`}>Editar</Link>
+          </Button>
         </CardContent>
       </Card>
 

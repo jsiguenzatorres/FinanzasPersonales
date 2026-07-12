@@ -18,3 +18,13 @@ export const accountCreateSchema = z.object({
 });
 
 export type AccountCreateInput = z.infer<typeof accountCreateSchema>;
+
+/** Moneda e initial_balance no son editables: cambiarlas retroactivamente
+ *  desalinearía el balance ya calculado por los triggers de transacciones. */
+export const accountUpdateSchema = z.object({
+  name: z.string().min(1, 'Ingresa un nombre').max(100),
+  type: accountTypeSchema,
+  bank_name: z.string().max(100).optional(),
+});
+
+export type AccountUpdateInput = z.infer<typeof accountUpdateSchema>;

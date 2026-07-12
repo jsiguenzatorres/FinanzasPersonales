@@ -11,7 +11,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
-import { createExpenseAction } from '@/lib/expenses/actions';
+import { createExpenseAction, editExpenseAction } from '@/lib/expenses/actions';
 import { classifyExpenseCategory } from '@/lib/expenses/classify';
 import { scanReceiptAction } from '@/lib/expenses/ocr';
 import { compressImageFile } from '@/lib/attachments/compress-image';
@@ -38,30 +38,52 @@ interface CurrencyOption {
   code: string;
 }
 
+export interface ExpenseInitialValues {
+  id: string;
+  merchant_name: string;
+  description: string;
+  amount: string;
+  currency: string;
+  transaction_date: string;
+  category_id: string;
+  payment_method: 'account' | 'card';
+  account_id?: string;
+  card_id?: string;
+  receipt_url?: string;
+}
+
 export function ExpenseForm({
   categories,
   accounts,
   cards,
   currencies,
   error,
+  initialValues,
 }: {
   categories: CategoryOption[];
   accounts: AccountOption[];
   cards: CardOption[];
   currencies: CurrencyOption[];
   error?: string;
+  initialValues?: ExpenseInitialValues;
 }) {
-  const [merchantName, setMerchantName] = useState('');
-  const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState('');
-  const [currency, setCurrency] = useState('USD');
-  const [transactionDate, setTransactionDate] = useState(new Date().toISOString().slice(0, 10));
-  const [categoryId, setCategoryId] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'account' | 'card'>('account');
+  const isEditing = !!initialValues;
+
+  const [merchantName, setMerchantName] = useState(initialValues?.merchant_name ?? '');
+  const [description, setDescription] = useState(initialValues?.description ?? '');
+  const [amount, setAmount] = useState(initialValues?.amount ?? '');
+  const [currency, setCurrency] = useState(initialValues?.currency ?? 'USD');
+  const [transactionDate, setTransactionDate] = useState(
+    initialValues?.transaction_date ?? new Date().toISOString().slice(0, 10),
+  );
+  const [categoryId, setCategoryId] = useState(initialValues?.category_id ?? '');
+  const [paymentMethod, setPaymentMethod] = useState<'account' | 'card'>(
+    initialValues?.payment_method ?? 'account',
+  );
   const [suggestion, setSuggestion] = useState<{ name: string; confidence: number } | null>(null);
   const [isClassifying, startClassifying] = useTransition();
 
-  const [receiptPath, setReceiptPath] = useState('');
+  const [receiptPath, setReceiptPath] = useState(initialValues?.receipt_url ?? '');
   const [ocrConfidence, setOcrConfidence] = useState<number | null>(null);
   const [ocrError, setOcrError] = useState('');
   const [isScanning, startScanning] = useTransition();
@@ -121,8 +143,12 @@ export function ExpenseForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nuevo gasto</CardTitle>
-        <CardDescription>Registra un gasto — FINN puede leer tu recibo y sugerir la categoría</CardDescription>
+        <CardTitle>{isEditing ? 'Editar gasto' : 'Nuevo gasto'}</CardTitle>
+        <CardDescription>
+          {isEditing
+            ? 'Corrige los datos de este gasto'
+            : 'Registra un gasto — FINN puede leer tu recibo y sugerir la categoría'}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {error && (
@@ -158,9 +184,10 @@ export function ExpenseForm({
           {ocrError && <p className="text-xs text-ff-red">{ocrError}</p>}
         </div>
 
-        <form action={createExpenseAction} className="space-y-4">
+        <form action={isEditing ? editExpenseAction : createExpenseAction} className="space-y-4">
+          {isEditing && <input type="hidden" name="expense_id" value={initialValues.id} />}
           <input type="hidden" name="payment_method" value={paymentMethod} />
-          <input type="hidden" name="receipt_url" value={receiptPath} />
+          <input type="hidden" name="receipt_url" value={receiptPath || ''} />
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
@@ -294,6 +321,7 @@ export function ExpenseForm({
                   id="account_id"
                   name="account_id"
                   required={paymentMethod === 'account'}
+                  defaultValue={initialValues?.account_id}
                   className="flex h-10 w-full rounded-md border border-border bg-card px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {accounts.map((a) => (
@@ -310,6 +338,7 @@ export function ExpenseForm({
                   id="card_id"
                   name="card_id"
                   required={paymentMethod === 'card'}
+                  defaultValue={initialValues?.card_id}
                   className="flex h-10 w-full rounded-md border border-border bg-card px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {cards.map((c) => (
@@ -347,7 +376,7 @@ export function ExpenseForm({
               (paymentMethod === 'card' && cards.length === 0)
             }
           >
-            Guardar gasto
+            {isEditing ? 'Guardar cambios' : 'Guardar gasto'}
           </Button>
         </form>
       </CardContent>

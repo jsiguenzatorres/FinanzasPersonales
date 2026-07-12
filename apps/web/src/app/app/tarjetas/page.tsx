@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Button, Card, CardContent } from '@flowfinance/ui';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { archiveCreditCardAction } from '@/lib/credit-cards/actions';
+import { archiveCreditCardAction, deleteCreditCardAction } from '@/lib/credit-cards/actions';
 
 function utilizationColor(pct: number): string {
   if (pct < 30) return 'text-ff-green';
@@ -9,7 +9,12 @@ function utilizationColor(pct: number): string {
   return 'text-ff-red';
 }
 
-export default async function CreditCardsPage() {
+export default async function CreditCardsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data: cards } = await supabase
     .from('credit_cards')
@@ -25,6 +30,12 @@ export default async function CreditCardsPage() {
           <Link href="/app/tarjetas/nueva">+ Nueva tarjeta</Link>
         </Button>
       </div>
+
+      {error && (
+        <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+          {error}
+        </p>
+      )}
 
       {!cards || cards.length === 0 ? (
         <Card>
@@ -76,14 +87,23 @@ export default async function CreditCardsPage() {
                     Corte día {card.cut_day} · Pago día {card.payment_due_day}
                   </p>
 
-                  <div className="flex items-center gap-2 pt-1">
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
                     <Button asChild variant="outline" size="sm">
                       <Link href={`/app/tarjetas/${card.id}/pago`}>Registrar pago</Link>
+                    </Button>
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={`/app/tarjetas/${card.id}/editar`}>Editar</Link>
                     </Button>
                     <form action={archiveCreditCardAction}>
                       <input type="hidden" name="card_id" value={card.id} />
                       <Button type="submit" variant="ghost" size="sm">
                         Archivar
+                      </Button>
+                    </form>
+                    <form action={deleteCreditCardAction}>
+                      <input type="hidden" name="card_id" value={card.id} />
+                      <Button type="submit" variant="ghost" size="sm" className="text-ff-red">
+                        Eliminar
                       </Button>
                     </form>
                   </div>

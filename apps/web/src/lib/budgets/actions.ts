@@ -79,3 +79,142 @@ export async function createBudgetAction(formData: FormData) {
   revalidatePath('/app');
   redirect('/app/presupuesto');
 }
+
+/**
+ * spent_amount de budget_categories solo lo mantiene al día el trigger de
+ * transactions hacia adelante — una categoría agregada a mitad de mes no
+ * hereda automáticamente el gasto ya ejecutado. Lo calculamos a mano al
+ * insertar una categoría nueva en un presupuesto existente.
+ */
+async function computeSpentForCategory(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  userId: string,
+  categoryId: string,
+  periodStart: string,
+  periodEnd: string,
+): Promise<number> {
+  const { data: children } = await supabase.from('categories').select('id').eq('parent_id', categoryId);
+  const relevantIds = [categoryId, ...(children ?? []).map((c) => c.id)];
+
+  const { data: txs } = await supabase
+    .from('transactions')
+    .select('amount, kind')
+    .eq('user_id', userId)
+    .in('category_id', relevantIds)
+    .in('kind', ['expense', 'cc_charge', 'refund'])
+    .is('deleted_at', null)
+    .gte('transaction_date', periodStart)
+    .lte('transaction_date', periodEnd);
+
+  return (txs ?? []).reduce((sum, t) => sum + (t.kind === 'refund' ? -t.amount : t.amount), 0);
+}
+
+export async function editBudgetAction(formData: FormData) {
+  const budgetId = formData.get('budget_id');
+  if (typeof budgetId !== 'string') return;
+
+  const mode = formData.get('mode');
+  const totalIncomeExpected = Number(formData.get('total_income_expected'));
+  const categoryIds = formData.getAll('category_id') as string[];
+  const allocatedAmounts = formData.getAll('allocated_amount') as string[];
+
+  const categories = categoryIds
+    .map((id, i) => ({ category_id: id, allocated_amount: Number(allocatedAmounts[i] || 0) }))
+    .filter((c) => c.allocated_amount > 0);
+
+  const parsed = budgetCreateSchema.safeParse({ mode, total_income_expected: totalIncomeExpected, categories });
+
+  if (!parsed.success) {
+    const message = parsed.error.issues[0]?.message ?? 'Datos inválidos.';
+    redirect(`/app/presupuesto/${budgetId}/editar?error=` + encodeURIComponent(message));
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/login');
+  }
+
+  const { data: budget } = await supabase
+    .from('budgets')
+    .select('period_start, period_end')
+    .eq('id', budgetId)
+    .single();
+
+  if (!budget) {
+    redirect('/app/presupuesto?error=' + encodeURIComponent('Presupuesto no encontrado.'));
+  }
+
+  const { data: existingCats } = await supabase
+    .from('budget_categories')
+    .select('id, category_id')
+    .eq('budget_id', budgetId);
+
+  const existingByCategoryId = new Map((existingCats ?? []).map((c) => [c.category_id, c.id]));
+  const newCategoryIds = new Set(parsed.data.categories.map((c) => c.category_id));
+
+  const toRemove = (existingCats ?? []).filter((c) => !newCategoryIds.has(c.category_id));
+  if (toRemove.length > 0) {
+    await supabase.from('budget_categories').delete().in('id', toRemove.map((c) => c.id));
+  }
+
+  for (const c of parsed.data.categories) {
+    const existingId = existingByCategoryId.get(c.category_id);
+    if (existingId) {
+      await supabase
+        .from('budget_categories')
+        .update({ allocated_amount: c.allocated_amount })
+        .eq('id', existingId);
+    } else {
+      const spentAmount = await computeSpentForCategory(
+        supabase,
+        user.id,
+        c.category_id,
+        budget.period_start,
+        budget.period_end,
+      );
+      await supabase.from('budget_categories').insert({
+        budget_id: budgetId,
+        category_id: c.category_id,
+        allocated_amount: c.allocated_amount,
+        spent_amount: spentAmount,
+      });
+    }
+  }
+
+  const totalAllocated = parsed.data.categories.reduce((sum, c) => sum + c.allocated_amount, 0);
+
+  const { error: updateError } = await supabase
+    .from('budgets')
+    .update({
+      mode: parsed.data.mode,
+      total_income_expected: parsed.data.total_income_expected,
+      total_allocated: totalAllocated,
+    })
+    .eq('id', budgetId);
+
+  if (updateError) {
+    redirect(`/app/presupuesto/${budgetId}/editar?error=` + encodeURIComponent(updateError.message));
+  }
+
+  revalidatePath('/app/presupuesto');
+  revalidatePath('/app');
+  redirect('/app/presupuesto');
+}
+
+export async function deleteBudgetAction(formData: FormData) {
+  const budgetId = formData.get('budget_id');
+  if (typeof budgetId !== 'string') return;
+
+  const supabase = await createSupabaseServerClient();
+  // budget_categories cascada — no hay transacciones que referencien budgets
+  // directamente, así que borrar un presupuesto es siempre seguro.
+  await supabase.from('budgets').delete().eq('id', budgetId);
+
+  revalidatePath('/app/presupuesto');
+  revalidatePath('/app');
+  redirect('/app/presupuesto');
+}

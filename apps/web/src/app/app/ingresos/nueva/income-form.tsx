@@ -12,7 +12,7 @@ import {
   Label,
 } from '@flowfinance/ui';
 import { calculateSvPayrollDeductions } from '@flowfinance/shared/utils';
-import { createIncomeAction } from '@/lib/income/actions';
+import { createIncomeAction, editIncomeAction } from '@/lib/income/actions';
 
 const INCOME_TYPES = [
   { value: 'salary', label: 'Ingreso laboral' },
@@ -36,25 +36,43 @@ interface Account {
   currency: string;
 }
 
+export interface IncomeInitialValues {
+  id: string;
+  type: string;
+  source_name: string;
+  gross_amount: string;
+  net_amount: string;
+  currency: string;
+  income_date: string;
+  account_id: string;
+  is_collected: boolean;
+  expected_date?: string;
+  notes?: string;
+}
+
 export function IncomeForm({
   currencies,
   accounts,
   error,
+  initialValues,
 }: {
   currencies: Currency[];
   accounts: Account[];
   error?: string;
+  initialValues?: IncomeInitialValues;
 }) {
-  const [type, setType] = useState('salary');
-  const [grossAmount, setGrossAmount] = useState('');
-  const [netAmount, setNetAmount] = useState('');
+  const isEditing = !!initialValues;
+
+  const [type, setType] = useState(initialValues?.type ?? 'salary');
+  const [grossAmount, setGrossAmount] = useState(initialValues?.gross_amount ?? '');
+  const [netAmount, setNetAmount] = useState(initialValues?.net_amount ?? '');
   const [deductionsTotal, setDeductionsTotal] = useState(0);
   const [deductionsPreview, setDeductionsPreview] = useState<{
     isss: number;
     afp: number;
     isr: number;
   } | null>(null);
-  const [isCollected, setIsCollected] = useState(true);
+  const [isCollected, setIsCollected] = useState(initialValues?.is_collected ?? true);
 
   function handleCalculateSv() {
     const gross = Number(grossAmount);
@@ -68,8 +86,10 @@ export function IncomeForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nuevo ingreso</CardTitle>
-        <CardDescription>Registra un ingreso — laboral, freelance u otro</CardDescription>
+        <CardTitle>{isEditing ? 'Editar ingreso' : 'Nuevo ingreso'}</CardTitle>
+        <CardDescription>
+          {isEditing ? 'Corrige los datos de este ingreso' : 'Registra un ingreso — laboral, freelance u otro'}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {error && (
@@ -78,7 +98,8 @@ export function IncomeForm({
           </p>
         )}
 
-        <form action={createIncomeAction} className="space-y-4">
+        <form action={isEditing ? editIncomeAction : createIncomeAction} className="space-y-4">
+          {isEditing && <input type="hidden" name="income_id" value={initialValues.id} />}
           <input type="hidden" name="deductions_total" value={deductionsTotal} />
 
           <div className="space-y-1.5">
@@ -101,7 +122,13 @@ export function IncomeForm({
 
           <div className="space-y-1.5">
             <Label htmlFor="source_name">Fuente</Label>
-            <Input id="source_name" name="source_name" required placeholder="Empresa X / Cliente Y" />
+            <Input
+              id="source_name"
+              name="source_name"
+              required
+              placeholder="Empresa X / Cliente Y"
+              defaultValue={initialValues?.source_name}
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -154,7 +181,7 @@ export function IncomeForm({
                 id="currency"
                 name="currency"
                 required
-                defaultValue="USD"
+                defaultValue={initialValues?.currency ?? 'USD'}
                 className="flex h-10 w-full rounded-md border border-border bg-card px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {currencies.map((c) => (
@@ -171,7 +198,7 @@ export function IncomeForm({
                 name="income_date"
                 type="date"
                 required
-                defaultValue={new Date().toISOString().slice(0, 10)}
+                defaultValue={initialValues?.income_date ?? new Date().toISOString().slice(0, 10)}
               />
             </div>
           </div>
@@ -182,6 +209,7 @@ export function IncomeForm({
               id="account_id"
               name="account_id"
               required
+              defaultValue={initialValues?.account_id}
               className="flex h-10 w-full rounded-md border border-border bg-card px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {accounts.map((a) => (
@@ -214,17 +242,28 @@ export function IncomeForm({
           {!isCollected && (
             <div className="space-y-1.5">
               <Label htmlFor="expected_date">Fecha esperada de cobro</Label>
-              <Input id="expected_date" name="expected_date" type="date" required />
+              <Input
+                id="expected_date"
+                name="expected_date"
+                type="date"
+                required
+                defaultValue={initialValues?.expected_date}
+              />
             </div>
           )}
 
           <div className="space-y-1.5">
             <Label htmlFor="notes">Notas (opcional)</Label>
-            <Input id="notes" name="notes" placeholder="Notas adicionales" />
+            <Input
+              id="notes"
+              name="notes"
+              placeholder="Notas adicionales"
+              defaultValue={initialValues?.notes}
+            />
           </div>
 
           <Button type="submit" className="w-full" disabled={accounts.length === 0}>
-            Guardar ingreso
+            {isEditing ? 'Guardar cambios' : 'Guardar ingreso'}
           </Button>
         </form>
       </CardContent>

@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { creditCardCreateSchema } from '@flowfinance/shared/schemas';
+import { creditCardCreateSchema, creditCardUpdateSchema } from '@flowfinance/shared/schemas';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export async function createCreditCardAction(formData: FormData) {
@@ -60,6 +60,53 @@ export async function createCreditCardAction(formData: FormData) {
   redirect('/app/tarjetas');
 }
 
+export async function editCreditCardAction(formData: FormData) {
+  const cardId = formData.get('card_id');
+  if (typeof cardId !== 'string') return;
+
+  const raw = {
+    bank_name: formData.get('bank_name'),
+    card_name: formData.get('card_name'),
+    card_brand: formData.get('card_brand') || undefined,
+    card_number_mask: formData.get('card_number_mask') || undefined,
+    credit_limit: Number(formData.get('credit_limit')),
+    cut_day: Number(formData.get('cut_day')),
+    payment_due_day: Number(formData.get('payment_due_day')),
+    interest_rate_annual_pct: Number(formData.get('interest_rate_annual_pct')),
+    min_payment_pct: Number(formData.get('min_payment_pct') || 5),
+  };
+
+  const parsed = creditCardUpdateSchema.safeParse(raw);
+
+  if (!parsed.success) {
+    const message = parsed.error.issues[0]?.message ?? 'Datos inválidos.';
+    redirect(`/app/tarjetas/${cardId}/editar?error=` + encodeURIComponent(message));
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from('credit_cards')
+    .update({
+      bank_name: parsed.data.bank_name,
+      card_name: parsed.data.card_name,
+      card_brand: parsed.data.card_brand ?? null,
+      card_number_mask: parsed.data.card_number_mask ?? null,
+      credit_limit: parsed.data.credit_limit,
+      cut_day: parsed.data.cut_day,
+      payment_due_day: parsed.data.payment_due_day,
+      interest_rate_annual: parsed.data.interest_rate_annual_pct / 100,
+      min_payment_pct: parsed.data.min_payment_pct,
+    })
+    .eq('id', cardId);
+
+  if (error) {
+    redirect(`/app/tarjetas/${cardId}/editar?error=` + encodeURIComponent(error.message));
+  }
+
+  revalidatePath('/app/tarjetas');
+  redirect('/app/tarjetas');
+}
+
 export async function archiveCreditCardAction(formData: FormData) {
   const cardId = formData.get('card_id');
   if (typeof cardId !== 'string') return;
@@ -68,6 +115,31 @@ export async function archiveCreditCardAction(formData: FormData) {
   await supabase.from('credit_cards').update({ status: 'archived' }).eq('id', cardId);
 
   revalidatePath('/app/tarjetas');
+}
+
+/**
+ * Intenta un borrado real. transactions.card_id es ON DELETE SET NULL, pero
+ * un cc_charge exige card_id (chk_tx_account_or_card) — si la tarjeta tiene
+ * cargos, el SET NULL en cascada viola ese check y Postgres rechaza el
+ * delete completo. En ese caso sugerimos archivar.
+ */
+export async function deleteCreditCardAction(formData: FormData) {
+  const cardId = formData.get('card_id');
+  if (typeof cardId !== 'string') return;
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from('credit_cards').delete().eq('id', cardId);
+
+  if (error) {
+    const message =
+      error.code === '23503' || error.code === '23514'
+        ? 'Esta tarjeta tiene cargos registrados y no se puede eliminar. Archívala para conservar el historial.'
+        : 'No se pudo eliminar la tarjeta.';
+    redirect('/app/tarjetas?error=' + encodeURIComponent(message));
+  }
+
+  revalidatePath('/app/tarjetas');
+  redirect('/app/tarjetas');
 }
 
 export async function registerPaymentAction(formData: FormData) {

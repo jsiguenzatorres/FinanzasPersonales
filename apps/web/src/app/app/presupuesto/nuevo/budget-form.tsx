@@ -11,13 +11,20 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
-import { createBudgetAction } from '@/lib/budgets/actions';
+import { createBudgetAction, editBudgetAction } from '@/lib/budgets/actions';
 
 interface CategoryOption {
   id: string;
   name: string;
   icon: string | null;
   avgSpent: number;
+}
+
+export interface BudgetInitialValues {
+  id: string;
+  mode: string;
+  total_income_expected: string;
+  allocations: Record<string, string>;
 }
 
 const MODES = [
@@ -30,14 +37,22 @@ export function BudgetForm({
   categories,
   suggestedIncome,
   error,
+  initialValues,
 }: {
   categories: CategoryOption[];
   suggestedIncome: number;
   error?: string;
+  initialValues?: BudgetInitialValues;
 }) {
-  const [mode, setMode] = useState('flexible');
-  const [totalIncome, setTotalIncome] = useState(suggestedIncome.toFixed(2));
-  const [allocations, setAllocations] = useState<Record<string, string>>({});
+  const isEditing = !!initialValues;
+
+  const [mode, setMode] = useState(initialValues?.mode ?? 'flexible');
+  const [totalIncome, setTotalIncome] = useState(
+    initialValues?.total_income_expected ?? suggestedIncome.toFixed(2),
+  );
+  const [allocations, setAllocations] = useState<Record<string, string>>(
+    initialValues?.allocations ?? {},
+  );
 
   const totalAllocated = Object.values(allocations).reduce((sum, v) => sum + (Number(v) || 0), 0);
   const unallocated = Number(totalIncome || 0) - totalAllocated;
@@ -47,7 +62,7 @@ export function BudgetForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nuevo presupuesto</CardTitle>
+        <CardTitle>{isEditing ? 'Editar presupuesto' : 'Nuevo presupuesto'}</CardTitle>
         <CardDescription>Presupuesto de {monthLabel}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -57,7 +72,8 @@ export function BudgetForm({
           </p>
         )}
 
-        <form action={createBudgetAction} className="space-y-4">
+        <form action={isEditing ? editBudgetAction : createBudgetAction} className="space-y-4">
+          {isEditing && <input type="hidden" name="budget_id" value={initialValues.id} />}
           <input type="hidden" name="mode" value={mode} />
 
           <div className="space-y-1.5">
@@ -137,7 +153,7 @@ export function BudgetForm({
           </div>
 
           <Button type="submit" className="w-full">
-            Crear presupuesto
+            {isEditing ? 'Guardar cambios' : 'Crear presupuesto'}
           </Button>
         </form>
       </CardContent>

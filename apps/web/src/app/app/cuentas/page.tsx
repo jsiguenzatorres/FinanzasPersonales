@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@flowfinance/ui';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { archiveAccountAction } from '@/lib/accounts/actions';
+import { archiveAccountAction, deleteAccountAction } from '@/lib/accounts/actions';
 
 const ACCOUNT_TYPE_LABELS: Record<string, string> = {
   checking: 'Cuenta corriente',
@@ -14,7 +14,12 @@ const ACCOUNT_TYPE_LABELS: Record<string, string> = {
   virtual: 'Bolsillo virtual',
 };
 
-export default async function AccountsPage() {
+export default async function AccountsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data: accounts } = await supabase
     .from('accounts')
@@ -30,6 +35,12 @@ export default async function AccountsPage() {
           <Link href="/app/cuentas/nueva">+ Nueva cuenta</Link>
         </Button>
       </div>
+
+      {error && (
+        <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+          {error}
+        </p>
+      )}
 
       {!accounts || accounts.length === 0 ? (
         <Card>
@@ -55,12 +66,23 @@ export default async function AccountsPage() {
                     currency: account.currency,
                   }).format(account.balance)}
                 </p>
-                <form action={archiveAccountAction}>
-                  <input type="hidden" name="account_id" value={account.id} />
-                  <Button type="submit" variant="ghost" size="sm">
-                    Archivar
+                <div className="flex flex-wrap gap-2">
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={`/app/cuentas/${account.id}/editar`}>Editar</Link>
                   </Button>
-                </form>
+                  <form action={archiveAccountAction}>
+                    <input type="hidden" name="account_id" value={account.id} />
+                    <Button type="submit" variant="ghost" size="sm">
+                      Archivar
+                    </Button>
+                  </form>
+                  <form action={deleteAccountAction}>
+                    <input type="hidden" name="account_id" value={account.id} />
+                    <Button type="submit" variant="ghost" size="sm" className="text-ff-red">
+                      Eliminar
+                    </Button>
+                  </form>
+                </div>
               </CardContent>
             </Card>
           ))}

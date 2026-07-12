@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button, Card, CardContent } from '@flowfinance/ui';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { deleteBudgetAction } from '@/lib/budgets/actions';
 
 const STATUS_COLOR: Record<string, string> = {
   on_track: 'bg-ff-green',
@@ -78,6 +79,17 @@ export default async function BudgetPage() {
           <p className="text-sm text-muted-foreground">
             Modo {MODE_LABELS[budget.mode] ?? budget.mode} · {budget.period_start} a {budget.period_end}
           </p>
+        </div>
+        <div className="flex gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link href={`/app/presupuesto/${budget.id}/editar`}>Editar</Link>
+          </Button>
+          <form action={deleteBudgetAction}>
+            <input type="hidden" name="budget_id" value={budget.id} />
+            <Button type="submit" variant="ghost" size="sm" className="text-ff-red">
+              Eliminar
+            </Button>
+          </form>
         </div>
       </div>
 

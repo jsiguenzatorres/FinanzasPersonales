@@ -54,6 +54,9 @@ export default async function IncomeDetailPage({ params }: { params: Promise<{ i
           </div>
           {!income.is_collected && <p className="text-sm text-ff-yellow">Pendiente de cobro</p>}
           {income.notes && <p className="text-sm text-muted-foreground">{income.notes}</p>}
+          <Button asChild variant="outline" size="sm">
+            <Link href={`/app/ingresos/${id}/editar`}>Editar</Link>
+          </Button>
         </CardContent>
       </Card>
 
