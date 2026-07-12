@@ -1,4 +1,12 @@
 export { cn } from './lib/cn';
-// Componentes shadcn se generan con su CLI:
-//   cd apps/web && pnpm dlx shadcn@latest add button input card dialog
-// Y se exportan desde aquí cuando los compartamos entre web y móvil.
+export { Button, buttonVariants, type ButtonProps } from './components/button';
+export { Input, type InputProps } from './components/input';
+export { Label } from './components/label';
+export {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from './components/card';
