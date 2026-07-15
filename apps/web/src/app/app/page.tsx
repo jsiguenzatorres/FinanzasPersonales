@@ -136,7 +136,7 @@ export default async function AppHomePage() {
           <p
             className={`font-mono text-4xl ${(netWorth?.net_worth ?? 0) >= 0 ? 'text-ff-green' : 'text-ff-red'}`}
           >
-            <AnimatedNumber value={netWorth?.net_worth ?? 0} format={fmt} />
+            <AnimatedNumber value={netWorth?.net_worth ?? 0} format={{ kind: 'currency', currency }} />
           </p>
           {netWorthDelta !== null && (
             <p className={`mt-1 text-xs ${netWorthDelta >= 0 ? 'text-ff-green' : 'text-ff-red'}`}>
@@ -155,7 +155,7 @@ export default async function AppHomePage() {
           <CardContent className="py-5 text-center">
             <p className="text-sm text-muted-foreground">Ingresos del mes</p>
             <p className="font-mono text-xl text-ff-green">
-              <AnimatedNumber value={totalIncome} format={fmt} />
+              <AnimatedNumber value={totalIncome} format={{ kind: 'currency', currency }} />
             </p>
           </CardContent>
         </Card>
@@ -163,7 +163,7 @@ export default async function AppHomePage() {
           <CardContent className="py-5 text-center">
             <p className="text-sm text-muted-foreground">Gastos del mes</p>
             <p className="font-mono text-xl text-ff-red">
-              <AnimatedNumber value={totalExpenses} format={fmt} />
+              <AnimatedNumber value={totalExpenses} format={{ kind: 'currency', currency }} />
             </p>
           </CardContent>
         </Card>
@@ -184,7 +184,7 @@ export default async function AppHomePage() {
               {savingsRate === null ? (
                 '—'
               ) : (
-                <AnimatedNumber value={savingsRate} format={(n) => `${n.toFixed(0)}%`} />
+                <AnimatedNumber value={savingsRate} format={{ kind: 'percent' }} />
               )}
             </p>
           </CardContent>
@@ -198,7 +198,7 @@ export default async function AppHomePage() {
             <div>
               <p className="font-medium">Liquidez disponible</p>
               <p className="font-mono text-sm text-ff-green">
-                <AnimatedNumber value={liquidBalance} format={fmt} />
+                <AnimatedNumber value={liquidBalance} format={{ kind: 'currency', currency }} />
               </p>
             </div>
             <Button asChild variant="outline" size="sm">
@@ -233,7 +233,7 @@ export default async function AppHomePage() {
             <div>
               <p className="font-medium">Deuda en tarjetas</p>
               <p className={`font-mono text-sm ${totalCardDebt > 0 ? 'text-ff-red' : 'text-ff-green'}`}>
-                <AnimatedNumber value={totalCardDebt} format={fmt} />
+                <AnimatedNumber value={totalCardDebt} format={{ kind: 'currency', currency }} />
               </p>
             </div>
             <Button asChild variant="outline" size="sm">
@@ -250,7 +250,7 @@ export default async function AppHomePage() {
             <div>
               <p className="font-medium">Préstamos activos</p>
               <p className="font-mono text-sm text-ff-yellow">
-                <AnimatedNumber value={totalLoansPending} format={fmt} />
+                <AnimatedNumber value={totalLoansPending} format={{ kind: 'currency', currency }} />
               </p>
             </div>
             <Button asChild variant="outline" size="sm">

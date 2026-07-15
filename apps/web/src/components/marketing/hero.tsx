@@ -6,8 +6,6 @@ import { Button } from '@flowfinance/ui';
 import { AnimatedNumber } from '@/components/animated-number';
 import { TiltCard } from './tilt-card';
 
-const fmtUsd = (n: number) => `$${n.toLocaleString('es-SV', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
 export function Hero() {
   return (
     <section className="bg-paper-grain relative overflow-hidden bg-landing-cream pb-24 pt-40 sm:pt-48">
@@ -110,7 +108,7 @@ export function Hero() {
               </span>
             </div>
             <p className="font-mono text-4xl font-medium tracking-tight text-white">
-              <AnimatedNumber value={18420.37} format={fmtUsd} duration={1400} />
+              <AnimatedNumber value={18420.37} format={{ kind: 'currency', currency: 'USD' }} duration={1400} />
             </p>
 
             <svg viewBox="0 0 300 70" className="mt-6 w-full text-[#DE9468]" preserveAspectRatio="none">
@@ -130,13 +128,13 @@ export function Hero() {
               <div className="rounded-xl bg-white/[0.04] p-3.5">
                 <p className="font-mono text-[11px] uppercase tracking-wide text-white/40">Préstamos activos</p>
                 <p className="mt-1 font-mono text-lg text-ff-yellow">
-                  <AnimatedNumber value={411.05} format={fmtUsd} duration={1200} />
+                  <AnimatedNumber value={411.05} format={{ kind: 'currency', currency: 'USD' }} duration={1200} />
                 </p>
               </div>
               <div className="rounded-xl bg-white/[0.04] p-3.5">
                 <p className="font-mono text-[11px] uppercase tracking-wide text-white/40">Tasa de ahorro</p>
                 <p className="mt-1 font-mono text-lg text-ff-blue">
-                  <AnimatedNumber value={27} format={(n) => `${n.toFixed(0)}%`} duration={1200} />
+                  <AnimatedNumber value={27} format={{ kind: 'percent' }} duration={1200} />
                 </p>
               </div>
             </div>

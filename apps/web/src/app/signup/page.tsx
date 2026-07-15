@@ -1,14 +1,5 @@
 import Link from 'next/link';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Input,
-  Label,
-} from '@flowfinance/ui';
+import { Button, Input, Label } from '@flowfinance/ui';
 import { signUpAction } from '@/lib/auth/actions';
 
 export default async function SignupPage({
@@ -19,29 +10,32 @@ export default async function SignupPage({
   const { error } = await searchParams;
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-6">
+    <main className="bg-paper-grain flex min-h-screen items-center justify-center bg-landing-cream p-6">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
-          <h1 className="font-display text-3xl">
-            Flow<span className="text-ff-green">Finance</span>
-          </h1>
+          <Link href="/" className="font-display text-3xl text-landing-ink">
+            Flow<span className="text-landing-terracotta">Finance</span>
+          </Link>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl">Crea tu cuenta</CardTitle>
-            <CardDescription>Empieza a tomar control de tu dinero</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="rounded-2xl border border-landing-ink/10 bg-white/60 p-6 shadow-sm">
+          <div className="mb-5">
+            <h1 className="font-display text-xl text-landing-ink">Crea tu cuenta</h1>
+            <p className="mt-1 text-sm text-landing-ink-soft">Empieza a tomar control de tu dinero</p>
+          </div>
+
+          <div className="space-y-4">
             {error && (
-              <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+              <p className="rounded-md border border-red-700/25 bg-red-700/10 px-4 py-3 text-sm text-red-700">
                 {error}
               </p>
             )}
 
             <form action={signUpAction} className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="displayName">Nombre</Label>
+                <Label htmlFor="displayName" className="text-landing-ink">
+                  Nombre
+                </Label>
                 <Input
                   id="displayName"
                   name="displayName"
@@ -49,10 +43,13 @@ export default async function SignupPage({
                   required
                   autoComplete="name"
                   placeholder="Tu nombre"
+                  className="border-landing-ink/15 bg-white text-landing-ink placeholder:text-landing-ink-soft/50"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="email">Correo</Label>
+                <Label htmlFor="email" className="text-landing-ink">
+                  Correo
+                </Label>
                 <Input
                   id="email"
                   name="email"
@@ -60,10 +57,13 @@ export default async function SignupPage({
                   required
                   autoComplete="email"
                   placeholder="tu@correo.com"
+                  className="border-landing-ink/15 bg-white text-landing-ink placeholder:text-landing-ink-soft/50"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="password">Contraseña</Label>
+                <Label htmlFor="password" className="text-landing-ink">
+                  Contraseña
+                </Label>
                 <Input
                   id="password"
                   name="password"
@@ -72,21 +72,25 @@ export default async function SignupPage({
                   minLength={8}
                   autoComplete="new-password"
                   placeholder="Mínimo 8 caracteres"
+                  className="border-landing-ink/15 bg-white text-landing-ink placeholder:text-landing-ink-soft/50"
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button
+                type="submit"
+                className="w-full rounded-full bg-landing-terracotta text-landing-cream hover:bg-landing-terracotta-deep"
+              >
                 Crear cuenta
               </Button>
             </form>
 
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-center text-sm text-landing-ink-soft">
               ¿Ya tienes cuenta?{' '}
-              <Link href="/login" className="text-ff-green hover:underline">
+              <Link href="/login" className="text-landing-terracotta hover:underline">
                 Inicia sesión
               </Link>
             </p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </main>
   );
