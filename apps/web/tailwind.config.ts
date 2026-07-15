@@ -39,7 +39,7 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        // FlowFinance brand
+        // FlowFinance brand (app, dark)
         ff: {
           green: '#00E5A0',
           blue: '#5B6EFF',
@@ -47,6 +47,21 @@ const config: Config = {
           yellow: '#FFD166',
           orange: '#FF9F43',
           purple: '#C084FC',
+        },
+        // Landing page — editorial, cálido. Deliberadamente distinto del
+        // dark-mode-verde-neón de la app: la marca puede tener dos voces.
+        landing: {
+          cream: '#F7F0E3',
+          paper: '#EDE2CC',
+          'paper-deep': '#E2D4B8',
+          ink: '#241D15',
+          'ink-soft': '#6E5E48',
+          terracotta: '#BD5A34',
+          'terracotta-soft': '#DE9468',
+          'terracotta-deep': '#9A4526',
+          forest: '#3E5A45',
+          'forest-soft': '#6E8A72',
+          gold: '#B08A4E',
         },
       },
       borderRadius: {

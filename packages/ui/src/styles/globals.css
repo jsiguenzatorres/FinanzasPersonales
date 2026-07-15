@@ -77,4 +77,78 @@
   .animate-fade-in-up {
     animation: fade-in-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
+
+  /* ─── Marketing / landing page ────────────────────────────────────── */
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(3%, -4%) scale(1.05); }
+    66% { transform: translate(-2%, 3%) scale(0.97); }
+  }
+  .animate-drift {
+    animation: drift 22s ease-in-out infinite;
+  }
+  .animate-drift-slow {
+    animation: drift 32s ease-in-out infinite reverse;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-ticker {
+    animation: ticker 28s linear infinite;
+  }
+
+  @keyframes blink-caret {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  .animate-blink {
+    animation: blink-caret 1s step-end infinite;
+  }
+
+  .bg-noise {
+    position: relative;
+  }
+  .bg-noise::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .bg-grid-fade {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, black 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, black 40%, transparent 100%);
+  }
+
+  /* Variante cálida del grid, para el fondo crema de la landing. */
+  .bg-grid-warm {
+    background-image:
+      linear-gradient(rgba(36, 29, 21, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(36, 29, 21, 0.06) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 0%, black 35%, transparent 100%);
+    mask-image: radial-gradient(ellipse 65% 55% at 50% 0%, black 35%, transparent 100%);
+  }
+
+  /* Textura de papel — grano sutil sobre el crema, evita que se vea "plano". */
+  .bg-paper-grain {
+    position: relative;
+  }
+  .bg-paper-grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
 }
