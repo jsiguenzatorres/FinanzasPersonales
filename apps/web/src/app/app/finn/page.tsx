@@ -1,7 +1,8 @@
-import { Button, Card, CardContent, Input } from '@flowfinance/ui';
+import { Card, CardContent } from '@flowfinance/ui';
 import { FINN_NAME_BY_PLAN } from '@flowfinance/finn/prompts/system';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { sendFinnMessageAction } from '@/lib/finn/chat';
+import { VoiceMessageForm } from '@/components/finn/voice-message-form';
+import { SpeakButton } from '@/components/finn/speak-button';
 
 export default async function FinnPage({
   searchParams,
@@ -62,7 +63,10 @@ export default async function FinnPage({
           </Card>
         ) : (
           messages.map((m, i) => (
-            <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div
+              key={i}
+              className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}
+            >
               <div
                 className={`max-w-[80%] whitespace-pre-wrap rounded-lg px-4 py-2 text-sm ${
                   m.role === 'user'
@@ -72,16 +76,13 @@ export default async function FinnPage({
               >
                 {m.content}
               </div>
+              {m.role === 'assistant' && m.content && <SpeakButton text={m.content} />}
             </div>
           ))
         )}
       </div>
 
-      <form action={sendFinnMessageAction} className="mt-4 flex gap-2">
-        <input type="hidden" name="conversation_id" value={conversationId ?? ''} />
-        <Input name="message" placeholder="Escribe tu pregunta..." required className="flex-1" />
-        <Button type="submit">Enviar</Button>
-      </form>
+      <VoiceMessageForm conversationId={conversationId ?? null} />
     </div>
   );
 }

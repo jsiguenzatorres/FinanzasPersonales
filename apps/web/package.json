@@ -13,6 +13,7 @@
     "clean": "rm -rf .next .turbo node_modules/.cache"
   },
   "dependencies": {
+    "@breezystack/lamejs": "^1.2.7",
     "@flowfinance/finn": "workspace:*",
     "@flowfinance/shared": "workspace:*",
     "@flowfinance/ui": "workspace:*",

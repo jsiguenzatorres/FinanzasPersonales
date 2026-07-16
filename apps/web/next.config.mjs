@@ -4,6 +4,9 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   transpilePackages: ['@flowfinance/shared', '@flowfinance/ui', '@flowfinance/finn'],
+  // @google-cloud/text-to-speech (voz de Neto) usa gRPC nativo — no lo
+  // empaquetes con webpack/turbopack, requiere Node runtime real.
+  serverExternalPackages: ['@google-cloud/text-to-speech'],
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts'],
   },
@@ -23,7 +26,7 @@ const nextConfig = {
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(self), geolocation=()' },
         ],
       },
     ];

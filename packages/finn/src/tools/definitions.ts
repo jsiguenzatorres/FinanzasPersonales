@@ -1,4 +1,4 @@
-import { SchemaType, type FunctionDeclaration } from '@google/generative-ai';
+import { Type, type FunctionDeclaration } from '@google/genai';
 
 /**
  * Tools de LECTURA que Neto puede invocar (function calling).
@@ -15,20 +15,20 @@ export const FINN_TOOLS: FunctionDeclaration[] = [
   {
     name: 'get_account_balances',
     description: 'Obtiene el saldo de todas las cuentas activas del usuario (no incluye tarjetas de crédito).',
-    parameters: { type: SchemaType.OBJECT, properties: {} },
+    parameters: { type: Type.OBJECT, properties: {} },
   },
   {
     name: 'get_category_spending',
     description: 'Obtiene el gasto acumulado en una categoría de presupuesto para un periodo dado.',
     parameters: {
-      type: SchemaType.OBJECT,
+      type: Type.OBJECT,
       properties: {
         category_name: {
-          type: SchemaType.STRING,
+          type: Type.STRING,
           description: 'Nombre del grupo de categoría, ej. "Alimentación", "Transporte"',
         },
         period: {
-          type: SchemaType.STRING,
+          type: Type.STRING,
           format: 'enum',
           enum: ['current_month', 'last_month', 'last_30_days'],
         },
@@ -39,16 +39,16 @@ export const FINN_TOOLS: FunctionDeclaration[] = [
   {
     name: 'get_budget_status',
     description: 'Obtiene el estado del presupuesto activo del usuario para el mes actual: % ejecutado, categorías en rojo/amarillo.',
-    parameters: { type: SchemaType.OBJECT, properties: {} },
+    parameters: { type: Type.OBJECT, properties: {} },
   },
   {
     name: 'get_recent_transactions',
     description: 'Obtiene las transacciones (gastos e ingresos) más recientes del usuario.',
     parameters: {
-      type: SchemaType.OBJECT,
+      type: Type.OBJECT,
       properties: {
         limit: {
-          type: SchemaType.NUMBER,
+          type: Type.NUMBER,
           description: 'Cantidad máxima de resultados, por defecto 10, máximo 30',
         },
       },
@@ -57,17 +57,17 @@ export const FINN_TOOLS: FunctionDeclaration[] = [
   {
     name: 'get_net_worth',
     description: 'Obtiene el patrimonio neto actual del usuario (activos menos pasivos) con su desglose.',
-    parameters: { type: SchemaType.OBJECT, properties: {} },
+    parameters: { type: Type.OBJECT, properties: {} },
   },
   {
     name: 'get_family_loans',
     description:
       'Obtiene los préstamos familiares del usuario (dinero prestado a familia/amigos, sin interés): quién debe, cuánto, desde cuándo, y si está vencido.',
     parameters: {
-      type: SchemaType.OBJECT,
+      type: Type.OBJECT,
       properties: {
         status: {
-          type: SchemaType.STRING,
+          type: Type.STRING,
           format: 'enum',
           enum: ['active', 'paid', 'written_off', 'all'],
           description: 'Filtro de estado, por defecto "active"',

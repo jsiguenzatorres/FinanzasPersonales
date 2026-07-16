@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, type Content, type FunctionDeclaration } from '@google/generative-ai';
+import { GoogleGenAI, type Content, type FunctionDeclaration } from '@google/genai';
 import { nimJsonCascade, NIM_CLASSIFY_CASCADE, NIM_OCR_CASCADE } from './nim-fallback';
 
 // Alias "latest" de Google — apuntan siempre al modelo flash vigente, evita
@@ -29,11 +29,19 @@ export interface ExtractFromImageParams {
   model?: FinnModel;
 }
 
+export interface TranscribeAudioParams {
+  audioBase64: string;
+  /** Gemini NO acepta audio/webm — debe convertirse antes (mp3, wav, ogg, aac, flac, aiff). */
+  mimeType: string;
+  model?: FinnModel;
+}
+
 export interface FinnClient {
   chat(prompt: string, model?: FinnModel): Promise<string>;
   classifyJson<T>(prompt: string, model?: FinnModel): Promise<T>;
   chatWithTools(params: ChatWithToolsParams): Promise<ChatWithToolsResult>;
   extractFromImage<T>(params: ExtractFromImageParams): Promise<T>;
+  transcribeAudio(params: TranscribeAudioParams): Promise<string>;
 }
 
 interface CreateOptions {
@@ -49,34 +57,36 @@ interface CreateOptions {
 }
 
 /**
- * Cliente Gemini para Neto.
+ * Cliente Gemini para Neto. Usa @google/genai (SDK vigente — el anterior
+ * @google/generative-ai entró en mantenimiento limitado con EOL nov-2025).
  * - Usa Flash (más capaz) por defecto para conversación.
  * - Usa Flash-Lite para clasificación y daily brief (más barato).
  */
 export function createFinnClient(opts: CreateOptions): FinnClient {
-  const genAI = new GoogleGenerativeAI(opts.apiKey);
+  const genAI = new GoogleGenAI({ apiKey: opts.apiKey });
   const defaultModel = opts.defaultModel ?? 'gemini-flash-latest';
   const nvidiaApiKey = opts.nvidiaApiKey;
 
   async function chat(prompt: string, model?: FinnModel): Promise<string> {
-    const m = genAI.getGenerativeModel({ model: model ?? defaultModel });
-    const result = await m.generateContent(prompt);
-    return result.response.text();
+    const result = await genAI.models.generateContent({
+      model: model ?? defaultModel,
+      contents: prompt,
+    });
+    return result.text ?? '';
   }
 
   async function classifyJson<T>(prompt: string, model?: FinnModel): Promise<T> {
     try {
-      const m = genAI.getGenerativeModel({
+      const result = await genAI.models.generateContent({
         model: model ?? 'gemini-flash-lite-latest',
-        generationConfig: {
+        contents: prompt,
+        config: {
           responseMimeType: 'application/json',
           temperature: 0.1,
           maxOutputTokens: 200,
         },
       });
-      const result = await m.generateContent(prompt);
-      const text = result.response.text();
-      return JSON.parse(text) as T;
+      return JSON.parse(result.text ?? '') as T;
     } catch (err) {
       if (!nvidiaApiKey) throw err;
       console.warn('[FINN] Gemini falló en classifyJson, probando cascada NIM:', err);
@@ -95,40 +105,42 @@ export function createFinnClient(opts: CreateOptions): FinnClient {
    * hasta un máximo de 5 vueltas (evita bucles).
    */
   async function chatWithTools(params: ChatWithToolsParams): Promise<ChatWithToolsResult> {
-    const m = genAI.getGenerativeModel({
+    const chatSession = genAI.chats.create({
       model: params.model ?? defaultModel,
-      systemInstruction: params.systemPrompt,
-      tools: params.tools.length > 0 ? [{ functionDeclarations: params.tools }] : undefined,
+      config: {
+        systemInstruction: params.systemPrompt,
+        tools: params.tools.length > 0 ? [{ functionDeclarations: params.tools }] : undefined,
+      },
+      history: params.history as Content[],
     });
 
-    const chatSession = m.startChat({ history: params.history as Content[] });
-
-    let result = await chatSession.sendMessage(params.message);
+    let result = await chatSession.sendMessage({ message: params.message });
     const toolCalls: ChatWithToolsResult['toolCalls'] = [];
 
-    let functionCalls = result.response.functionCalls();
+    let functionCalls = result.functionCalls;
     let guard = 0;
 
     while (functionCalls && functionCalls.length > 0 && guard < 5) {
       guard++;
       const functionResponseParts = await Promise.all(
         functionCalls.map(async (call) => {
-          const output = await params.executeTool(call.name, (call.args ?? {}) as Record<string, unknown>);
-          toolCalls.push({ name: call.name, input: call.args, output });
+          const name = call.name ?? '';
+          const output = await params.executeTool(name, (call.args ?? {}) as Record<string, unknown>);
+          toolCalls.push({ name, input: call.args, output });
           return {
-            functionResponse: { name: call.name, response: output as object },
+            functionResponse: { name, response: output as Record<string, unknown> },
           };
         }),
       );
 
-      result = await chatSession.sendMessage(functionResponseParts);
-      functionCalls = result.response.functionCalls();
+      result = await chatSession.sendMessage({ message: functionResponseParts });
+      functionCalls = result.functionCalls;
     }
 
-    const usage = result.response.usageMetadata;
+    const usage = result.usageMetadata;
 
     return {
-      text: result.response.text(),
+      text: result.text ?? '',
       toolCalls,
       tokensIn: usage?.promptTokenCount ?? 0,
       tokensOut: usage?.candidatesTokenCount ?? 0,
@@ -142,22 +154,20 @@ export function createFinnClient(opts: CreateOptions): FinnClient {
    */
   async function extractFromImage<T>(params: ExtractFromImageParams): Promise<T> {
     try {
-      const m = genAI.getGenerativeModel({
+      const result = await genAI.models.generateContent({
         model: params.model ?? 'gemini-flash-latest',
-        generationConfig: {
+        contents: [
+          { inlineData: { data: params.imageBase64, mimeType: params.mimeType } },
+          { text: params.prompt },
+        ],
+        config: {
           responseMimeType: 'application/json',
           temperature: 0.1,
           maxOutputTokens: 1500,
         },
       });
 
-      const result = await m.generateContent([
-        { inlineData: { data: params.imageBase64, mimeType: params.mimeType } },
-        { text: params.prompt },
-      ]);
-
-      const text = result.response.text();
-      return JSON.parse(text) as T;
+      return JSON.parse(result.text ?? '') as T;
     } catch (err) {
       if (!nvidiaApiKey) throw err;
       console.warn('[FINN] Gemini falló en extractFromImage, probando cascada NIM:', err);
@@ -173,5 +183,25 @@ export function createFinnClient(opts: CreateOptions): FinnClient {
     }
   }
 
-  return { chat, classifyJson, chatWithTools, extractFromImage };
+  /**
+   * Transcribe un audio corto (nota de voz del chat) a texto plano. Sin
+   * cascada NIM — es una pieza nueva, sin volumen de producción todavía que
+   * justifique un respaldo; si Gemini falla, el error se propaga y el chat
+   * le pide al usuario que reintente o escriba en su lugar.
+   */
+  async function transcribeAudio(params: TranscribeAudioParams): Promise<string> {
+    const result = await genAI.models.generateContent({
+      model: params.model ?? 'gemini-flash-lite-latest',
+      contents: [
+        { inlineData: { data: params.audioBase64, mimeType: params.mimeType } },
+        {
+          text: 'Transcribe exactamente lo que dice este audio, en español. Responde SOLO con la transcripción, sin comentarios ni formato adicional.',
+        },
+      ],
+      config: { temperature: 0 },
+    });
+    return (result.text ?? '').trim();
+  }
+
+  return { chat, classifyJson, chatWithTools, extractFromImage, transcribeAudio };
 }
