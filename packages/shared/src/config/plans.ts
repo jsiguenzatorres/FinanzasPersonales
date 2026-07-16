@@ -8,7 +8,7 @@ export type PlanTier = 'free' | 'starter' | 'pro' | 'elite';
 export const PLAN_ORDER: PlanTier[] = ['free', 'starter', 'pro', 'elite'];
 
 export interface PlanLimits {
-  /** Techo diario anti-abuso de mensajes a FINN. */
+  /** Techo diario anti-abuso de mensajes a Neto. */
   finnMessagesPerDay: number;
   /** Techo mensual adicional (null = solo rige el techo diario). */
   finnMessagesPerMonth: number | null;
@@ -28,7 +28,7 @@ export interface PlanDefinition {
   tier: PlanTier;
   /** Nombre comercial del plan (marketing). */
   displayName: string;
-  /** Nombre de la personalidad de FINN en este plan. */
+  /** Nombre de la personalidad de Neto en este plan. */
   finnName: string;
   priceMonthlyUsd: number;
   /** Precio total anual, ya con el 20% de descuento aplicado. */
@@ -40,7 +40,7 @@ export const PLANS: Record<PlanTier, PlanDefinition> = {
   free: {
     tier: 'free',
     displayName: 'Free',
-    finnName: 'FINN Básico',
+    finnName: 'Neto Básico',
     priceMonthlyUsd: 0,
     priceAnnualUsd: 0,
     limits: {

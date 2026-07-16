@@ -61,7 +61,7 @@ export function LoansSpotlight() {
               entregó y cuándo te lo tienen que devolver.
             </p>
             <p className="mt-4 text-lg leading-relaxed text-landing-ink-soft">
-              Y si prestas usando tu tarjeta de crédito, FINN te avisa cuánto te va a costar
+              Y si prestas usando tu tarjeta de crédito, Neto te avisa cuánto te va a costar
               de verdad — antes de que sea tarde.
             </p>
           </Reveal>

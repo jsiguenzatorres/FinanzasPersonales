@@ -20,7 +20,7 @@
 7. ✅ Categorías sistema + custom adaptadas para **El Salvador**
 8. ✅ Generated columns para campos derivados (recomendado, atomicidad garantizada)
 9. ✅ Colaborativo cableado en transactions, budgets, goals, trips
-10. ✅ FINN: conversations + messages + insights separados con tracking de tokens/costo
+10. ✅ Neto: conversations + messages + insights separados con tracking de tokens/costo
 11. ✅ `pg_cron` para jobs (sin Celery en MVP)
 
 **Resoluciones de 8 preguntas:**
@@ -70,7 +70,7 @@
 15. [Dominio 11 — Cartera con interés (MOD-14)](#dominio-11--cartera-con-interés-mod-14)
 16. [Dominio 12 — Viajes (MOD-18)](#dominio-12--viajes-mod-18)
 17. [Dominio 13 — Fiscal (MOD-19)](#dominio-13--fiscal-mod-19)
-18. [Dominio 14 — FINN / IA](#dominio-14--finn--ia)
+18. [Dominio 14 — Neto / IA](#dominio-14--neto--ia)
 19. [Dominio 15 — Simulador de impacto](#dominio-15--simulador-de-impacto)
 20. [Dominio 16 — FlowScore y gamificación](#dominio-16--flowscore-y-gamificación)
 21. [Dominio 17 — Finanzas colaborativas (MOD-11)](#dominio-17--finanzas-colaborativas-mod-11)
@@ -195,7 +195,7 @@ create type capture_source as enum (
   'voice',             -- dictado de voz (Fase 2)
   'open_banking',      -- Belvo (Fase 2)
   'recurring',         -- generado por regla recurrente
-  'finn'               -- creado por FINN en conversación
+  'finn'               -- creado por Neto en conversación
 );
 
 -- Clasificación 50/30/20
@@ -277,7 +277,7 @@ create type tax_record_type as enum (
   'iva_collected'           -- IVA cobrado
 );
 
--- FINN
+-- Neto
 create type finn_session_kind as enum (
   'onboarding', 'daily_brief', 'chat', 'simulator', 'goal_planning', 'budget_review'
 );
@@ -502,7 +502,7 @@ create policy "users_update_self" on public.users for update using (auth.uid() =
 ```
 
 ### `user_settings`
-**Propósito:** preferencias de UI, notificaciones, FINN. Separado para no inflar `users`.
+**Propósito:** preferencias de UI, notificaciones, Neto. Separado para no inflar `users`.
 **Fase:** 0
 
 ```sql
@@ -1248,7 +1248,7 @@ create table public.goals (
   priority                smallint default 5,                   -- 1-10
   auto_contribution_pct   numeric(5,2),                         -- % de cada ingreso a la meta
 
-  ai_feasibility_score    numeric(5,2),                         -- 0-100 calculado por FINN
+  ai_feasibility_score    numeric(5,2),                         -- 0-100 calculado por Neto
   ai_recommendation       text,
   ai_updated_at           timestamptz,
 
@@ -1802,10 +1802,10 @@ create policy "tax_owner" on public.tax_records for all
 
 ---
 
-## DOMINIO 14 — FINN / IA
+## DOMINIO 14 — Neto / IA
 
 ### `finn_conversations`
-**Propósito:** sesiones de chat con FINN (cada sesión = un thread).
+**Propósito:** sesiones de chat con Neto (cada sesión = un thread).
 **Módulos:** MOD-08
 **Fase:** 1
 
@@ -1865,7 +1865,7 @@ create policy "finn_msg_owner" on public.finn_messages for all
 ```
 
 ### `finn_insights`
-**Propósito:** insights generados proactivamente por FINN (daily brief, alertas, recomendaciones).
+**Propósito:** insights generados proactivamente por Neto (daily brief, alertas, recomendaciones).
 **Fase:** 1
 
 ```sql
@@ -1905,7 +1905,7 @@ create policy "finn_ins_owner" on public.finn_insights for all
 ## DOMINIO 15 — Simulador de impacto
 
 ### `simulations`
-**Propósito:** 24 escenarios "qué pasa si...". Input + cómputo + insight de FINN.
+**Propósito:** 24 escenarios "qué pasa si...". Input + cómputo + insight de Neto.
 **Módulos:** Simulador (sin número de MOD, transversal)
 **Fase:** 2
 
@@ -2350,7 +2350,7 @@ Aunque solo se use el ~40% en MVP, **todas las tablas se crean en Fase 0** para 
 18. **Préstamos:** `family_loans`, `family_loan_payments`, `loan_portfolio`, `loan_payments`
 19. **Deudas:** `debts`, `debt_payments`
 20. **Trip expenses:** `trip_expenses`
-21. **FINN:** `finn_conversations`, `finn_messages`, `finn_insights`
+21. **Neto:** `finn_conversations`, `finn_messages`, `finn_insights`
 22. **Simulador:** `simulations`
 23. **Gamificación:** `achievements` (+ seed), `user_achievements`, `streaks`, `flow_scores`
 24. **Alertas y notif:** `alert_rules`, `notifications`

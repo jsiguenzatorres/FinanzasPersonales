@@ -219,7 +219,7 @@ export function LoanForm({
               {isCashAdvance && (
                 <div className="space-y-2 rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3">
                   <p className="text-sm text-ff-red">
-                    🤖 <strong>FINN:</strong> Alerta máxima. Un retiro de efectivo con tarjeta NO tiene
+                    🤖 <strong>Neto:</strong> Alerta máxima. Un retiro de efectivo con tarjeta NO tiene
                     período de gracia — los intereses corren desde hoy mismo, más la comisión de retiro
                     (3-5% + $2-5). Es la forma más cara de prestar dinero. Si puedes, usa transferencia o
                     efectivo de tu cuenta de ahorro en su lugar.

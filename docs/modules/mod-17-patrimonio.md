@@ -41,7 +41,7 @@ Calcula y visualiza el patrimonio neto (activos − pasivos) del usuario en cada
 | Pasivos manuales (préstamos privados) | ✅ | — | — |
 | Multi-moneda consolidado a USD | ✅ | — | — |
 | Bitcoin como activo | ✅ | — | — |
-| Cambios significativos (>5%) con explicación FINN | ✅ | — | — |
+| Cambios significativos (>5%) con explicación Neto | ✅ | — | — |
 | Proyección ML a 6/12/24 meses | ❌ | ✅ Prophet | — |
 | Benchmark anónimo vs. cohorte | ❌ | ❌ | ✅ |
 | Simulador de escenarios patrimoniales | Parcial | ✅ completo | — |
@@ -123,7 +123,7 @@ Todos los valores convertidos a `users.currency_default` (USD para SV) usando `g
 2. Calcula `total_assets`, `total_liabilities`, breakdowns.
 3. Compara con último snapshot: `delta_amount`, `delta_pct`.
 4. INSERT en `net_worth_snapshots`.
-5. Si `|delta_pct| > 5%`: FINN genera insight explicando el cambio.
+5. Si `|delta_pct| > 5%`: Neto genera insight explicando el cambio.
 
 ### CU-03 — Agregar activo manual (auto, casa)
 **Actor:** Usuario tiene auto tasado en $8,500.
@@ -140,7 +140,7 @@ Todos los valores convertidos a `users.currency_default` (USD para SV) usando `g
 1. `/app/patrimonio` → tab "Pasivos manuales" → "Agregar".
 2. Captura: nombre ("Debo a Carlos"), tipo `other`, monto.
 3. Guarda en `manual_liabilities`.
-4. FINN sugiere: "¿Prefieres registrarlo como préstamo familiar para tracking de pagos?" (redirige a MOD-13, Fase 2).
+4. Neto sugiere: "¿Prefieres registrarlo como préstamo familiar para tracking de pagos?" (redirige a MOD-13, Fase 2).
 
 ### CU-05 — Ver desglose completo
 **Actor:** Usuario quiere entender de qué está compuesto su patrimonio.
@@ -174,7 +174,7 @@ PASIVOS                $ 3,550.00
 - Tooltip con desglose de mes.
 - Botón: cambiar rango 1m / 3m / 6m / 12m / desde inicio.
 
-### CU-07 — Insight de FINN sobre cambio grande
+### CU-07 — Insight de Neto sobre cambio grande
 **Trigger:** snapshot semanal detecta `delta_pct > 5%` (positivo o negativo).
 **Flujo:**
 1. Edge Function analiza qué cambió: comparar breakdowns actual vs anterior.
@@ -201,7 +201,7 @@ PASIVOS                $ 3,550.00
 **Flujo:**
 1. En MOD-05 Metas (Fase 2), crea meta tipo `savings` con target $20K.
 2. MOD-17 muestra progreso hacia esa meta.
-3. FINN calcula si ritmo actual alcanza (proyección lineal MVP).
+3. Neto calcula si ritmo actual alcanza (proyección lineal MVP).
 
 **Status MVP:** vinculación básica; visualización completa en Fase 2 con MOD-05.
 
@@ -316,13 +316,13 @@ Snapshots se conservan indefinidamente. Volumen bajo (~52/año/usuario = 5 KB/a�
 ### 5.6 Depreciación de vehículos (MVP simplificado)
 - `manual_assets.appreciation_rate_yr` — puede ser negativo (depreciación).
 - MVP: NO aplica automáticamente. El valor se mantiene igual hasta que usuario lo actualice manualmente.
-- FINN sugiere anualmente: "Actualiza el valor de tu Toyota Corolla — probablemente depreció ~15% en el último año".
+- Neto sugiere anualmente: "Actualiza el valor de tu Toyota Corolla — probablemente depreció ~15% en el último año".
 
 Fase 2: función `depreciate_manual_assets()` job mensual que aplica automáticamente.
 
 ### 5.7 Delta significativo (>5%)
 - `delta_pct` calculado como `(new_net_worth - old_net_worth) / |old_net_worth|`.
-- Si `|delta_pct| ≥ 0.05` (5%), disparar insight FINN.
+- Si `|delta_pct| ≥ 0.05` (5%), disparar insight Neto.
 - Excepciones: primera semana (no hay old) NO dispara.
 
 ### 5.8 Contribución al FlowScore
@@ -343,7 +343,7 @@ Fórmula exacta se documenta en spec de FlowScore transversal.
 | 2 | Edge Function GET | `/functions/v1/net-worth-live` | Cálculo actual con breakdown completo |
 | 3 | Supabase client | `from('net_worth_snapshots').select()` | Histórico (RLS owner) |
 | 4 | Edge Function POST | `/functions/v1/net-worth-snapshot` | Forzar snapshot manual |
-| 5 | Edge Function GET | `/functions/v1/net-worth-explain-delta` | Genera insight FINN sobre cambio |
+| 5 | Edge Function GET | `/functions/v1/net-worth-explain-delta` | Genera insight Neto sobre cambio |
 | 6 | Supabase client | `from('manual_assets').all()` | CRUD activos manuales |
 | 7 | Supabase client | `from('manual_liabilities').all()` | CRUD pasivos manuales |
 
@@ -414,7 +414,7 @@ Jul                            Jun
 ▼ Pasivos    $ 3,550.00
 
 +$450 esta semana  ↑
-💬 FINN: "Tu patrimonio subió principalmente por tu quincena de $800."
+💬 Neto: "Tu patrimonio subió principalmente por tu quincena de $800."
 ```
 
 ### 7.3 Drill-down
@@ -479,14 +479,14 @@ Edge Functions verifican `auth.uid()` antes de calcular.
 | Caso | Manejo |
 |---|---|
 | Usuario sin ningún activo ni pasivo | net_worth = 0, breakdowns vacíos, UI muestra empty state |
-| Patrimonio negativo (deudas > activos) | Válido, se muestra en rojo con FINN insight sobre plan de acción |
+| Patrimonio negativo (deudas > activos) | Válido, se muestra en rojo con Neto insight sobre plan de acción |
 | BTC price no disponible temporalmente | Excluir del cálculo, mostrar en `pending_fx`, retry al día siguiente |
 | Usuario cambia `currency_default` | Snapshots pasados quedan en su currency histórica; nuevos usan nueva base |
 | Delta 100% (pasa de 0 a positivo) | Cálculo `delta_pct` con `nullif(|old|, 0)` → infinity → capado a 999% con nota |
 | Manual asset con valor 0 | Rechazado (constraint) |
 | Family loan con `deleted_at` reciente | No cuenta desde soft-delete |
 | Cuenta archivada durante la semana | Snapshot semanal la incluye hasta el día anterior a archivarse |
-| BTC volatilidad extrema (±20% semana) | Snapshot lo captura; delta grande dispara FINN insight explicativo |
+| BTC volatilidad extrema (±20% semana) | Snapshot lo captura; delta grande dispara Neto insight explicativo |
 | Manual asset con currency ≠ base | Convertido cada vez usando `get_fx_rate` |
 
 ---
@@ -572,7 +572,7 @@ Edge Functions verifican `auth.uid()` antes de calcular.
 5. Edge Function `net-worth-snapshot` + cron job
 6. UI overview con gráfica
 7. UI CRUD manual_assets y manual_liabilities
-8. Delta insight con FINN
+8. Delta insight con Neto
 9. Drill-down y histórico
 10. 3 reportes MVP
 11. Tests
@@ -584,7 +584,7 @@ Edge Functions verifican `auth.uid()` antes de calcular.
 - Cron job + snapshot: 0.5 día
 - UI overview con Recharts: 1.5 días
 - UI CRUD manual: 1 día
-- Delta insight con FINN: 1 día
+- Delta insight con Neto: 1 día
 - Drill-down: 0.5 día
 - Reportes: 0.5 día
 - Tests: 1 día
@@ -613,7 +613,7 @@ Edge Functions verifican `auth.uid()` antes de calcular.
 - ⏳ pg_cron job semanal
 - ⏳ UI overview con gráfica Recharts
 - ⏳ UI CRUD activos y pasivos manuales
-- ⏳ Integración FINN insights
+- ⏳ Integración Neto insights
 - ⏳ 3 reportes MVP
 - ⏳ Tests unit + integration + 3 E2E
 
@@ -631,7 +631,7 @@ Edge Functions verifican `auth.uid()` antes de calcular.
 | **MOD-16 Deudas (Fase 2)** | Fuente de pasivos |
 | **MOD-01 Dashboard** | Widget con patrimonio + delta semanal |
 | **MOD-05 Metas (Fase 2)** | Meta tipo "patrimonio a $X" mide progreso desde aquí |
-| **MOD-08 FINN** | Insights de delta significativo, recomendaciones de rebalanceo |
+| **MOD-08 Neto** | Insights de delta significativo, recomendaciones de rebalanceo |
 | **FlowScore** | Componente `growth_score` viene de tendencia de patrimonio |
 | **MOD-09 Gamificación (Fase 3)** | Logros por milestones ($10K, $50K, $100K) |
 | **MOD-10 Reportes (Fase 3)** | Reporte anual de patrimonio |

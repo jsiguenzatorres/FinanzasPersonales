@@ -147,7 +147,7 @@ export function ExpenseForm({
         <CardDescription>
           {isEditing
             ? 'Corrige los datos de este gasto'
-            : 'Registra un gasto — FINN puede leer tu recibo y sugerir la categoría'}
+            : 'Registra un gasto — Neto puede leer tu recibo y sugerir la categoría'}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -252,11 +252,11 @@ export function ExpenseForm({
               onClick={handleSuggestCategory}
               disabled={isClassifying || (!merchantName && !description) || !amount}
             >
-              {isClassifying ? 'Consultando FINN...' : '✨ Sugerir categoría con IA'}
+              {isClassifying ? 'Consultando a Neto...' : '✨ Sugerir categoría con IA'}
             </Button>
             {suggestion && (
               <p className="text-xs text-muted-foreground">
-                FINN sugiere: <span className="text-ff-green">{suggestion.name}</span> (
+                Neto sugiere: <span className="text-ff-green">{suggestion.name}</span> (
                 {Math.round(suggestion.confidence * 100)}% confianza)
               </p>
             )}

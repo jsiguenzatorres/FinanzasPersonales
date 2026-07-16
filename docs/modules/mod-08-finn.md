@@ -1,4 +1,4 @@
-# MOD-08 — FINN (Asistente IA)
+# MOD-08 — Neto (Asistente IA)
 
 > **Versión:** 1.1 — **APROBADA** (2026-07-09)
 > **Fase:** 1 (MVP — Sub-fase 1.3, semanas 12-16) — se implementa AL FINAL del MVP porque consume todos los demás
@@ -11,13 +11,13 @@
 ## Decisiones cerradas
 
 **2026-06-30:**
-1. ✅ **FINN puede crear datos en onboarding** con 3 tools de write guarded (`set_user_country`, `set_income_estimate`, `create_first_account`). Solo permitidas cuando `session_kind = 'onboarding'`.
+1. ✅ **Neto puede crear datos en onboarding** con 3 tools de write guarded (`set_user_country`, `set_income_estimate`, `create_first_account`). Solo permitidas cuando `session_kind = 'onboarding'`.
 2. ✅ **Sin streaming SSE en MVP** — respuesta completa al terminar. Streaming se evalúa en Fase 1.3 tardía o Fase 2.
 3. ✅ **Feedback thumbs up/down desde MVP**. Storage en `finn_messages.metadata.feedback`. Análisis agregado en Fase 2.
 4. ✅ **Historial indefinido con delete manual**. Warning en settings sobre uso de datos. Cumple GDPR/LFPDPPP con export + delete.
 
 **2026-07-09 (v1.1 — incorporación de `FLOWFINANCE-SPEC.md`, documento histórico pre-pivote):**
-5. ✅ **Personalidad y capacidades de FINN ligadas al plan de suscripción** (reemplaza el modelo anterior de "3 tonos configurables iguales en todos los planes"). Ver sección 2.
+5. ✅ **Personalidad y capacidades de Neto ligadas al plan de suscripción** (reemplaza el modelo anterior de "3 tonos configurables iguales en todos los planes"). Ver sección 2.
 6. ✅ **Incorporado el concepto "Momento Eureka"** como principio de diseño no negociable del onboarding — ver CU-15.
 7. ✅ **Incorporados los protocolos de re-engagement (Pro+) y bienestar financiero (Elite)** — ver CU-16, CU-17.
 8. ✅ **Taxonomía de alertas ampliada de 12 a 27 tipos** (migración 25, `20260709000100_expand_alert_kind_taxonomy.sql`) — ver sección 6.4.
@@ -27,9 +27,9 @@
 ## 1. Propósito y alcance
 
 ### 1.1 Qué hace
-FINN es el asistente conversacional que **conoce los datos del usuario y puede responder preguntas contextualizadas, dar insights proactivos, guiar onboarding y explicar decisiones**. Usa Gemini con function calling para consultar tablas del usuario en tiempo real — NUNCA inventa números.
+Neto es el asistente conversacional que **conoce los datos del usuario y puede responder preguntas contextualizadas, dar insights proactivos, guiar onboarding y explicar decisiones**. Usa Gemini con function calling para consultar tablas del usuario en tiempo real — NUNCA inventa números.
 
-**Principio de diseño no negociable:** antes de cada llamada a Gemini, el sistema construye un **snapshot financiero completo** del usuario desde Supabase (ver sección 7 — Contexto financiero). FINN nunca recibe una pregunta sin ese contexto inyectado. Si no hay datos suficientes para responder algo, FINN lo dice explícitamente y explica qué le falta registrar al usuario — nunca improvisa.
+**Principio de diseño no negociable:** antes de cada llamada a Gemini, el sistema construye un **snapshot financiero completo** del usuario desde Supabase (ver sección 7 — Contexto financiero). Neto nunca recibe una pregunta sin ese contexto inyectado. Si no hay datos suficientes para responder algo, Neto lo dice explícitamente y explica qué le falta registrar al usuario — nunca improvisa.
 
 ### 1.2 Qué NO hace
 - No es un asesor financiero certificado (banner claro en UI).
@@ -54,28 +54,28 @@ FINN es el asistente conversacional que **conoce los datos del usuario y puede r
 | **Re-engagement sin culpa** (Pro+) | ✅ | — | — |
 | **Protocolo de bienestar financiero** (Elite) | ✅ | — | — |
 | Historial buscable | ✅ | Semantic search | — |
-| FINN por WhatsApp Business | ❌ | ❌ | ✅ |
-| FINN proactivo push | ❌ | ✅ | — |
+| Neto por WhatsApp Business | ❌ | ❌ | ✅ |
+| Neto proactivo push | ❌ | ✅ | — |
 | Simulador conversacional | ❌ | ✅ (Fase 2 con MOD-simulador) | — |
 
 ---
 
 ## 2. Personalidad y capacidades por plan
 
-FINN **no es el mismo asistente en cada plan** — cambia de nombre, tono, capacidades y límites. Esto refuerza la estrategia de monetización sin que se sienta como una restricción arbitraria: cada nivel corresponde a una etapa de madurez financiera distinta.
+Neto **no es el mismo asistente en cada plan** — cambia de nombre, tono, capacidades y límites. Esto refuerza la estrategia de monetización sin que se sienta como una restricción arbitraria: cada nivel corresponde a una etapa de madurez financiera distinta.
 
 ### 2.1 Tabla comparativa
 
-| Plan | Nombre de FINN | Mensajes | Daily Brief | Ejecuta acciones | Memoria de contexto | Protocolo especial |
+| Plan | Nombre de Neto | Mensajes | Daily Brief | Ejecuta acciones | Memoria de contexto | Protocolo especial |
 |---|---|---|---|---|---|---|
-| **Free** | "FINN Básico" | 5/día · 15/mes | No | No | No | — |
+| **Free** | "Neto Básico" | 5/día · 15/mes | No | No | No | — |
 | **Starter** | "Tu Compañero" | 30/mes · máx 5/día | Sí, bajo demanda | No | No | — |
 | **Pro** | "Tu Asesor Personal" | Ilimitado (50/día anti-abuso) | Sí, automático + resumen semanal | Sí | Sí (recuerda conversaciones previas) | Re-engagement sin culpa |
 | **Elite** | "Tu Socio Estratégico" | Ilimitado (100/día anti-abuso) | Sí + sesión de planificación mensual | Sí | Sí | + Protocolo de bienestar financiero |
 
 ### 2.2 Personalidad por plan
 
-**Free — "FINN Básico":** funcional pero limitado. Responde preguntas simples sobre los datos ya capturados. Cada respuesta que toca un tema avanzado (inversión, deuda compleja) termina con una mención breve y no invasiva de qué plan lo desbloquea, sin presionar.
+**Free — "Neto Básico":** funcional pero limitado. Responde preguntas simples sobre los datos ya capturados. Cada respuesta que toca un tema avanzado (inversión, deuda compleja) termina con una mención breve y no invasiva de qué plan lo desbloquea, sin presionar.
 
 **Starter — "Tu Compañero":** cálido, empático, accesible. Habla como un amigo que estudió finanzas y explica todo sin hacer sentir tonto al usuario. Nunca juzga, nunca culpa. Temas: gastos, presupuesto, saldo disponible, alertas de tarjeta, metas básicas. Para temas avanzados, menciona el Plan Pro sin presionar: *"Si algún día quieres, en el Plan Pro puedo ayudarte con eso."*
 
@@ -91,10 +91,10 @@ FINN **no es el mismo asistente en cada plan** — cambia de nombre, tono, capac
 
 El prompt final = `FINN_BASE_PROMPT + FINN_PERSONALITY_<PLAN> + contexto financiero (sección 7)`.
 
-### 2.4 Estrategia de upgrade vía FINN (sin presionar)
+### 2.4 Estrategia de upgrade vía Neto (sin presionar)
 
-- **Día 45 (Starter → Pro):** FINN menciona el FlowScore que subió y sugiere organizar préstamos familiares pendientes de registrar.
-- **Día 90 (Pro → Elite):** FINN menciona los ingresos pasivos generados y sugiere evaluar cartera de préstamos con interés y optimización fiscal.
+- **Día 45 (Starter → Pro):** Neto menciona el FlowScore que subió y sugiere organizar préstamos familiares pendientes de registrar.
+- **Día 90 (Pro → Elite):** Neto menciona los ingresos pasivos generados y sugiere evaluar cartera de préstamos con interés y optimización fiscal.
 - Estos mensajes se generan como `finn_insights` de prioridad baja-media, nunca como interrupción del flujo de chat.
 
 ---
@@ -122,29 +122,29 @@ Cada sesión = 1 fila en `finn_conversations` + N mensajes en `finn_messages`.
 **Actor:** Usuario recién registrado (post email verify).
 **Flujo:**
 1. Redirect a `/onboarding` → `finn-start-session` con `kind = 'onboarding'`.
-2. FINN saluda: *"¡Hola! Soy FINN. Voy a ayudarte a configurar FlowFinance en 3 minutos. ¿Cómo prefieres que te llame?"*
-3. Usuario responde nombre → FINN guarda en `users.display_name`.
-4. FINN pregunta secuencialmente:
+2. Neto saluda: *"¡Hola! Soy Neto. Voy a ayudarte a configurar FlowFinance en 3 minutos. ¿Cómo prefieres que te llame?"*
+3. Usuario responde nombre → Neto guarda en `users.display_name`.
+4. Neto pregunta secuencialmente:
    - "¿Cuál es tu mayor problema con el dinero hoy?" → chips: *No sé a dónde va mi quincena / Tengo deudas que no puedo controlar / Presto dinero a familia y lo pierdo / Quiero empezar a ahorrar pero no sé cómo / Otro...* — la respuesta orienta qué módulos destacar después, sin preguntar por todos.
    - "¿En qué país vives?" → tool `set_user_country`
    - "¿Cuál es tu ingreso principal mensual aproximado?" → tool `set_income_estimate`
    - "¿Dónde recibes tu salario o ingresos principales?" → tool `create_first_account`
    - "¿Cuánto tienes actualmente en esa cuenta?" → completa cuenta
    - "¿Tienes tarjetas de crédito? ¿Cuántas?" → si sí, invita a MOD-15
-5. FINN concluye: *"Listo. Vas a ver tu Dashboard con lo básico. Cualquier duda, tocame el ícono verde."*
+5. Neto concluye: *"Listo. Vas a ver tu Dashboard con lo básico. Cualquier duda, tocame el ícono verde."*
 6. Marca `users.onboarding_done = true`.
 
 **Costo:** ~$0.01 por onboarding completo (~10 turnos con Gemini Flash).
 
 ### CU-02 — Chat libre con context
-**Actor:** Usuario tap ícono FINN o `/app/finn`.
+**Actor:** Usuario tap ícono Neto o `/app/finn`.
 **Flujo:**
 1. Sistema abre o continúa la sesión activa `kind = 'chat'`.
 2. Al iniciar, construye el `context_snapshot` (ver sección 7) y lo cachea en `finn_conversations.context_snapshot`.
 3. Usuario pregunta: "¿cuánto llevo gastado este mes en restaurantes?"
-4. FINN llama tool `get_category_spending({category_name: 'Restaurantes', period: 'current_month'})`.
+4. Neto llama tool `get_category_spending({category_name: 'Restaurantes', period: 'current_month'})`.
 5. Tool retorna: `{spent: 187.50, budgeted: 200.00, remaining: 12.50, days_left: 5}`.
-6. FINN responde: "Llevas $187.50 gastados en Restaurantes este mes. Te quedan $12.50 disponibles para los 5 días restantes ($2.50/día). Vas justo."
+6. Neto responde: "Llevas $187.50 gastados en Restaurantes este mes. Te quedan $12.50 disponibles para los 5 días restantes ($2.50/día). Vas justo."
 
 **Costo:** ~$0.003 por interacción promedio.
 
@@ -170,17 +170,17 @@ Cada sesión = 1 fila en `finn_conversations` + N mensajes en `finn_messages`.
 4. Guarda en `finn_insights`.
 5. Aparece en Top 5 del Dashboard y como notification.
 
-### CU-05 — FINN sugiere presupuesto (integración con MOD-03)
-Ver MOD-03 CU-09. FINN llama tool `analyze_historical_spending` → propone distribución.
+### CU-05 — Neto sugiere presupuesto (integración con MOD-03)
+Ver MOD-03 CU-09. Neto llama tool `analyze_historical_spending` → propone distribución.
 
-### CU-06 — FINN clasifica ingreso (integración con MOD-00)
+### CU-06 — Neto clasifica ingreso (integración con MOD-00)
 Ver MOD-00 CU-06. Edge Function `income-classify` usa Gemini Flash-Lite.
 
-### CU-07 — FINN extrae recibo (integración con MOD-04)
+### CU-07 — Neto extrae recibo (integración con MOD-04)
 Ver MOD-04 CU-02. Edge Function `expense-ocr` usa Gemini Flash multimodal.
 
 ### CU-08 — Explicación de cambio patrimonial
-Ver MOD-17 CU-07. FINN identifica top 2 fuentes de cambio y explica.
+Ver MOD-17 CU-07. Neto identifica top 2 fuentes de cambio y explica.
 
 ### CU-09 — Historial de conversaciones
 **Actor:** Usuario quiere revisar consejo pasado.
@@ -193,27 +193,27 @@ Ver MOD-17 CU-07. FINN identifica top 2 fuentes de cambio y explica.
 **Actor:** Usuario Free excede 5 mensajes/día.
 **Flujo:**
 1. Edge Function `finn-chat` verifica contador diario (tabla `rate_limits`).
-2. Si excede, retorna error 429 con message: "Alcanzaste tu límite diario de FINN Básico. Con Starter tienes 30/mes, con Pro mensajes ilimitados. Vuelve mañana o mejora tu plan."
+2. Si excede, retorna error 429 con message: "Alcanzaste tu límite diario de Neto Básico. Con Starter tienes 30/mes, con Pro mensajes ilimitados. Vuelve mañana o mejora tu plan."
 3. UI muestra estado con countdown y CTA upgrade.
 
 ### CU-11 — Modo crisis
 **Actor:** Usuario activa `crisis_mode` en settings (o el sistema lo activa automáticamente al detectar liquidez crítica — ver alerta `crisis_mode` en taxonomía §6.4).
 **Flujo:**
-1. FINN cambia registro: más directo, con foco en supervivencia financiera.
+1. Neto cambia registro: más directo, con foco en supervivencia financiera.
 2. Prompt system incluye contexto de crisis.
 3. Sugerencias priorizan liquidez inmediata sobre metas largo plazo.
 
-### CU-12 — FINN NO puede ejecutar acción destructiva
+### CU-12 — Neto NO puede ejecutar acción destructiva
 **Actor:** Usuario dice: "Elimina todos mis gastos de este mes."
 **Flujo:**
-1. FINN identifica intención destructiva.
+1. Neto identifica intención destructiva.
 2. Responde: "No puedo eliminar registros por ti — es una acción que solo tú debes confirmar. Ve a MOD-04 Gastos, selecciona los registros y elimina desde ahí."
 3. NO llama ninguna tool destructiva.
 
-### CU-13 — FINN NO recomienda producto específico
+### CU-13 — Neto NO recomienda producto específico
 **Actor:** "¿En qué debería invertir?"
 **Flujo:**
-1. FINN detecta consulta de inversión.
+1. Neto detecta consulta de inversión.
 2. Responde con marco educativo: "Como asistente no puedo recomendar productos específicos, pero puedo ayudarte a pensar tu perfil de riesgo, tu horizonte y las categorías generales (renta fija, acciones, etc.). Con eso puedes tomar decisiones con un asesor certificado o hacer tu propia investigación."
 
 ### CU-14 — Cambiar hora del Daily Brief
@@ -267,7 +267,7 @@ Ver MOD-17 CU-07. FINN identifica top 2 fuentes de cambio y explica.
 
 ## 5. Function calling — tools disponibles (MVP)
 
-FINN puede invocar estas funciones (llamadas RPC seguras via Supabase con RLS):
+Neto puede invocar estas funciones (llamadas RPC seguras via Supabase con RLS):
 
 | Tool | Descripción | Read/Write | Plan mínimo |
 |---|---|---|---|
@@ -451,7 +451,7 @@ interface FinnFinancialContext {
 
 ### 8.1 Rate limits por plan
 
-| Plan | Mensajes FINN | Daily Brief | OCR/día | Clasificaciones/día | Simulaciones/día (Fase 2) |
+| Plan | Mensajes Neto | Daily Brief | OCR/día | Clasificaciones/día | Simulaciones/día (Fase 2) |
 |---|---|---|---|---|---|
 | Free | 5/día · 15/mes | No | 3 | 20 | 0 |
 | Starter | 30/mes · máx 5/día | Bajo demanda | 30 | 300 | 0 |
@@ -553,9 +553,9 @@ Sin streaming en MVP (decisión #2) — la respuesta llega completa.
 4. **Onboarding** (`/onboarding`) — versión especial del chat.
 
 ### 10.2 Chat UX
-- Burbuja del usuario a la derecha, FINN a la izquierda con avatar circular.
-- El nombre de FINN mostrado en el header del chat cambia según el plan ("Tu Compañero" / "Tu Asesor Personal" / "Tu Socio Estratégico").
-- Cuando FINN llama tool, muestra badge sutil "Consultando tus datos..." con spinner.
+- Burbuja del usuario a la derecha, Neto a la izquierda con avatar circular.
+- El nombre de Neto mostrado en el header del chat cambia según el plan ("Tu Compañero" / "Tu Asesor Personal" / "Tu Socio Estratégico").
+- Cuando Neto llama tool, muestra badge sutil "Consultando tus datos..." con spinner.
 - Cuando termina, resalta el número si es citable (ej. subraya "$187.50").
 - Botón "Copiar" en respuestas largas.
 - Sugerencias de preguntas al inicio: "¿Cuánto llevo este mes?", "¿Cuál es mi próximo vencimiento?", "¿Puedo permitirme una compra de $200?".
@@ -563,7 +563,7 @@ Sin streaming en MVP (decisión #2) — la respuesta llega completa.
 ### 10.3 Onboarding UX
 - Chat full screen sin sidebar.
 - Progreso "Paso 3 de 7" arriba.
-- FINN muestra input types diferentes: text, número, chips, botones.
+- Neto muestra input types diferentes: text, número, chips, botones.
 - Sin skip agresivo; usuario puede decir "prefiero configurar después" y avanza.
 
 ### 10.4 Widget global
@@ -573,7 +573,7 @@ Sin streaming en MVP (decisión #2) — la respuesta llega completa.
 
 ### 10.5 Estados
 - Rate limit: banner amarillo con countdown y CTA upgrade (con el nombre del siguiente plan y qué desbloquea).
-- Error de Gemini: "FINN está tomando una siesta. Reintenta en un momento."
+- Error de Gemini: "Neto está tomando una siesta. Reintenta en un momento."
 - Sin conversaciones: primera vez muestra tutorial rápido.
 
 ### 10.6 Accesibilidad
@@ -631,18 +631,18 @@ create policy "fi_owner" on public.finn_insights for all using (auth.uid() = use
 |---|---|
 | Gemini API down | Retry con backoff exponencial; después 3 intentos, respuesta fallback |
 | Usuario envía mensaje muy largo | Truncar a 4000 chars con warning |
-| Tool call devuelve error | FINN lo maneja: "No pude consultar ese dato ahora, intenta después" |
+| Tool call devuelve error | Neto lo maneja: "No pude consultar ese dato ahora, intenta después" |
 | Rate limit alcanzado a mitad de conversación | Bloquea siguiente mensaje, muestra CTA |
-| Usuario pregunta sobre otro usuario | FINN rechaza — solo responde con datos propios |
+| Usuario pregunta sobre otro usuario | Neto rechaza — solo responde con datos propios |
 | Conversación abandonada 30+ min | Auto-cierra (`ended_at = now()`) |
 | Prompt injection intentado | Filtro básico + Gemini safety settings; log evento |
-| FINN da respuesta con hallucination detectable | Sistema no puede detectar todo; fomenta feedback con thumbs down |
-| Idioma diferente al esperado | FINN mantiene español SV pero responde brevemente si detecta otro idioma |
+| Neto da respuesta con hallucination detectable | Sistema no puede detectar todo; fomenta feedback con thumbs down |
+| Idioma diferente al esperado | Neto mantiene español SV pero responde brevemente si detecta otro idioma |
 | Multimodal con imagen inapropiada | Gemini safety la rechaza; UI muestra mensaje neutro |
-| Usuario Free intenta usar tool de ejecución | `finn-execute-tool` rechaza server-side; FINN responde explicando qué plan lo desbloquea |
+| Usuario Free intenta usar tool de ejecución | `finn-execute-tool` rechaza server-side; Neto responde explicando qué plan lo desbloquea |
 | Usuario hace downgrade con conversaciones "Pro" activas | Historial se conserva, pero nuevas conversaciones usan personalidad/límites del nuevo plan |
 | Protocolo de bienestar se activaría 2 veces en el mismo mes | Bloqueado por regla dura de 30 días — segunda condición se ignora hasta que pase el cooldown |
-| Usuario sin ningún dato pide el Momento Eureka antes de tiempo | No se genera hasta cruzar el umbral (≥5 transactions); FINN explica qué falta |
+| Usuario sin ningún dato pide el Momento Eureka antes de tiempo | No se genera hasta cruzar el umbral (≥5 transactions); Neto explica qué falta |
 
 ---
 
@@ -709,8 +709,8 @@ create policy "fi_owner" on public.finn_insights for all using (auth.uid() = use
 - `finn_upgrade_prompt_shown` props: `day`, `from_plan`, `to_plan`
 
 ### 16.2 KPIs
-- % usuarios activos que usan FINN semanalmente: ≥50%
-- Sesiones FINN por usuario Pro por mes: ≥20
+- % usuarios activos que usan Neto semanalmente: ≥50%
+- Sesiones Neto por usuario Pro por mes: ≥20
 - % de mensajes con tool call: ≥40% (indica uso contextual)
 - Costo Gemini promedio por user Pro: ≤$5/mes
 - % thumbs up: ≥75%
@@ -722,8 +722,8 @@ create policy "fi_owner" on public.finn_insights for all using (auth.uid() = use
 
 ## 17. Out of scope (MVP)
 
-- ❌ FINN por WhatsApp (Fase 3)
-- ❌ FINN proactivo con push notifications generalizado (Fase 2 — solo Momento Eureka/reengagement/wellness llevan push en MVP)
+- ❌ Neto por WhatsApp (Fase 3)
+- ❌ Neto proactivo con push notifications generalizado (Fase 2 — solo Momento Eureka/reengagement/wellness llevan push en MVP)
 - ❌ Semantic search en historial (Fase 2)
 - ❌ Voice input (Fase 2)
 - ❌ Modo "coach" con planes de acción semanales (Fase 2)
@@ -800,7 +800,7 @@ create policy "fi_owner" on public.finn_insights for all using (auth.uid() = use
 
 | # | Decisión | Resolución | Implicación |
 |---|---|---|---|
-| 5 | Personalidad de FINN | ✅ Ligada al plan (4 niveles), reemplaza tonos configurables | System prompt con bloque de personalidad por `users.plan` |
+| 5 | Personalidad de Neto | ✅ Ligada al plan (4 niveles), reemplaza tonos configurables | System prompt con bloque de personalidad por `users.plan` |
 | 6 | Momento Eureka | ✅ Incorporado como principio no negociable | Nueva Edge Function `finn-eureka-insight`, KPI de retención dedicado |
 | 7 | Protocolos emocionales | ✅ Re-engagement (Pro+) y bienestar (Elite) incorporados | 2 nuevas Edge Functions con jobs cron, reglas de cooldown duras |
 | 8 | Taxonomía de alertas | ✅ Ampliada de 12 a 27 tipos | Migración 25 aplicada a Supabase real |
@@ -828,7 +828,7 @@ create policy "fi_owner" on public.finn_insights for all using (auth.uid() = use
 
 ## 21. Conexión con otros módulos
 
-| Módulo | Rol de FINN |
+| Módulo | Rol de Neto |
 |---|---|
 | **MOD-00 Ingresos** | Clasifica ingreso vía prompt (Flash-Lite) |
 | **MOD-02 Cuentas** | Onboarding crea 1ra cuenta; tools consultan balances |
@@ -845,4 +845,4 @@ create policy "fi_owner" on public.finn_insights for all using (auth.uid() = use
 | **FlowScore** | Explica componentes y cómo mejorar; dispara protocolo de bienestar si cae >50pts |
 | **MOD-09 Gamificación (Fase 3)** | Notifica logros con tono celebratorio |
 | **MOD-20 Calendario (Fase 2)** | Consulta próximos eventos |
-| **Billing (Stripe)** | `users.plan` determina personalidad, límites y tools disponibles de FINN en tiempo real |
+| **Billing (Stripe)** | `users.plan` determina personalidad, límites y tools disponibles de Neto en tiempo real |

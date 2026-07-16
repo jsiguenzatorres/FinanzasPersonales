@@ -31,7 +31,7 @@ const NAV_ITEMS = [
   { href: '/app/prestamos', label: 'Préstamos', icon: HandCoins },
   { href: '/app/patrimonio', label: 'Patrimonio', icon: LineChart },
   { href: '/app/presupuesto', label: 'Presupuesto', icon: Target },
-  { href: '/app/finn', label: 'FINN', icon: Bot },
+  { href: '/app/finn', label: 'Neto', icon: Bot },
 ];
 
 function isItemActive(pathname: string, href: string): boolean {

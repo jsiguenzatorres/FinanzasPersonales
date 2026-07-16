@@ -10,7 +10,7 @@ const PLANS = [
     price: '$0',
     period: '',
     description: 'Prueba el producto antes de comprometerte',
-    features: ['5 mensajes FINN/día', '3 escaneos OCR/día', '20 adjuntos de respaldo', 'Presupuesto flexible'],
+    features: ['5 mensajes Neto/día', '3 escaneos OCR/día', '20 adjuntos de respaldo', 'Presupuesto flexible'],
     featured: false,
   },
   {
@@ -18,7 +18,7 @@ const PLANS = [
     price: '$4.99',
     period: '/mes',
     description: 'Claridad Financiera',
-    features: ['30 mensajes FINN/mes', '30 escaneos OCR/día', '100 adjuntos', 'FINN Daily Brief'],
+    features: ['30 mensajes Neto/mes', '30 escaneos OCR/día', '100 adjuntos', 'Neto Daily Brief'],
     featured: false,
   },
   {
@@ -27,7 +27,7 @@ const PLANS = [
     period: '/mes',
     description: 'Control y Crecimiento',
     features: [
-      'FINN ilimitado',
+      'Neto ilimitado',
       'Préstamos familiares completo',
       'Simulador 16 escenarios',
       '6 cuentas + tarjetas ilimitadas',

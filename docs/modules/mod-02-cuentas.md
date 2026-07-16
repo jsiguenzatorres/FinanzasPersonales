@@ -13,7 +13,7 @@
 2. ✅ **Bolsillos virtuales en JSONB.** `accounts.virtual_buckets` (más simple que tabla separada). Migrar a tabla en Fase 2 si emerge necesidad real.
 3. ✅ **Saldo almacenado con trigger.** `accounts.balance` se mantiene actualizado vía `update_account_balance()` PL/pgSQL en INSERT/UPDATE/DELETE de transactions. Función `reconcile_account_balance()` corre semanal para detectar drift.
 4. ✅ **Cuentas NO colaborativas.** Un solo dueño por cuenta. Lo colaborativo vive en `collab_space` (espacios compartidos) — las transacciones se etiquetan, pero las cuentas son personales.
-5. ✅ **Conciliación opcional con recordatorios.** FINN sugiere conciliar cuando han pasado >60 días sin reconciliación en una cuenta activa.
+5. ✅ **Conciliación opcional con recordatorios.** Neto sugiere conciliar cuando han pasado >60 días sin reconciliación en una cuenta activa.
 
 ---
 
@@ -88,7 +88,7 @@ Lista pre-poblada en UI (auto-completar `bank_name`):
 **Actor:** Usuario recién registrado.
 **Trigger:** Wizard de onboarding (paso 2) o llegada a Dashboard vacío.
 **Flujo:**
-1. FINN pregunta: "¿En qué cuenta recibes tu salario o ingresos principales?"
+1. Neto pregunta: "¿En qué cuenta recibes tu salario o ingresos principales?"
 2. Usuario selecciona tipo `checking` o `savings`.
 3. Captura: nombre ("BAC corriente"), banco (autocompletar), últimos 4 dígitos opcionales, saldo actual.
 4. Confirma moneda (default USD para SV).
@@ -187,7 +187,7 @@ Lista pre-poblada en UI (auto-completar `bank_name`):
    - Transacciones programadas con `status='pending'`
 3. Genera línea de tiempo día-por-día con saldo proyectado.
 4. Resalta días donde proyección cruza saldo mínimo configurado.
-5. FINN comenta: "El 18 de cada mes tu cuenta baja a $80. Considera ajustar débitos."
+5. Neto comenta: "El 18 de cada mes tu cuenta baja a $80. Considera ajustar débitos."
 
 **Implementación:** función PL/pgSQL `project_account_balance(account_id, days)` retorna `TABLE(date, balance, source)`.
 
@@ -512,7 +512,7 @@ Libre:         $   614.56
 3. **Apariencia**: color (paleta 8) + ícono (emoji).
 
 ### 7.5 Estados vacíos
-- Sin cuentas: ilustración + "Empieza agregando dónde guardas tu dinero" + CTA "Crear primera cuenta" + atajo "FINN puede ayudarte" (chat sugerido).
+- Sin cuentas: ilustración + "Empieza agregando dónde guardas tu dinero" + CTA "Crear primera cuenta" + atajo "Neto puede ayudarte" (chat sugerido).
 
 ### 7.6 Confirmaciones críticas
 - Eliminar cuenta sin transacciones: confirmación simple.
@@ -591,7 +591,7 @@ create policy "accounts_owner" on public.accounts
 | BTC FX no disponible | `amount_base = NULL`; UI muestra "BTC sin tasa" + retry diario |
 | Cuenta con `belvo_account_id` (Fase 2) editada manualmente | Permitir, pero advertir "Esto se sobrescribirá en próxima sync" |
 | Cierre de cuenta con saldo > 0 | Pedir confirmación: "¿Transferir saldo a otra cuenta antes de archivar?" |
-| Cuenta cash con saldo negativo | Permitido (deuda en efectivo); FINN sugiere ajuste |
+| Cuenta cash con saldo negativo | Permitido (deuda en efectivo); Neto sugiere ajuste |
 | `parent_account_id` apunta a cuenta archivada | Rechazar |
 
 ---
@@ -713,7 +713,7 @@ create policy "accounts_owner" on public.accounts
 | 2 | Bolsillos: JSONB vs tabla | ✅ JSONB | `accounts.virtual_buckets` con invariant validado en app + Zod |
 | 3 | Saldo: derivado vs almacenado | ✅ Almacenado con trigger | Trigger `update_account_balance()` + job `reconcile_account_balance()` semanal |
 | 4 | Cuentas colaborativas | ✅ NO — un dueño | Colaborativo solo vía `collab_space` con tags en transacciones |
-| 5 | Conciliación obligatoria | ✅ Opcional con recordatorios | FINN insight a partir de 60 días sin conciliar |
+| 5 | Conciliación obligatoria | ✅ Opcional con recordatorios | Neto insight a partir de 60 días sin conciliar |
 
 ---
 

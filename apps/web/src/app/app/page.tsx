@@ -260,17 +260,17 @@ export default async function AppHomePage() {
         </Card>
       )}
 
-      {/* ── 5. CTA a FINN ─────────────────────────────────────────────── */}
+      {/* ── 5. CTA a Neto ─────────────────────────────────────────────── */}
       <Card className="animate-fade-in-up border-ff-green/20 bg-ff-green/5" style={{ animationDelay: '420ms' }}>
         <CardContent className="flex items-center justify-between py-5">
           <div>
             <p className="font-medium">🤖 ¿Dudas sobre tus finanzas?</p>
             <p className="text-sm text-muted-foreground">
-              Pregúntale a FINN — conoce tus datos reales, no respuestas genéricas.
+              Pregúntale a Neto — conoce tus datos reales, no respuestas genéricas.
             </p>
           </div>
           <Button asChild size="sm">
-            <Link href="/app/finn">Hablar con FINN</Link>
+            <Link href="/app/finn">Hablar con Neto</Link>
           </Button>
         </CardContent>
       </Card>

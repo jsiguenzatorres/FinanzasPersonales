@@ -54,7 +54,7 @@ export function Hero() {
             className="mt-6 max-w-lg text-lg text-landing-ink-soft"
           >
             FlowFinance es la única app que también rastrea el dinero que le prestas a tu
-            familia — con <strong className="text-landing-ink">FINN</strong>, un asistente que
+            familia — con <strong className="text-landing-ink">Neto</strong>, un asistente que
             conoce tus números reales, nunca inventa nada.
           </motion.p>
 

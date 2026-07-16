@@ -49,7 +49,7 @@ interface CreateOptions {
 }
 
 /**
- * Cliente Gemini para FINN.
+ * Cliente Gemini para Neto.
  * - Usa Flash (más capaz) por defecto para conversación.
  * - Usa Flash-Lite para clasificación y daily brief (más barato).
  */

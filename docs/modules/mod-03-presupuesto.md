@@ -13,7 +13,7 @@
 2. ✅ **Rollover overspent default `true`** (disciplina realista). Configurable en settings.
 3. ✅ **Colab schema soportado desde MVP, UI de invitación en MOD-11 (Fase 3)**. Mientras tanto, todos los budgets son personales.
 4. ✅ **Split y presupuesto**: sumar por hijas cuando `is_split = true` (consistente con MOD-04).
-5. ✅ **Cache de sugerencia FINN**: localStorage 24h TTL con botón "Actualizar sugerencia" forzando refetch.
+5. ✅ **Cache de sugerencia Neto**: localStorage 24h TTL con botón "Actualizar sugerencia" forzando refetch.
 
 ---
 
@@ -38,7 +38,7 @@ Permite al usuario planificar y controlar sus gastos mensuales usando 3 modos: *
 | Rollover automático mes-a-mes | ✅ | — |
 | 10 KPIs en tiempo real | ✅ | — |
 | Alertas configurables (umbrales) | ✅ | — |
-| Sugerencia de FINN basada en historial | ✅ básica | ✅ mejorada con ML |
+| Sugerencia de Neto basada en historial | ✅ básica | ✅ mejorada con ML |
 | Presupuesto colaborativo (via collab_space) | ✅ persistencia | ✅ UI Fase 3 |
 | Realtime (Supabase Realtime) para colaborativo | ✅ | — |
 | Plantillas guardadas | ❌ | ✅ |
@@ -93,8 +93,8 @@ Permite al usuario planificar y controlar sus gastos mensuales usando 3 modos: *
 **Trigger:** Va a `/app/presupuesto` sin budget activo.
 **Flujo:**
 1. **Paso 1 — Elegir modo**: 3 tarjetas explicativas (Zero-based / Flexible / 50-30-20). Usuario elige.
-2. **Paso 2 — FINN detecta ingreso**: sistema calcula `total_income_expected` = ingresos recurrentes activos + promedio 3 meses de ingresos variables.
-3. **Paso 3 — FINN propone distribución**: basada en historial de gastos por categoría últimos 3 meses. Muestra propuesta editable.
+2. **Paso 2 — Neto detecta ingreso**: sistema calcula `total_income_expected` = ingresos recurrentes activos + promedio 3 meses de ingresos variables.
+3. **Paso 3 — Neto propone distribución**: basada en historial de gastos por categoría últimos 3 meses. Muestra propuesta editable.
 4. **Paso 4 — Usuario ajusta**: sliders o inputs por categoría. Muestra "Disponible: $X" en tiempo real.
 5. **Paso 5 — Confirmar y activar**: valida (zero-based requiere `unallocated = 0`), crea `budgets` + `budget_categories`, activa alertas.
 
@@ -139,7 +139,7 @@ Días:  20/30                Promedio necesario/día: $27.30
    - 100%: warning
    - >100%: critical
 3. Crea `notification` con `in_app` (siempre) + canales según preferencias del usuario.
-4. FINN puede generar insight: "Restaurantes lleva 89% con 10 días del mes por delante. Necesitas gastar <$3/día para no sobregirar."
+4. Neto puede generar insight: "Restaurantes lleva 89% con 10 días del mes por delante. Necesitas gastar <$3/día para no sobregirar."
 
 ### CU-05 — Cierre de mes con rollover
 **Trigger:** `pg_cron` primer día del mes 3am UTC.
@@ -151,7 +151,7 @@ Días:  20/30                Promedio necesario/día: $27.30
    - Aplica rollover:
      - Si `budgets.rollover_unspent = true`: sobrante de categoría X pasa como `rollover_amount` positivo en nueva línea.
      - Si `budgets.rollover_overspent = true` (default): sobregiro de categoría X se resta al mes nuevo (`rollover_amount` negativo).
-2. FINN insight: "Julio arrancó. Tu presupuesto de junio quedó en 96% ejecutado. Excelente."
+2. Neto insight: "Julio arrancó. Tu presupuesto de junio quedó en 96% ejecutado. Excelente."
 
 ### CU-06 — Cambiar modo de presupuesto
 **Actor:** Usuario quiere pasar de Flexible a Zero-based.
@@ -184,12 +184,12 @@ Ingreso: $1,800
 20% Ahorro/Deuda     $   30 / $ 360   🔴  8%  necesita atención
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💬 FINN: "Vas bien en necesidades y deseos, pero tu meta
+💬 Neto: "Vas bien en necesidades y deseos, pero tu meta
 de 20% en ahorro está muy atrás. Considera revisar
 tus gastos discrecionales del resto del mes."
 ```
 
-### CU-09 — Sugerencia de distribución con FINN
+### CU-09 — Sugerencia de distribución con Neto
 **Actor:** Usuario en paso 3 del wizard, presupuesto en modo Zero-based.
 **Flujo:**
 1. Sistema consulta historial últimos 3 meses agrupado por categoría.
@@ -347,7 +347,7 @@ Los 10 KPIs del doc maestro, calculados desde vista `v_budget_kpis`:
 | 9 | Ratio 50/30/20 real | Suma por `money_class` (con override) |
 | 10 | Diferencial vs. mes anterior | `%exec_actual - %exec_mismo_dia_mes_anterior` |
 
-### 5.5 Sugerencia de distribución FINN
+### 5.5 Sugerencia de distribución Neto
 
 **Prompt template (Gemini Flash-Lite):**
 ```
@@ -382,7 +382,7 @@ Costo: ~$0.0002 por llamada. Solo se ejecuta al crear budget mensual.
 |---|---|---|---|
 | 1 | Supabase client | `budgets` CRUD | Con RLS |
 | 2 | Edge Function POST | `/functions/v1/budget-create` | Crea budget + budget_categories atómico |
-| 3 | Edge Function POST | `/functions/v1/budget-suggest` | FINN sugiere distribución |
+| 3 | Edge Function POST | `/functions/v1/budget-suggest` | Neto sugiere distribución |
 | 4 | Edge Function POST | `/functions/v1/budget-close-rollover` | Cierra + rollover (llamado por cron y manual) |
 | 5 | Edge Function POST | `/functions/v1/budget-adjust-category` | Ajusta límite de una categoría |
 | 6 | Edge Function GET | `/functions/v1/budget-kpis` | Retorna los 10 KPIs |
@@ -444,9 +444,9 @@ Día 20/30                              ▓▓▓▓▓▓▓░░░
 ▼ Todas las categorías (expandible)
 ```
 
-### 7.3 Wizard paso 3 (FINN sugiere)
+### 7.3 Wizard paso 3 (Neto sugiere)
 ```
-FINN analizó tus últimos 3 meses. Esta es una sugerencia:
+Neto analizó tus últimos 3 meses. Esta es una sugerencia:
 
 🏠 Vivienda           $500  ← "Consistente, mismo alquiler"
 🛒 Alimentación       $300  ← "Promedio +5% inflación"
@@ -567,11 +567,11 @@ Realtime: canal por `budget_id` para colaborativo, filtrado por RLS.
   - Con `category_id` NULL → no afecta
   - Con transaction fuera del periodo → no afecta
 - Rollover mensual: sobrante positivo, sobrante negativo
-- FINN suggest con historial → JSON estructurado válido
+- Neto suggest con historial → JSON estructurado válido
 - RLS entre users y en colab_space
 
 ### 12.3 E2E
-- Wizard 5 pasos zero-based con FINN suggest → crea budget
+- Wizard 5 pasos zero-based con Neto suggest → crea budget
 - Capturar gasto → dashboard refleja
 - Cruzar 80% → alert aparece
 - Cruzar 100% → status over
@@ -628,9 +628,9 @@ Realtime: canal por `budget_id` para colaborativo, filtrado por RLS.
 ### 15.2 Orden recomendado
 1. Zod schemas + `budget-create` Edge Function
 2. Trigger `update_budget_spent` + tests
-3. UI wizard 5 pasos (sin FINN suggest todavía)
+3. UI wizard 5 pasos (sin Neto suggest todavía)
 4. UI overview + KPIs base
-5. Integración FINN suggest (Gemini)
+5. Integración Neto suggest (Gemini)
 6. Cierre + rollover automático
 7. Alertas y notificaciones
 8. Vista modo 50/30/20 con money_class_override
@@ -644,7 +644,7 @@ Realtime: canal por `budget_id` para colaborativo, filtrado por RLS.
 - Trigger update_budget_spent + tests: 1 día
 - UI wizard: 3 días
 - UI overview + KPIs: 2 días
-- FINN suggest: 1 día
+- Neto suggest: 1 día
 - Rollover automático: 1 día
 - Alertas: 1 día
 - Vistas por modo (50/30/20, zero-based specifics): 2 días
@@ -663,7 +663,7 @@ Realtime: canal por `budget_id` para colaborativo, filtrado por RLS.
 | 2 | Rollover overspent default | ✅ `true` | Configurable en settings del budget |
 | 3 | Colab en MVP | ✅ Schema sí, UI en MOD-11 | Presupuestos personales hasta Fase 3 |
 | 4 | Split y budget | ✅ Sumar hijas | Trigger usa `category_id` de cada hija |
-| 5 | Cache FINN suggest | ✅ localStorage 24h TTL | Botón refetch manual disponible |
+| 5 | Cache Neto suggest | ✅ localStorage 24h TTL | Botón refetch manual disponible |
 
 ---
 
@@ -693,7 +693,7 @@ Realtime: canal por `budget_id` para colaborativo, filtrado por RLS.
 | **MOD-01 Dashboard** | Widget "Semáforo Presupuesto" muestra categorías 🟢🟡🔴 |
 | **MOD-15 Tarjetas** | Cargos a tarjeta cuentan como cualquier gasto |
 | **MOD-05 Metas (Fase 2)** | Línea "Ahorro" del budget puede vincularse a meta específica |
-| **MOD-08 FINN** | Suggest en wizard, alertas de cruce de umbral, insight de fin de mes |
+| **MOD-08 Neto** | Suggest en wizard, alertas de cruce de umbral, insight de fin de mes |
 | **MOD-11 Colaborativas (Fase 3)** | Budgets con `collab_space_id` compartidos entre members |
 | **MOD-12 Salud financiera (Fase 3)** | Ratio ingreso/gasto viene del budget |
 | **MOD-09 Gamificación (Fase 3)** | Logros: mes con presupuesto en verde, racha de meses balanceados |

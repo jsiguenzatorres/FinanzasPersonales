@@ -22,8 +22,8 @@ export interface FinnContextSnapshot {
 }
 
 /**
- * Construye el snapshot financiero que se inyecta en el system prompt de FINN
- * antes de cada llamada a Gemini. Principio no negociable: FINN nunca recibe
+ * Construye el snapshot financiero que se inyecta en el system prompt de Neto
+ * antes de cada llamada a Gemini. Principio no negociable: Neto nunca recibe
  * una pregunta sin este contexto (spec §1.1).
  *
  * Todas las queries filtran explícitamente por user_id como defensa en

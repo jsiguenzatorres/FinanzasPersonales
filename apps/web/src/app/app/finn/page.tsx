@@ -20,7 +20,7 @@ export default async function FinnPage({
     .eq('id', user!.id)
     .single();
 
-  const finnName = FINN_NAME_BY_PLAN[profile?.plan ?? 'free'] ?? 'FINN';
+  const finnName = FINN_NAME_BY_PLAN[profile?.plan ?? 'free'] ?? 'Neto';
 
   let messages: Array<{ role: string; content: string | null }> = [];
   if (conversationId) {

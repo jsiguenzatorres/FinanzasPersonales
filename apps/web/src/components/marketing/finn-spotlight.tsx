@@ -25,12 +25,12 @@ export function FinnSpotlight() {
 
       <div className="relative mx-auto grid max-w-6xl gap-16 px-6 lg:grid-cols-2 lg:items-center">
         <Reveal>
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-landing-terracotta">// FINN</p>
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-landing-terracotta">// Neto</p>
           <h2 className="mt-4 font-display text-4xl tracking-tight text-landing-ink sm:text-5xl">
             Un asistente que <span className="text-landing-terracotta">consulta antes de hablar</span>
           </h2>
           <p className="mt-5 text-lg leading-relaxed text-landing-ink-soft">
-            La mayoría de los asistentes financieros inventan respuestas genéricas. FINN
+            La mayoría de los asistentes financieros inventan respuestas genéricas. Neto
             ejecuta herramientas reales sobre tus datos — saldos, presupuesto, préstamos —
             antes de contestar. Si no sabe algo, te lo dice.
           </p>
@@ -53,7 +53,7 @@ export function FinnSpotlight() {
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-landing-terracotta/15 font-mono text-[11px] text-landing-terracotta">
                 AI
               </span>
-              <p className="text-sm font-medium text-landing-ink">FINN</p>
+              <p className="text-sm font-medium text-landing-ink">Neto</p>
               <span className="ml-auto flex items-center gap-1.5 font-mono text-[11px] text-ff-green">
                 <span className="h-1.5 w-1.5 rounded-full bg-ff-green" />
                 en línea

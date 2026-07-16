@@ -9,7 +9,7 @@
 
 ## Decisiones cerradas (2026-06-30)
 
-1. ✅ **Layout móvil: FINN Brief sticky-below-header**. Visible al scroll inicial; se libera contenido debajo cuando el usuario ya lo leyó.
+1. ✅ **Layout móvil: Neto Brief sticky-below-header**. Visible al scroll inicial; se libera contenido debajo cuando el usuario ya lo leyó.
 2. ✅ **Regeneración manual del Daily Brief: 3/día en Free, ilimitado en Pro+**. Cada regeneración es llamada Gemini con costo real.
 3. ✅ **Widget FlowScore en MVP con score básico + badge "Beta"** para setear expectativa. Gamificación completa en Fase 3.
 4. ✅ **Sparkline Net Worth: 6 meses** (responsivo al comportamiento reciente). 12 meses en módulo dedicado.
@@ -20,7 +20,7 @@
 ## 1. Propósito y alcance
 
 ### 1.1 Qué hace
-Presenta una vista **360°** del estado financiero del usuario en tiempo real: 8 widgets personalizables, KPIs, semáforo de salud financiera y el brief diario de FINN. Optimizado para: leer en 30 segundos y decidir qué acción tomar hoy.
+Presenta una vista **360°** del estado financiero del usuario en tiempo real: 8 widgets personalizables, KPIs, semáforo de salud financiera y el brief diario de Neto. Optimizado para: leer en 30 segundos y decidir qué acción tomar hoy.
 
 ### 1.2 Qué NO hace
 - No captura datos (redirige a MOD-00, 04, 15).
@@ -36,7 +36,7 @@ Presenta una vista **360°** del estado financiero del usuario en tiempo real: 8
 | Drag & drop reorder | ✅ | — | — |
 | Ocultar/mostrar widgets | ✅ | — | — |
 | Realtime updates (Supabase Realtime) | ✅ | — | — |
-| FINN Daily Brief automático | ✅ | Personalización tono | — |
+| Neto Daily Brief automático | ✅ | Personalización tono | — |
 | Top 5 alertas del día | ✅ | ML priority | — |
 | KPIs live | ✅ | — | — |
 | Widgets personalizados por usuario | ❌ | ✅ | — |
@@ -95,7 +95,7 @@ Los 8 widgets del doc maestro, todos activos por default:
 - **Muestra:** número grande, badge "USD equivalente" si multi-moneda, tooltip explicativo.
 - **Deep link:** `/app/cuentas`.
 
-### 2.7 🤖 FINN Daily Brief
+### 2.7 🤖 Neto Daily Brief
 - **Fuente:** `finn_insights` WHERE `kind = 'daily_brief' AND DATE(created_at) = today`.
 - **Generación:** job `finn-daily-brief` corre a las 6:50am hora del usuario (`user_settings.finn_daily_brief_at`).
 - **Muestra:** párrafo generado por Gemini 2.5 Flash con:
@@ -121,14 +121,14 @@ Los 8 widgets del doc maestro, todos activos por default:
 **Flujo:**
 1. Redirect desde `/onboarding/complete` → `/app`.
 2. Sistema carga los 8 widgets con datos reales del user.
-3. FINN Daily Brief (primera vez) se genera on-the-fly (no cron todavía).
+3. Neto Daily Brief (primera vez) se genera on-the-fly (no cron todavía).
 4. Se muestra hint "Puedes reordenar widgets manteniéndolos presionados".
 
 ### CU-02 — Vista diaria (usuario recurrente)
 **Actor:** Abre la app cada mañana.
 **Flujo:**
 1. Landing en `/app`.
-2. FINN Daily Brief ya generado por cron a las 6:50am.
+2. Neto Daily Brief ya generado por cron a las 6:50am.
 3. Widgets renderizan primero con caché local (last known); actualiza en background con Realtime.
 4. Usuario lee brief, ve alertas, tap en acción.
 
@@ -170,7 +170,7 @@ Los 8 widgets del doc maestro, todos activos por default:
    - Sin ingresos → "Registra un ingreso"
    - Sin budget → "Crea tu presupuesto"
    - Sin metas → "Define una meta"
-2. FINN Daily Brief adapta el mensaje: "Aún no tienes suficientes datos para un análisis completo. Empieza registrando..."
+2. Neto Daily Brief adapta el mensaje: "Aún no tienes suficientes datos para un análisis completo. Empieza registrando..."
 
 ### CU-08 — Widget "Metas Top 3" con menos de 3 metas
 **Flujo:** Muestra las que existen + card "Crear meta" al final.
@@ -178,9 +178,9 @@ Los 8 widgets del doc maestro, todos activos por default:
 ### CU-09 — Modo móvil compacto
 **Actor:** Usuario en teléfono.
 **Layout:**
-- FINN Brief primero (full width)
+- Neto Brief primero (full width)
 - Grid 1 columna con widgets apilados
-- Bottom nav con 5 tabs: Home · Gastos · Presupuesto · FINN · Más
+- Bottom nav con 5 tabs: Home · Gastos · Presupuesto · Neto · Más
 
 ### CU-10 — Alerta sin acción del usuario en 24h
 **Flujo:**
@@ -195,10 +195,10 @@ Los 8 widgets del doc maestro, todos activos por default:
 2. Widget "Semáforo Presupuesto" resaltado con animación breve.
 3. Tap resalta → `/app/presupuesto`.
 
-### CU-12 — FINN Daily Brief manual (refresh)
+### CU-12 — Neto Daily Brief manual (refresh)
 **Actor:** Usuario quiere re-generar brief.
 **Flujo:**
-1. Tap ⋯ del widget FINN → "Regenerar".
+1. Tap ⋯ del widget Neto → "Regenerar".
 2. Llama Edge Function `finn-daily-brief?force=true`.
 3. Rate limited: máximo 3 regeneraciones/día en Free.
 
@@ -296,7 +296,7 @@ $$;
 
 **Prompt (Gemini 2.5 Flash):**
 ```
-Eres FINN, asistente de finanzas personales.
+Eres Neto, asistente de finanzas personales.
 
 Genera un párrafo de "brief diario" para el usuario, en español SV, cálido y directo.
 
@@ -395,7 +395,7 @@ Response 200:
 │ Sidebar   │   Dashboard                            │
 │ (nav)     │                                        │
 │           │  ┌────────────┐ ┌────────────┐        │
-│           │  │ FINN Brief │ │ Alertas 5  │        │
+│           │  │ Neto Brief │ │ Alertas 5  │        │
 │           │  │            │ │            │        │
 │           │  └────────────┘ └────────────┘        │
 │           │                                        │
@@ -411,9 +411,9 @@ Response 200:
 
 ### 7.2 Layout móvil
 - Header: greeting + avatar
-- FINN Brief full width (siempre visible arriba)
+- Neto Brief full width (siempre visible arriba)
 - Widgets apilados 1 columna
-- Bottom nav: Home · Gastos · Presupuesto · FINN · Más
+- Bottom nav: Home · Gastos · Presupuesto · Neto · Más
 - FAB "+Gasto" flotante
 
 ### 7.3 Componentes
@@ -457,7 +457,7 @@ Todas las tablas consultadas tienen RLS owner. Vista `v_dashboard_summary` con `
 | Caso | Manejo |
 |---|---|
 | Usuario sin datos (todos widgets vacíos) | Cada widget muestra su CTA de setup |
-| FINN Brief falla (Gemini down) | Fallback texto estático: "Empieza tu día revisando tu presupuesto y gastos recientes." |
+| Neto Brief falla (Gemini down) | Fallback texto estático: "Empieza tu día revisando tu presupuesto y gastos recientes." |
 | Realtime desconectado | Badge "Reconectando..."; refetch manual via pull-to-refresh |
 | Usuario cambia currency_default | Widgets recalculan al reload |
 | Widget con error (crash) | Error boundary aísla; resto del dashboard sigue funcionando |
@@ -487,7 +487,7 @@ Todas las tablas consultadas tienen RLS owner. Vista `v_dashboard_summary` con `
 - Drag widget → orden persiste tras reload
 - Ocultar widget → no aparece
 - Deep link desde alerta → navegación correcta
-- FINN Brief force regenerate → nuevo texto
+- Neto Brief force regenerate → nuevo texto
 
 ### 12.4 Performance
 - `dashboard-data` responde <400ms P95 con caché
@@ -533,14 +533,14 @@ Todas las tablas consultadas tienen RLS owner. Vista `v_dashboard_summary` con `
 ### 15.1 Bloqueadores
 - ⏳ MOD-00, 02, 04, 15, 17 activos (fuentes de datos)
 - ⏳ MOD-03 activo (semáforo presupuesto)
-- ⏳ MOD-08 FINN básico (para Daily Brief)
+- ⏳ MOD-08 Neto básico (para Daily Brief)
 - ⏳ Supabase Realtime configurado
 
 ### 15.2 Orden recomendado
 1. Vista `v_dashboard_summary` + function `calculate_liquidity_today`
 2. Edge Function `dashboard-data` (agregador)
 3. Grid layout con `dnd-kit`
-4. 8 widgets uno por uno (empezando por FINN Brief y NetWorth)
+4. 8 widgets uno por uno (empezando por Neto Brief y NetWorth)
 5. Realtime subscriptions
 6. Deep links a módulos
 7. Estados vacíos por widget
@@ -565,7 +565,7 @@ Todas las tablas consultadas tienen RLS owner. Vista `v_dashboard_summary` con `
 
 | # | Decisión | Resolución | Implicación |
 |---|---|---|---|
-| 1 | Layout móvil FINN Brief | ✅ Sticky-below-header | CSS `position: sticky; top: <header-height>` |
+| 1 | Layout móvil Neto Brief | ✅ Sticky-below-header | CSS `position: sticky; top: <header-height>` |
 | 2 | Regenerar Daily Brief | ✅ 3/día Free · Ilimitado Pro+ | Rate limit por plan en Edge Function |
 | 3 | FlowScore widget MVP | ✅ Sí con badge "Beta" | Score básico visible, tooltip explica limitación |
 | 4 | Sparkline Net Worth | ✅ 6 meses | Query `net_worth_snapshots` últimos 24 puntos |
@@ -599,6 +599,6 @@ Todas las tablas consultadas tienen RLS owner. Vista `v_dashboard_summary` con `
 | **MOD-15** | Tarjetas alimentan Alertas (vencimientos) |
 | **MOD-17** | Patrimonio en widget dedicado |
 | **MOD-05 (Fase 2)** | Metas alimentan widget Top 3 Metas |
-| **MOD-08 FINN** | Daily Brief + insights → Top 5 Alertas |
+| **MOD-08 Neto** | Daily Brief + insights → Top 5 Alertas |
 | **MOD-12 Salud (Fase 3)** | Complementa semáforo global |
 | **FlowScore** | Widget dedicado |

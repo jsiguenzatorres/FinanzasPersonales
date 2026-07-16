@@ -6,7 +6,7 @@ import { TiltCard } from './tilt-card';
 const FEATURES = [
   {
     tag: '01',
-    title: 'FINN, tu asesor con memoria real',
+    title: 'Neto, tu asesor con memoria real',
     description:
       'No es un chatbot genérico — consulta tus cuentas, gastos y préstamos de verdad antes de responder. Nunca inventa números.',
     textClass: 'text-landing-terracotta',
@@ -24,7 +24,7 @@ const FEATURES = [
   {
     tag: '03',
     title: 'Escanea el recibo',
-    description: 'Toma una foto — FINN lee el monto, el comercio y la categoría por ti.',
+    description: 'Toma una foto — Neto lee el monto, el comercio y la categoría por ti.',
     textClass: 'text-landing-forest',
     rgb: '62, 90, 69',
     span: '',

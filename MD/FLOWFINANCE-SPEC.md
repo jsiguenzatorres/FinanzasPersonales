@@ -8,9 +8,9 @@
 
 ## 1. Visión del Producto
 
-FlowFinance es una plataforma de finanzas personales con IA diseñada específicamente para la realidad económica de LATAM. Resuelve problemas que ninguna app del mercado cubre: préstamos informales a familiares, alto uso de efectivo, multi-moneda real, planificación fiscal y un asistente conversacional (**FINN**) con acceso completo al contexto financiero del usuario.
+FlowFinance es una plataforma de finanzas personales con IA diseñada específicamente para la realidad económica de LATAM. Resuelve problemas que ninguna app del mercado cubre: préstamos informales a familiares, alto uso de efectivo, multi-moneda real, planificación fiscal y un asistente conversacional (**Neto**) con acceso completo al contexto financiero del usuario.
 
-**Propuesta de valor en una frase:** *"Toma control total de tu dinero en 5 minutos. FINN hace el trabajo difícil por ti."*
+**Propuesta de valor en una frase:** *"Toma control total de tu dinero en 5 minutos. Neto hace el trabajo difícil por ti."*
 
 ### Diferenciadores clave vs. competencia (Monarch, YNAB, Cleo, PocketGuard, Wealthfront, Qapital, Credit Karma, Rocket Money)
 
@@ -57,7 +57,7 @@ FlowFinance es una plataforma de finanzas personales con IA diseñada específic
 - **Let's Encrypt SSL** — HTTPS automático
 
 ### Inteligencia Artificial
-- **Claude API (Anthropic)** — modelo `claude-sonnet-4-20250514` — FINN, resúmenes, itinerarios, desafíos
+- **Claude API (Anthropic)** — modelo `claude-sonnet-4-20250514` — Neto, resúmenes, itinerarios, desafíos
 - **XGBoost** — categorización automática de transacciones
 - **Prophet / LSTM** — predicción de gastos
 - **Isolation Forest** — detección de anomalías/fraude
@@ -70,7 +70,7 @@ FlowFinance es una plataforma de finanzas personales con IA diseñada específic
 - **ExchangeRate-API** — tipos de cambio en vivo
 - **Stripe** — pagos de subscripción
 - **Resend** — emails transaccionales
-- **WhatsApp Business API** — notificaciones FINN (Fase 2+)
+- **WhatsApp Business API** — notificaciones Neto (Fase 2+)
 - **CoinGecko API** — precios de criptomonedas
 
 ### Seguridad
@@ -95,7 +95,7 @@ FlowFinance es una plataforma de finanzas personales con IA diseñada específic
 | MOD-05 | Metas Financieras | Fase 2 |
 | MOD-06 | Suscripciones y Facturas | Fase 2 |
 | MOD-07 | Inversiones y Portafolio | Fase 2 (básico) / Fase 3 (alternativo) |
-| MOD-08 | FINN — Asistente IA | Fase 1 (básico) / escalado en Fase 2-3 |
+| MOD-08 | Neto — Asistente IA | Fase 1 (básico) / escalado en Fase 2-3 |
 | MOD-09 | Gamificación + FlowScore | Fase 2 |
 | MOD-10 | Reportes y Analítica | Fase 2-3 |
 | MOD-11 | Finanzas Colaborativas | Fase 3 |
@@ -119,9 +119,9 @@ Campos: tipo, subcategoría, fuente, monto bruto/neto, moneda, tipo de cambio, f
 
 ### 3.2 MOD-01 — Dashboard Principal
 
-8 widgets personalizables: Patrimonio Neto Live, Flujo del Mes, Top 5 Alertas, Metas Top 3, Semáforo Presupuesto, Liquidez Libre Hoy, **FINN Daily Brief**, FlowScore + Racha.
+8 widgets personalizables: Patrimonio Neto Live, Flujo del Mes, Top 5 Alertas, Metas Top 3, Semáforo Presupuesto, Liquidez Libre Hoy, **Neto Daily Brief**, FlowScore + Racha.
 
-El FINN Daily Brief se genera cada mañana vía Claude API con: liquidez actual, alertas de presupuesto, vencimientos próximos, estado de préstamos otorgados, y **1 acción concreta recomendada**.
+El Neto Daily Brief se genera cada mañana vía Claude API con: liquidez actual, alertas de presupuesto, vencimientos próximos, estado de préstamos otorgados, y **1 acción concreta recomendada**.
 
 ### 3.3 MOD-02 — Cuentas Bancarias
 
@@ -152,7 +152,7 @@ Features clave:
 - Ropa & Personal (ropa, accesorios, peluquería, cosméticos, tintorería)
 - Finanzas (ahorro, deudas, tarjetas, inversiones, préstamos otorgados)
 
-**Flujo de creación**: FINN detecta ingreso → propone distribución basada en historial → usuario ajusta → presupuesto confirmado → KPIs y alertas activas.
+**Flujo de creación**: Neto detecta ingreso → propone distribución basada en historial → usuario ajusta → presupuesto confirmado → KPIs y alertas activas.
 
 **10 KPIs en tiempo real:**
 1. % Ejecución global
@@ -170,7 +170,7 @@ Features clave:
 
 **12 tipos de alertas**: categoría al 70%, al 90%, sobregirada, predictiva (proyección de agotamiento), gasto inusual, presupuesto cumplido, oportunidad de ahorro, inicio de mes nuevo, gasto mayor que mes anterior, racha de presupuesto, rollover disponible, modo crisis activado.
 
-**8 reportes propios**: ejecución mensual, histórico de cumplimiento, categorías problemáticas, proyección de cierre, análisis de rollover, distribución 50/30/20, varianza mensual, reporte FINN del mes.
+**8 reportes propios**: ejecución mensual, histórico de cumplimiento, categorías problemáticas, proyección de cierre, análisis de rollover, distribución 50/30/20, varianza mensual, reporte Neto del mes.
 
 **4 períodos soportados**: mensual, quincenal, semanal, por evento.
 
@@ -182,11 +182,11 @@ Features clave:
 
 12 reportes: resumen mensual, comparativa mes anterior, tendencia 12 meses, top 10 establecimientos, gasto por modalidad, días con más gasto, hora con más gasto, categorías sobregiradas, patrones de consumo, gastos por etiqueta, flujo de caja semanal, proyección mes en curso.
 
-### 3.6 MOD-08 — FINN (Asistente IA — el diferenciador principal)
+### 3.6 MOD-08 — Neto (Asistente IA — el diferenciador principal)
 
-FINN (Financial Intelligence Navigator) recibe el **contexto financiero completo del usuario** en cada llamada a Claude API: saldos de cuentas, gastos, ingresos, préstamos otorgados/recibidos, metas, fechas de corte de tarjetas, portafolio de inversiones, suscripciones, deudas propias.
+Neto recibe el **contexto financiero completo del usuario** en cada llamada a Claude API: saldos de cuentas, gastos, ingresos, préstamos otorgados/recibidos, metas, fechas de corte de tarjetas, portafolio de inversiones, suscripciones, deudas propias.
 
-**Principio de diseño no negociable**: FINN nunca da respuestas genéricas. Toda respuesta debe basarse en los datos reales del usuario consultados en tiempo real desde Supabase antes de construir el prompt para Claude.
+**Principio de diseño no negociable**: Neto nunca da respuestas genéricas. Toda respuesta debe basarse en los datos reales del usuario consultados en tiempo real desde Supabase antes de construir el prompt para Claude.
 
 Capacidades:
 - Responde preguntas en lenguaje natural sobre los datos del usuario
@@ -208,7 +208,7 @@ Campos: nombre del deudor, relación, monto, moneda, fecha de entrega, modalidad
 **Modalidad de entrega (`delivery_method`) — 6 opciones, dos de ellas requieren distinguir tarjeta:**
 - `cash`, `transfer`, `debit`, `bitcoin`, `crypto` — entrega directa, sin implicación de intereses para el usuario.
 - `credit_purchase` — el usuario paga algo con su tarjeta directamente para el familiar (ej. supermercado, colegiatura). Tiene período de gracia, como cualquier compra normal de MOD-15.
-- `credit_cash_advance` — el usuario retira efectivo con su tarjeta para dárselo al familiar. **Sin período de gracia — interés desde el día 1**, más comisión de retiro (3-5% + $2-$5 fijo en SV). FINN advierte activamente cuando detecta este patrón: es la forma más cara de prestar dinero.
+- `credit_cash_advance` — el usuario retira efectivo con su tarjeta para dárselo al familiar. **Sin período de gracia — interés desde el día 1**, más comisión de retiro (3-5% + $2-$5 fijo en SV). Neto advierte activamente cuando detecta este patrón: es la forma más cara de prestar dinero.
 
 **Vínculo con MOD-04/MOD-15:** cada préstamo entregado vía tarjeta o cuenta genera automáticamente su `transaction_id` real (`cc_charge` para compra, tipo dedicado para retiro de efectivo) — el saldo de la tarjeta en MOD-15 y el préstamo en MOD-13 son la misma operación, nunca se duplica el monto ni se cuenta como gasto personal del usuario. Alternativamente, un gasto ya registrado en MOD-04 se puede vincular retroactivamente a un préstamo existente o nuevo vía el campo "Vincular a préstamo MOD-13" (categoría "Campos de Split").
 
@@ -260,7 +260,7 @@ Patrimonio Neto = Σ Activos − Σ Pasivos, recalculado con cada movimiento.
 3. **Itinerario día a día**: lugares con descripción/horario/precio, restaurantes por categoría de precio, logística de traslados, presupuesto desglosado por día, guía de emergencias, funciona offline
 4. **Control de gastos en viaje**: registro rápido en moneda local con conversión automática, mapa de gastos, semáforo de presupuesto, división de gastos en grupo
 
-Post-viaje: integración automática al MOD-04, comparativa presupuestado vs. real, resumen FINN.
+Post-viaje: integración automática al MOD-04, comparativa presupuestado vs. real, resumen Neto.
 
 ### 3.13 MOD-19 — Control Fiscal
 
@@ -270,7 +270,7 @@ Resumen anual exportable en PDF para el contador. Alertas de fechas límite de d
 
 ### 3.14 MOD-20 — Calendario Financiero Maestro
 
-8 tipos de eventos en una sola vista: ingresos esperados, gastos fijos, tarjetas (corte/pago), metas, inversiones, obligaciones fiscales, viajes planeados, alertas proactivas de FINN.
+8 tipos de eventos en una sola vista: ingresos esperados, gastos fijos, tarjetas (corte/pago), metas, inversiones, obligaciones fiscales, viajes planeados, alertas proactivas de Neto.
 
 4 vistas: mensual, semanal, lista, flujo de caja.
 
@@ -286,7 +286,7 @@ Herramienta estratégica con 24 escenarios en 3 categorías:
 
 **Largo Plazo (8):** comprar vs. rentar casa, auto efectivo vs. crédito, nuevo hijo, pagar estudios, fondo de emergencia ideal, proyección 5/10 años, retiro anticipado (FIRE), impacto financiero de separación.
 
-Cada simulación: variables de entrada → impacto calculado → recomendación de FINN con lenguaje claro y accionable.
+Cada simulación: variables de entrada → impacto calculado → recomendación de Neto con lenguaje claro y accionable.
 
 ---
 
@@ -315,43 +315,43 @@ Organizados por **etapa de vida financiera**, no por cantidad de features. Todos
 
 ### ⚪ Free — $0
 **Perfil:** Prueba el producto antes de comprometerse.
-**FINN — "FINN Básico":** 5 mensajes/día · 15/mes, funcional y directo, sin ejecutar acciones.
+**Neto — "Neto Básico":** 5 mensajes/día · 15/mes, funcional y directo, sin ejecutar acciones.
 **Incluye:** Dashboard, registro de gastos/ingresos (manual, foto, voz), 3 escaneos OCR/día, 20 adjuntos de respaldo (100MB total), presupuesto modo Flexible, alertas básicas, FlowScore visible.
 **No incluye:** Préstamos familiares, inversiones, simulador, viajes, modo offline, multi-cuenta, Daily Brief automático.
 
 ### 🟢 Starter — "Claridad Financiera" — $4.99/mes ($47.90/año)
 **Perfil:** El que sobrevive quincena a quincena, sin presupuesto formal.
-**FINN — "Tu Compañero":** 30 mensajes/mes (máx 5/día), tono cálido y empático, sin tecnicismos, sin juzgar.
-**Incluye todo lo de Free más:** FINN Daily Brief bajo demanda, 30 escaneos OCR/día, 100 adjuntos de respaldo (500MB total), 5 alertas básicas, 1 cuenta + 2 tarjetas, 3 fuentes de ingreso, 2 metas, 4 reportes, historial 6 meses.
+**Neto — "Tu Compañero":** 30 mensajes/mes (máx 5/día), tono cálido y empático, sin tecnicismos, sin juzgar.
+**Incluye todo lo de Free más:** Neto Daily Brief bajo demanda, 30 escaneos OCR/día, 100 adjuntos de respaldo (500MB total), 5 alertas básicas, 1 cuenta + 2 tarjetas, 3 fuentes de ingreso, 2 metas, 4 reportes, historial 6 meses.
 **No incluye:** Préstamos familiares, inversiones, simulador, viajes, modo offline, multi-cuenta.
 
 ### 🔵 Pro — "Control y Crecimiento" — $11.99/mes ($115.10/año) — Plan más popular
 **Perfil:** El que ya controla lo básico y quiere optimizar.
-**FINN — "Tu Asesor Personal":** Mensajes ilimitados (50/día anti-abuso), ejecuta acciones directamente, brief diario + resumen semanal automático, recuerda contexto de conversaciones previas, re-engagement sin culpa.
+**Neto — "Tu Asesor Personal":** Mensajes ilimitados (50/día anti-abuso), ejecuta acciones directamente, brief diario + resumen semanal automático, recuerda contexto de conversaciones previas, re-engagement sin culpa.
 **Incluye todo lo de Starter más:** 6 cuentas bancarias, tarjetas ilimitadas, los 3 modos de presupuesto completos (12 alertas, 10 KPIs, 8 reportes), 300 escaneos OCR/día, 500 adjuntos de respaldo (2GB total), **MOD-13 Préstamos Familiares completo**, inversiones básicas, **Simulador 16 escenarios** (Préstamos + Ingresos&Gastos, 20/día), **WanderFinance completo**, deudas propias con estrategias, metas ilimitadas, gamificación completa, modo offline, widget, exportación CSV.
 
 ### 💎 Elite — "Libertad Financiera" — $24.99/mes ($239.90/año)
 **Perfil:** El que construye riqueza, múltiples ingresos, negocio propio.
-**FINN — "Tu Socio Estratégico":** Mensajes ilimitados (100/día anti-abuso) + sesión mensual de planificación profunda, análisis de portafolio con recomendaciones, protocolo de bienestar financiero emocional (detecta estrés sostenido y acompaña sin presión).
+**Neto — "Tu Socio Estratégico":** Mensajes ilimitados (100/día anti-abuso) + sesión mensual de planificación profunda, análisis de portafolio con recomendaciones, protocolo de bienestar financiero emocional (detecta estrés sostenido y acompaña sin presión).
 **Incluye todo lo de Pro más:** OCR y simulaciones sin límite práctico, 2,000 adjuntos de respaldo (10GB total), **MOD-14 Mi Cartera con interés**, portafolio alternativo completo (inmuebles, negocio, proyectos), **Simulador 24 escenarios completo** + comparación en paralelo, **MOD-19 Control Fiscal multi-país**, patrimonio neto avanzado + proyección 10 años, hasta 4 usuarios (familia), Modo Asesor B2B (hasta 5 clientes), exportación PDF/Excel/JSON, soporte prioritario <2h.
 
 **Descuento anual: 20% en todos los planes de pago.**
 
 ### Análisis de costos (COGS) — por qué estos precios son sostenibles
 
-Los dos costos variables reales del sistema son Gemini API (OCR + chat FINN) y Supabase Storage (adjuntos + recibos). Con precios vigentes a jul-2026:
+Los dos costos variables reales del sistema son Gemini API (OCR + chat Neto) y Supabase Storage (adjuntos + recibos). Con precios vigentes a jul-2026:
 
-- **Gemini 2.5 Flash:** $0.30 / 1M tokens de entrada, $2.50 / 1M tokens de salida. Una imagen comprimida (~2000px) consume ~1,300-2,500 tokens de entrada. Un escaneo OCR completo (imagen + respuesta JSON estructurada) cuesta **~$0.0015 USD** — un mensaje de chat FINN típico, aún menos.
+- **Gemini 2.5 Flash:** $0.30 / 1M tokens de entrada, $2.50 / 1M tokens de salida. Una imagen comprimida (~2000px) consume ~1,300-2,500 tokens de entrada. Un escaneo OCR completo (imagen + respuesta JSON estructurada) cuesta **~$0.0015 USD** — un mensaje de chat Neto típico, aún menos.
 - **Supabase Storage:** ~$0.021 / GB / mes en overage (el plan Pro de Supabase ya incluye 100GB). El cupo más alto (Elite: 10GB/usuario) cuesta en el peor caso **~$0.21 USD/mes** si un usuario individual llegara a llenarlo por completo.
 - **Peor caso teórico Pro** (300 OCR/día × 30 días, el techo, no el uso esperado): ~$13.50/mes en Gemini — un escenario de abuso extremo, no el comportamiento real de un usuario de finanzas personales (que escanea unos pocos recibos por semana). El techo existe para limitar abuso, no representa el costo esperado.
 - **Conclusión:** con uso real (no el techo máximo), el costo variable por usuario activo es de centavos, muy por debajo de cualquiera de los precios propuestos — el margen viene principalmente de infraestructura fija (Supabase, Vercel) que se amortiza entre todos los usuarios, no de estos costos variables. Los precios existentes ($4.99 / $11.99 / $24.99) se mantienen sin cambios; se valida que son sostenibles.
 
 *Nota: precios de Gemini y Supabase verificados vía búsqueda web en jul-2026 — revalidar si pasa mucho tiempo, las APIs de IA cambian de precio con frecuencia.*
 
-### Estrategia de upgrade vía FINN (sin presionar al usuario)
+### Estrategia de upgrade vía Neto (sin presionar al usuario)
 
-- **Día 45 (Starter→Pro)**: FINN menciona el FlowScore que subió y sugiere organizar préstamos familiares que el usuario tiene pendientes.
-- **Día 90 (Pro→Elite)**: FINN menciona los ingresos pasivos generados y sugiere evaluar la cartera de préstamos con interés y la optimización fiscal.
+- **Día 45 (Starter→Pro)**: Neto menciona el FlowScore que subió y sugiere organizar préstamos familiares que el usuario tiene pendientes.
+- **Día 90 (Pro→Elite)**: Neto menciona los ingresos pasivos generados y sugiere evaluar la cartera de préstamos con interés y la optimización fiscal.
 
 ### Fuentes de ingreso adicionales (Fase 3)
 - Marketplace transparente (comisión solo cuando genuinamente conviene al usuario)
@@ -839,23 +839,23 @@ CREATE POLICY "Users can only access their own accounts"
 ## 8. Roadmap de Desarrollo (3 Fases — 12 meses)
 
 ### Fase 1 — MVP (Mes 1-3)
-Auth + onboarding conversacional con FINN · MOD-00 Ingresos · MOD-01 Dashboard · MOD-02 Cuentas (8 tipos) · MOD-03 Presupuesto · MOD-04 Gastos + OCR · MOD-08 FINN básico · MOD-15 Tarjetas · MOD-17 Patrimonio neto básico · Modo offline · Modo privacidad · Widget · Biometría · Exportación de datos · Web app Next.js · Setup Supabase + VPS.
+Auth + onboarding conversacional con Neto · MOD-00 Ingresos · MOD-01 Dashboard · MOD-02 Cuentas (8 tipos) · MOD-03 Presupuesto · MOD-04 Gastos + OCR · MOD-08 Neto básico · MOD-15 Tarjetas · MOD-17 Patrimonio neto básico · Modo offline · Modo privacidad · Widget · Biometría · Exportación de datos · Web app Next.js · Setup Supabase + VPS.
 
 ### Fase 2 — Expansión (Mes 4-7)
 MOD-05 Metas · MOD-06 Suscripciones · MOD-07 Inversiones básicas · MOD-13 Préstamos familia · MOD-14 Mi Cartera · MOD-16 Deudas propias · MOD-18 WanderFinance · MOD-20 Calendario maestro · Simulador 16 escenarios (luego 24) · Educación contextual · Comparador "Tu Yo Ideal" · Importar PDF banco · App React Native · ML categorización · Dictado de voz.
 
 ### Fase 3 — Diferenciación (Mes 8-12)
-MOD-09 Gamificación completa · MOD-10 Reportes avanzados · MOD-11 Finanzas colaborativas · MOD-12 Salud financiera · MOD-19 Fiscal/deducibles · FINN por WhatsApp · Benchmark anónimo · Modo Asesor B2B · Marketplace transparente · Multi-país · Aniversario financiero · FlowScore marketing · Notificaciones proactivas.
+MOD-09 Gamificación completa · MOD-10 Reportes avanzados · MOD-11 Finanzas colaborativas · MOD-12 Salud financiera · MOD-19 Fiscal/deducibles · Neto por WhatsApp · Benchmark anónimo · Modo Asesor B2B · Marketplace transparente · Multi-país · Aniversario financiero · FlowScore marketing · Notificaciones proactivas.
 
 ---
 
 ## 9. Principios de Diseño No Negociables
 
-1. **FINN siempre usa datos reales del usuario** — nunca respuestas genéricas de Claude sin contexto financiero inyectado en el prompt.
+1. **Neto siempre usa datos reales del usuario** — nunca respuestas genéricas de Claude sin contexto financiero inyectado en el prompt.
 2. **El simulador debe ser fácil de encontrar** — botón accesible desde el dashboard, no enterrado en un menú.
 3. **El registro de gastos en efectivo debe tomar menos de 3 segundos** — sin fricción, categorización automática después.
 4. **El primer "momento eureka" debe ocurrir en las primeras 48 horas** — algo que sorprenda al usuario sobre sus propios datos.
-5. **El componente emocional de FINN no es opcional** — re-engagement sin culpa, acompañamiento en momentos de estrés financiero, especialmente en plan Elite.
+5. **El componente emocional de Neto no es opcional** — re-engagement sin culpa, acompañamiento en momentos de estrés financiero, especialmente en plan Elite.
 6. **Nunca contar abonos de préstamos familiares como ingreso confirmado** en el presupuesto — tratarlos como ingreso contingente hasta que se reciban.
 7. **Las transferencias internas nunca son gasto ni ingreso** — debe estar resuelto a nivel de lógica de negocio desde el primer sprint.
 8. **Todas las tablas con datos de usuario llevan RLS desde el día 1** — no se agrega después.
@@ -907,12 +907,12 @@ REDIS_URL=
 1. Setup del monorepo: `apps/web` (Next.js), `apps/mobile` (Expo), `apps/api` (FastAPI)
 2. Configurar Supabase: proyecto, tablas de `users`, `accounts`, `transactions`, `income_entries`, `budgets`, `budget_categories` con RLS
 3. Auth con Supabase Auth (email + OAuth Google)
-4. Onboarding conversacional: pantalla de chat inicial con FINN preguntando el mayor problema financiero del usuario
+4. Onboarding conversacional: pantalla de chat inicial con Neto preguntando el mayor problema financiero del usuario
 5. CRUD de cuentas bancarias (MOD-02) con los 8 tipos
 6. CRUD de transacciones (MOD-04) con registro manual primero, OCR/voz después
 7. Lógica de presupuesto (MOD-03): modo Flexible primero, cálculo de KPIs básicos
 8. Dashboard (MOD-01) con los widgets esenciales: liquidez, flujo del mes, alertas
-9. Integración Claude API para FINN básico: endpoint que construye el contexto financiero del usuario y lo envía a Claude
+9. Integración Claude API para Neto básico: endpoint que construye el contexto financiero del usuario y lo envía a Claude
 10. Deploy inicial en Hostinger VPS + Vercel/similar para Next.js
 
 ---
@@ -921,11 +921,11 @@ REDIS_URL=
 
 ---
 
-## 12. Integración Claude API — Arquitectura de FINN
+## 12. Integración Claude API — Arquitectura de Neto
 
 ### 12.1 Principio fundamental
 
-Antes de cada llamada a la Claude API, el sistema construye un **snapshot financiero completo** del usuario desde Supabase. Claude NUNCA recibe una pregunta sin contexto financiero real. Este es el diferenciador más importante de FINN vs. cualquier otro chatbot.
+Antes de cada llamada a la Claude API, el sistema construye un **snapshot financiero completo** del usuario desde Supabase. Claude NUNCA recibe una pregunta sin contexto financiero real. Este es el diferenciador más importante de Neto vs. cualquier otro chatbot.
 
 ### 12.2 Estructura del contexto inyectado
 
@@ -1012,13 +1012,13 @@ interface FinnContext {
 }
 ```
 
-### 12.3 System prompt de FINN por plan
+### 12.3 System prompt de Neto por plan
 
 ```typescript
 // apps/api/finn/system_prompts.ts
 
 const BASE_PROMPT = `
-Eres FINN (Financial Intelligence Navigator), el asistente financiero personal de FlowFinance.
+Eres Neto, el asistente financiero personal de FlowFinance.
 
 REGLA FUNDAMENTAL: Siempre respondes basándote ÚNICAMENTE en los datos financieros reales del usuario
 que se te proporcionan en el contexto. NUNCA des consejos genéricos. Si no tienes datos suficientes,
@@ -1372,7 +1372,7 @@ flowfinance/
 │   │   │   │   ├── goals/           # MOD-05
 │   │   │   │   ├── subscriptions/   # MOD-06
 │   │   │   │   ├── investments/     # MOD-07
-│   │   │   │   ├── finn/            # MOD-08 Chat FINN
+│   │   │   │   ├── finn/            # MOD-08 Chat Neto
 │   │   │   │   ├── gamification/    # MOD-09
 │   │   │   │   ├── reports/         # MOD-10
 │   │   │   │   ├── family-loans/    # MOD-13
@@ -1385,7 +1385,7 @@ flowfinance/
 │   │   │   │   ├── calendar/        # MOD-20
 │   │   │   │   └── simulator/       # Simulador de impacto
 │   │   │   └── api/
-│   │   │       ├── finn/route.ts    # Proxy a FastAPI FINN
+│   │   │       ├── finn/route.ts    # Proxy a FastAPI Neto
 │   │   │       └── webhooks/        # Stripe + Plaid
 │   │   ├── components/
 │   │   │   ├── ui/                  # shadcn/ui
@@ -1447,12 +1447,12 @@ flowfinance/
 
 ## 15. Flujo de Onboarding (primeras 48 horas — el "momento eureka")
 
-El onboarding es completamente conversacional con FINN. El objetivo es que en las primeras 48 horas el usuario viva un momento de sorpresa con sus propios datos.
+El onboarding es completamente conversacional con Neto. El objetivo es que en las primeras 48 horas el usuario viva un momento de sorpresa con sus propios datos.
 
 ### Pantalla 1 — Bienvenida conversacional
 
 ```
-FINN: "Hola! Soy FINN, tu asistente financiero personal. Antes de configurar 
+Neto: "Hola! Soy Neto, tu asistente financiero personal. Antes de configurar 
       todo, quiero entenderte mejor.
       
       ¿Cuál es tu mayor problema con el dinero hoy?
@@ -1466,7 +1466,7 @@ FINN: "Hola! Soy FINN, tu asistente financiero personal. Antes de configurar
 
 ### Pantalla 2 — Configuración contextual (basada en respuesta)
 
-FINN configura automáticamente los módulos relevantes para ese perfil. No pregunta por todos los módulos — solo los que importan para ese usuario.
+Neto configura automáticamente los módulos relevantes para ese perfil. No pregunta por todos los módulos — solo los que importan para ese usuario.
 
 ### Pantalla 3 — Primer ingreso de datos
 
@@ -1474,7 +1474,7 @@ Un solo campo: "¿Cuánto dinero tienes disponible ahora mismo en tu cuenta prin
 
 ### Pantalla 4 — El momento eureka (día 2-3)
 
-Cuando el usuario registra sus primeros 5-10 gastos, FINN genera el primer insight sorprendente:
+Cuando el usuario registra sus primeros 5-10 gastos, Neto genera el primer insight sorprendente:
 - "Gastas en promedio $89 diarios en delivery — $2,670/mes. ¿Lo sabías?"
 - "Tu sueldo te dura 19 días en promedio. Los últimos 11 días del mes vives de lo que va quedando."
 - "Tienes $2,840/mes en suscripciones activas. De esas, 3 no las has usado en más de 45 días."
@@ -1487,7 +1487,7 @@ Este momento debe ocurrir de forma proactiva, sin que el usuario lo pida.
 
 ### Estimación de costo Claude API por plan
 
-| Plan | Llamadas FINN/mes | Tokens promedio/llamada | Costo estimado/usuario/mes |
+| Plan | Llamadas Neto/mes | Tokens promedio/llamada | Costo estimado/usuario/mes |
 |---|---|---|---|
 | Starter | ~40 (30 user + 10 briefings) | ~3,000 | ~$0.30 USD |
 | Pro | ~200 (ilimitado + briefings + semanales) | ~4,000 | ~$1.20 USD |
@@ -1565,7 +1565,7 @@ export interface Alert {
   severity: 'info' | 'warning' | 'critical';
   title: string;
   message: string;               // mensaje técnico
-  finn_message: string;          // mensaje de FINN en tono natural
+  finn_message: string;          // mensaje de Neto en tono natural
   action_label?: string;         // CTA del botón
   action_route?: string;         // ruta a donde lleva el tap
   related_entity_id?: string;    // budget_id, loan_id, card_id, etc.
@@ -1728,9 +1728,9 @@ app.conf.beat_schedule = {
 
 | Término | Definición en FlowFinance |
 |---|---|
-| **FINN** | Financial Intelligence Navigator. El asistente IA de FlowFinance. Siempre recibe el contexto financiero real del usuario antes de responder. |
+| **Neto** | El asistente IA de FlowFinance. Siempre recibe el contexto financiero real del usuario antes de responder. |
 | **Contexto Financiero** | Snapshot de todos los datos del usuario (cuentas, gastos, deudas, metas, tarjetas, préstamos) que se inyecta en cada llamada a Claude API. |
-| **Daily Brief** | Párrafo diario generado por FINN cada mañana con lo más urgente del día financiero y una acción recomendada. |
+| **Daily Brief** | Párrafo diario generado por Neto cada mañana con lo más urgente del día financiero y una acción recomendada. |
 | **FlowScore** | Score 0-1000 que mide la salud financiera del usuario basado en 6 indicadores ponderados. Se recalcula semanalmente. |
 | **Bolsillo Virtual** | Sub-asignación dentro de una cuenta de ahorro real. No requiere abrir cuentas bancarias adicionales. |
 | **Liquidez Real** | Saldo total de cuentas líquidas menos compromisos fijos pendientes del mes menos aportes a metas programados. El dinero realmente disponible. |
@@ -1738,12 +1738,12 @@ app.conf.beat_schedule = {
 | **Ingreso Contingente** | Abono de préstamo familiar pendiente de recibir. No se contabiliza como ingreso hasta que efectivamente se reciba. |
 | **Semáforo Presupuesto** | Indicador visual verde (<80%), amarillo (80-99%), rojo (≥100%) por categoría de presupuesto. |
 | **Modo Crisis** | Estado de la app cuando el saldo disponible cae por debajo de X días de gastos. Muestra días de liquidez, pausa metas no urgentes, sugiere cortes por impacto. |
-| **Momento Eureka** | Primera revelación sorprendente que FINN hace al usuario sobre sus propios datos en las primeras 48 horas. El evento más importante para la retención inicial. |
+| **Momento Eureka** | Primera revelación sorprendente que Neto hace al usuario sobre sus propios datos en las primeras 48 horas. El evento más importante para la retención inicial. |
 | **WanderFinance** | MOD-18. Planificador de viajes integrado con 4 fases: planificación financiera, destino con IA, itinerario día a día, control en viaje. |
 | **Ratio Deuda/Ingreso** | (Suma de cuotas mensuales de deudas) / (Ingreso mensual neto). Semáforo: <28% excelente, 28-36% manejable, 36-43% precaución, >43% peligro. |
 | **Rollover** | Dinero de presupuesto de una categoría que sobró al cierre del mes y se arrastra al siguiente período. |
-| **Re-engagement sin culpa** | Protocolo de FINN cuando el usuario lleva +7 días sin registrar datos. Invita a retomar sin señalar ni juzgar el período de ausencia. |
-| **Protocolo Bienestar** | (Solo Plan Elite) Protocolo de FINN que se activa cuando detecta estrés financiero sostenido. Ofrece acompañamiento empático y revisión sin prisa. |
+| **Re-engagement sin culpa** | Protocolo de Neto cuando el usuario lleva +7 días sin registrar datos. Invita a retomar sin señalar ni juzgar el período de ausencia. |
+| **Protocolo Bienestar** | (Solo Plan Elite) Protocolo de Neto que se activa cuando detecta estrés financiero sostenido. Ofrece acompañamiento empático y revisión sin prisa. |
 
 ---
 

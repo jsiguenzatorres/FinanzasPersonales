@@ -57,7 +57,7 @@ export async function sendFinnMessageAction(formData: FormData) {
       '/app/finn?' +
         (existingConversationId ? `conversation_id=${existingConversationId}&` : '') +
         'error=' +
-        encodeURIComponent(`Alcanzaste tu límite diario de FINN (${limit} mensajes). Vuelve mañana.`),
+        encodeURIComponent(`Alcanzaste tu límite diario de Neto (${limit} mensajes). Vuelve mañana.`),
     );
   }
 
@@ -92,7 +92,7 @@ export async function sendFinnMessageAction(formData: FormData) {
   if (!process.env.GEMINI_API_KEY) {
     redirect(
       `/app/finn?conversation_id=${conversationId}&error=` +
-        encodeURIComponent('FINN no está configurado (falta GEMINI_API_KEY).'),
+        encodeURIComponent('Neto no está configurado (falta GEMINI_API_KEY).'),
     );
   }
 
@@ -137,7 +137,7 @@ export async function sendFinnMessageAction(formData: FormData) {
     console.error('[FINN chat] error en chatWithTools:', err);
     redirect(
       `/app/finn?conversation_id=${conversationId}&error=` +
-        encodeURIComponent('FINN está tomando una siesta. Reintenta en un momento.'),
+        encodeURIComponent('Neto está tomando una siesta. Reintenta en un momento.'),
     );
   }
 

@@ -1,7 +1,7 @@
 import { SchemaType, type FunctionDeclaration } from '@google/generative-ai';
 
 /**
- * Tools de LECTURA que FINN puede invocar (function calling).
+ * Tools de LECTURA que Neto puede invocar (function calling).
  * La implementación real vive en la app (apps/web/src/lib/finn/tools.ts)
  * porque necesita el cliente Supabase autenticado — aquí solo van los
  * schemas que Gemini necesita para decidir cuándo y cómo invocarlas.

@@ -22,7 +22,7 @@ const SEVERITY_ORDER: Record<DashboardAlert['severity'], number> = {
  * disponibles: presupuesto, tarjetas, liquidez.
  *
  * Reutilizable: esta misma lógica alimentará el "Top 5 Alertas" de MOD-08
- * FINN más adelante, sin duplicar código.
+ * Neto más adelante, sin duplicar código.
  */
 export async function computeDashboardAlerts(
   supabase: SupabaseClient<Database>,

@@ -39,7 +39,7 @@ Registra dinero prestado (sin interés) a familiares o amigos: cuánto, a quién
 | Abonos con modalidad propia + comprobante | ✅ | — |
 | Alertas de mora (sin abono >30 días) | ✅ | — |
 | KPIs del módulo (7, ver §4) | ✅ | — |
-| FINN advierte proactivamente sobre `credit_cash_advance` | ✅ | — |
+| Neto advierte proactivamente sobre `credit_cash_advance` | ✅ | — |
 | Recordatorios automáticos al deudor (WhatsApp/SMS) | ❌ | ✅ (requiere integración WhatsApp Business, Fase 3 general) |
 | Refinanciar / convertir préstamo familiar a MOD-14 con interés | ❌ | ✅ |
 
@@ -74,7 +74,7 @@ Fecha, monto, modalidad recibida (puede diferir de la entrega — ej. prestaste 
 ```
 Los primeros tres (+ cripto) son neutrales: el usuario ya tenía ese dinero disponible. Los dos de tarjeta son fundamentalmente distintos entre sí:
 - **`credit_purchase`** — como cualquier compra normal, tiene período de gracia hasta el corte.
-- **`credit_cash_advance`** — interés corre desde el minuto 1 (sin gracia) + comisión de retiro (3-5% + $2-5 fijo en SV). Es la forma más cara de prestar dinero que existe, y FINN debe decirlo explícitamente cuando el usuario elija esta opción (ver §5).
+- **`credit_cash_advance`** — interés corre desde el minuto 1 (sin gracia) + comisión de retiro (3-5% + $2-5 fijo en SV). Es la forma más cara de prestar dinero que existe, y Neto debe decirlo explícitamente cuando el usuario elija esta opción (ver §5).
 
 ### 2.4 12 categorías de destino
 Alimentos, reparación hogar, reparación carro, colegiatura, recibos/servicios, gastos médicos, deudas/créditos, ropa, evento/celebración, herramientas/negocio, viaje/transporte, otro.
@@ -114,13 +114,13 @@ Total prestado/año · total pendiente · deudor con mayor saldo (agregado por `
 
 ---
 
-## 5. Integración FINN
+## 5. Integración Neto
 
-Regla dura nueva: **si el usuario selecciona `delivery_method = 'credit_cash_advance'` al crear un préstamo, FINN interrumpe con una advertencia antes de guardar** (no bloquea, pero exige reconocimiento explícito):
+Regla dura nueva: **si el usuario selecciona `delivery_method = 'credit_cash_advance'` al crear un préstamo, Neto interrumpe con una advertencia antes de guardar** (no bloquea, pero exige reconocimiento explícito):
 
 > "Alerta: un retiro de efectivo con tarjeta no tiene período de gracia — los intereses corren desde hoy mismo, más la comisión de retiro. Es la forma más cara de prestar dinero. ¿Confirmas que no puedes usar transferencia o efectivo de tu cuenta de ahorro en su lugar?"
 
-Consultas frecuentes que FINN debe poder responder con datos reales (vía tool calling, mismo patrón que MOD-04):
+Consultas frecuentes que Neto debe poder responder con datos reales (vía tool calling, mismo patrón que MOD-04):
 - "¿Cuánto me deben en total?"
 - "¿Quién me debe más?"
 - "¿Qué preso está atrasado?" *(sic — préstamo)*
@@ -131,7 +131,7 @@ Consultas frecuentes que FINN debe poder responder con datos reales (vía tool c
 ## 6. Páginas / UI (a construir)
 
 - `/app/prestamos` — lista de préstamos activos, agrupados por deudor, con saldo pendiente y estado (al día / sin abono >30 días en amarillo/rojo)
-- `/app/prestamos/nuevo` — formulario (campos §2.1), con selector de `delivery_method` que muestra la advertencia de FINN inline si se elige `credit_cash_advance`
+- `/app/prestamos/nuevo` — formulario (campos §2.1), con selector de `delivery_method` que muestra la advertencia de Neto inline si se elige `credit_cash_advance`
 - `/app/prestamos/[id]` — detalle: historial de abonos, adjuntos (reusa `AttachmentsSection` ya construido), botón "Registrar abono"
 - `/app/prestamos/[id]/editar` — editar términos (mismo patrón de edición ya establecido en el resto del sistema)
 - Integración en Gastos (`/app/gastos/[id]`): botón "Vincular a préstamo" cuando la transacción no está ya vinculada
@@ -144,4 +144,4 @@ Consultas frecuentes que FINN debe poder responder con datos reales (vía tool c
 1. Los abonos de préstamos familiares **nunca cuentan como ingreso confirmado** en presupuesto hasta recibirse (regla ya vigente, documentada en spec maestro).
 2. El dinero prestado **nunca cuenta como gasto personal** del usuario en reportes de MOD-04 ni en `update_budget_spent()`.
 3. Un préstamo vía tarjeta/cuenta **siempre** tiene una `transactions` real detrás — nunca se registra el monto "flotando" sin afectar el saldo real de donde salió.
-4. `credit_cash_advance` requiere reconocimiento explícito del usuario ante la advertencia de FINN antes de guardar.
+4. `credit_cash_advance` requiere reconocimiento explícito del usuario ante la advertencia de Neto antes de guardar.

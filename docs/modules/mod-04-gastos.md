@@ -89,7 +89,7 @@ Excluidos: `income`, `transfer_in`, `transfer_out`, `cc_payment`, `interest_earn
 **Flujo:**
 1. Tap FAB → tap ícono cámara.
 2. Toma foto del recibo (o selecciona de galería).
-3. UI muestra "FINN está leyendo tu recibo…" (skeleton).
+3. UI muestra "Neto está leyendo tu recibo…" (skeleton).
 4. Edge Function `expense-ocr` sube imagen a Supabase Storage temporal + llama Gemini 2.5 Flash multimodal con prompt de extracción.
 5. Gemini devuelve JSON estructurado: `{merchant, total, tax, subtotal, items, date, currency}`.
 6. UI pre-llena el form con esos valores, resalta cada campo con badge "IA" y confidence.
@@ -593,7 +593,7 @@ Ayer · martes                      -$120.00
 ```
 
 ### 8.5 Estados vacíos
-- Sin gastos: "Empieza registrando tu primer gasto. FINN puede sugerirte categorías automáticamente."
+- Sin gastos: "Empieza registrando tu primer gasto. Neto puede sugerirte categorías automáticamente."
 - Sin resultados en filtro: "No hay gastos que coincidan. Ajusta filtros o rango de fechas."
 
 ### 8.6 Confirmaciones críticas

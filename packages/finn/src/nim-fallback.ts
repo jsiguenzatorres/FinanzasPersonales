@@ -7,7 +7,7 @@
  * tiene cascada NIM todavía: depende de function calling real (consulta
  * saldos/gastos reales del usuario) y el soporte de tool-calling de los
  * modelos NIM no está confirmado — un fallback ahí podría inventar datos
- * en vez de fallar limpiamente, que es justo lo que FINN tiene prohibido.
+ * en vez de fallar limpiamente, que es justo lo que Neto tiene prohibido.
  */
 
 const NIM_CHAT_COMPLETIONS_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';

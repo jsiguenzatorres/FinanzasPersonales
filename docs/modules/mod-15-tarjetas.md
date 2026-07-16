@@ -11,7 +11,7 @@
 
 1. ✅ **Cálculo de intereses simplificado con banner "Cálculo aproximado"** en cada statement con intereses. Interés simple diario sobre `unpaid`.
 2. ✅ **Cuenta espejo del CC en `accounts`: opt-in**. Default OFF.
-3. ✅ **FINN pregunta anualidad al detectar fee grande** en tarjeta si el usuario no configuró `annual_fee_month`.
+3. ✅ **Neto pregunta anualidad al detectar fee grande** en tarjeta si el usuario no configuró `annual_fee_month`.
 4. ✅ **Meses sin intereses (MSI): ignorar en MVP**. Usuario ajusta `payment_no_interest` manualmente.
 5. ✅ **Alertas de utilización alta: evento único al cruzar 60% + recordatorio semanal** si continúa alta.
 
@@ -117,7 +117,7 @@ Flujo real es en **MOD-04**, pero MOD-15 muestra resultado:
    - Calcula `payment_no_interest = new_balance - promociones sin interés`.
    - INSERT en `cc_statements`.
    - Marca transactions del periodo como `status = 'reconciled'`.
-2. FINN genera `finn_insight` "Tu tarjeta BAC cortó: $856 de saldo, vence el 5 de julio".
+2. Neto genera `finn_insight` "Tu tarjeta BAC cortó: $856 de saldo, vence el 5 de julio".
 
 ### CU-04 — Ver estado de cuenta actual
 **Actor:** Usuario abre detalle de tarjeta.
@@ -166,7 +166,7 @@ Pago mínimo:      $  42.80
 - 5 días antes: prioridad media
 - 3 días antes: prioridad alta
 - Día del vencimiento: crítica
-- Día después: crítica + FINN pregunta "¿Ya pagaste? Regístralo aquí"
+- Día después: crítica + Neto pregunta "¿Ya pagaste? Regístralo aquí"
 
 ### CU-08 — Cargo automático de anualidad
 **Trigger:** job mensual verifica `credit_cards` con `annual_fee_month = EXTRACT(month FROM current_date)`.
@@ -224,7 +224,7 @@ Pago mínimo:      $  42.80
    - `interest_amount = unpaid * interest_rate_monthly` (aprox mensual del CAT)
    - Crea transaction `kind = 'interest_paid'`, `card_id = <tarjeta>`, `amount = interest_amount`.
    - Aumenta `credit_cards.current_balance`.
-2. FINN insight: "Pagaste parcialmente. Se cargó $X en intereses este ciclo. Si pagas $Y antes del próximo corte evitas más."
+2. Neto insight: "Pagaste parcialmente. Se cargó $X en intereses este ciclo. Si pagas $Y antes del próximo corte evitas más."
 
 ---
 
@@ -427,7 +427,7 @@ Response 201:
 - Ciclo actual (días restantes)
 - Próximo vencimiento con countdown
 - Botón grande "Registrar pago"
-- Insights de FINN si aplican
+- Insights de Neto si aplican
 
 ### 7.4 Detalle · tab Cargos
 - Timeline de `transactions` con `card_id = <card>` del ciclo actual.
@@ -627,7 +627,7 @@ Validaciones extra en Edge Functions:
 |---|---|---|---|
 | 1 | Cálculo intereses simplificado | ✅ Interés simple diario + banner | Función `apply_cc_interest` con comentario explícito de aproximación |
 | 2 | Cuenta espejo CC | ✅ Opt-in (default OFF) | Toggle en wizard paso 3; crea `accounts` con `type='credit_card'` reflejo |
-| 3 | Anualidad FINN preguntando | ✅ Sí | Detecta `fee > $25 USD` sin `annual_fee_month`, sugiere configurar |
+| 3 | Anualidad Neto preguntando | ✅ Sí | Detecta `fee > $25 USD` sin `annual_fee_month`, sugiere configurar |
 | 4 | MSI en MVP | ✅ Ignorar | Usuario ajusta `payment_no_interest` manual; modelar en Fase 2 si emerge |
 | 5 | Alertas utilización | ✅ Evento único + recordatorio semanal | 1 alert al cruzar 60%; luego 1 cada 7 días si sigue |
 
@@ -658,7 +658,7 @@ Validaciones extra en Edge Functions:
 | **MOD-03 Presupuesto** | Cargos a tarjeta cuentan hacia el presupuesto de su categoría |
 | **MOD-16 Deudas** | Saldo de tarjetas contribuye al ratio deuda/ingreso |
 | **MOD-17 Patrimonio** | `current_balance` de tarjetas es pasivo |
-| **MOD-08 FINN** | Alertas de corte, vencimiento, utilización alta, intereses inminentes |
+| **MOD-08 Neto** | Alertas de corte, vencimiento, utilización alta, intereses inminentes |
 | **FlowScore** | `utilization_pct` es componente del score de deuda |
 | **MOD-19 Fiscal** | Anualidad podría ser deducible dependiendo del régimen |
 | **MOD-11 Colab** | Tarjeta puede tener cargos en `collab_space` (Fase 3) |

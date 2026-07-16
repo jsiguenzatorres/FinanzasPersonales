@@ -368,7 +368,7 @@ async function main() {
   }
 
   // Préstamo 3: retiro de efectivo con tarjeta para "Carlos" (primo) — el
-  // caso caro que FINN debe advertir: sin período de gracia.
+  // caso caro que Neto debe advertir: sin período de gracia.
   {
     const { data: tx, error: txErr } = await admin
       .from('transactions')

@@ -12,7 +12,7 @@
 1. ✅ **Cálculo automático ISSS/AFP/ISR para El Salvador en MVP.** Función helper opcional que el usuario invoca con un botón.
 2. ✅ **Adjuntar factura DTE: solo PDF en MVP.** XML diferido a Fase 3 si surge demanda.
 3. ✅ **OCR de boleta de pago con Gemini: diferido a Fase 2.** En MVP captura manual.
-4. ✅ **Sin tope de ingresos no cobrados.** Alerta de FINN a partir de 20 facturas pendientes.
+4. ✅ **Sin tope de ingresos no cobrados.** Alerta de Neto a partir de 20 facturas pendientes.
 5. ✅ **Fallback manual de FX cuando no hay tasa disponible.** UX simple: "No tenemos FX para esta fecha, ¿usar esta tasa?" con campo numérico.
 
 ---
@@ -72,7 +72,7 @@ Captura, almacena, clasifica y proyecta TODOS los ingresos del usuario. Es la fu
 4. Aparece en Dashboard widget "Por cobrar" y en calendario MOD-20.
 5. Cuando cobra: usuario abre el registro y tap "Marcar como cobrado" → crea `transaction`, actualiza saldo.
 
-**Edge case:** Si `expected_date` pasa y sigue `is_collected = false`, FINN genera `finn_insight` con prioridad alta.
+**Edge case:** Si `expected_date` pasa y sigue `is_collected = false`, Neto genera `finn_insight` con prioridad alta.
 
 ### CU-03 — Recibir ingreso en divisa diferente a la base
 **Actor:** Freelance que cobra en EUR pero su base es USD.
@@ -453,7 +453,7 @@ Función SQL `create_income_entry` hace:
 - `<Card>`, `<Button>`, `<Input>`, `<Select>`, `<Tabs>`, `<Sheet>` (drawer móvil), `<Dialog>`, `<DatePicker>`, `<Slider>`, `<Switch>`, `<Badge>`, `<DropdownMenu>`, `<Tooltip>`, `<Skeleton>` para loading.
 
 ### 6.4 Estados vacíos
-- Sin ingresos: ilustración + CTA "Registra tu primer ingreso" + sugerencia "FINN puede ayudarte a importarlos por mensaje".
+- Sin ingresos: ilustración + CTA "Registra tu primer ingreso" + sugerencia "Neto puede ayudarte a importarlos por mensaje".
 
 ### 6.5 Confirmaciones críticas
 - Eliminar: confirmación con mención "Se moverá a la papelera. Puedes recuperarlo en 30 días."
@@ -501,7 +501,7 @@ Responde SOLO con JSON válido:
 
 ### 7.3 Manejo de respuesta
 - Si `confidence >= 0.85`: pre-seleccionar tipo.
-- Si `confidence < 0.85`: pre-seleccionar pero mostrar "FINN sugiere {type} ({confidence}%)" con opción de ver razonamiento.
+- Si `confidence < 0.85`: pre-seleccionar pero mostrar "Neto sugiere {type} ({confidence}%)" con opción de ver razonamiento.
 - Si el usuario cambia el tipo: guardar override en tabla `finn_classification_overrides` (NO en schema actual, se agrega en Fase 2 si hace falta).
 
 ### 7.4 Costo y rate limit
@@ -530,7 +530,7 @@ Los 14 reportes están descritos en el doc maestro. Priorizo cuáles van en MVP:
 10. Historial de cobranza freelance
 11. Avance hacia meta de ingreso (si usuario define meta)
 12. Ingreso por hora trabajada (requiere captura de horas)
-13. Resumen IA semanal FINN (texto generado)
+13. Resumen IA semanal Neto (texto generado)
 14. Proyección a 3/6/12 meses con ML (Prophet)
 
 ### Implementación
@@ -647,7 +647,7 @@ create policy "income_owner" on public.income_entries
 ### 13.2 KPIs de adopción
 - % de usuarios que registran ≥1 ingreso en primeros 7 días (target: 80%)
 - % que crea recurrente para salario (target: 60% de los `salary`)
-- % de ingresos con tipo cambiado vs. sugerencia FINN (target: <20% override = clasificador bueno)
+- % de ingresos con tipo cambiado vs. sugerencia Neto (target: <20% override = clasificador bueno)
 - Tiempo promedio de captura de un ingreso (target: <30 segundos)
 
 ---
@@ -709,7 +709,7 @@ Las 5 decisiones se aprobaron tal como las recomendé. Resumen consolidado:
 | 1 | Deducciones SV automáticas | ✅ Implementar en MVP | Función `calculate_sv_payroll_deductions(gross)` + botón "Calcular deducciones SV" en wizard paso 1 |
 | 2 | Factura DTE: PDF vs PDF+XML | ✅ Solo PDF en MVP | UI valida `.pdf` únicamente, max 5MB. XML postergado |
 | 3 | OCR boleta de pago | ✅ Diferido a Fase 2 | El form de ingresos en MVP es 100% manual |
-| 4 | Tope de ingresos no cobrados | ✅ Sin tope | FINN genera `finn_insight` cuando `count(is_collected=false) >= 20` |
+| 4 | Tope de ingresos no cobrados | ✅ Sin tope | Neto genera `finn_insight` cuando `count(is_collected=false) >= 20` |
 | 5 | Fallback FX manual | ✅ Implementar | Cuando `get_fx_rate()` devuelve NULL, UI muestra prompt: "No tenemos tasa {currency}→{base} para {date}. ¿Usar esta tasa?" con campo `numeric(15,6)` editable. La tasa manual NO se guarda en `fx_rates` (puede ser inexacta) — solo se aplica al registro actual |
 
 ---
