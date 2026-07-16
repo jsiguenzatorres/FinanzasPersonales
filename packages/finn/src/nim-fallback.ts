@@ -19,9 +19,22 @@ export const NIM_CLASSIFY_CASCADE = [
   'nvidia/nemotron-3-nano-30b-a3b',
 ];
 
-/** Ranking 1º/2º/3º de la categoría "OCR / Extracción de documentos". */
+/**
+ * Ranking 1º/2º/3º de la categoría "OCR / Extracción de documentos".
+ *
+ * 'nvidia/nemotron-ocr-v2' (1ª opción anterior) NO EXISTE en el catálogo NIM
+ * — verificado el 2026-07-16 contra GET /v1/models (118 modelos reales, ese
+ * id no está entre ellos), siempre devolvía 404 y quemaba una vuelta de la
+ * cascada. Se reemplazó por 'nvidia/nemoretriever-parse', que sí existe en
+ * el catálogo y está dedicado a parsing de documentos. Ningún modelo de esta
+ * lista fue probado en vivo contra el formato chat/completions + image_url
+ * que usa este archivo (bloqueo de red al investigar) — si alguno no acepta
+ * ese contrato, nimJsonCascade() simplemente cae al siguiente, así que el
+ * cambio es seguro aunque no esté 100% confirmado. Ver MD/nvidia-nim-modelos-
+ * backup (1).md para el detalle de la verificación.
+ */
 export const NIM_OCR_CASCADE = [
-  'nvidia/nemotron-ocr-v2',
+  'nvidia/nemoretriever-parse',
   'nvidia/nemotron-parse',
   'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning',
 ];
