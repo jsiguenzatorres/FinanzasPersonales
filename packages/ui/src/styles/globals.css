@@ -2,46 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── FlowFinance design tokens (paleta del doc maestro) ──────────────── */
+/* ─── FlowFinance design tokens — paleta cálida editorial ─────────────────
+   v2 (2026-07-16): reemplaza el dark-mode verde-neón original. La app entera
+   (no solo la landing) ahora usa crema/tinta/terracota — un solo sistema de
+   tokens semánticos (Button/Card/Input ya los consumen vía bg-background,
+   text-foreground, etc.) así que retemear aquí recolorea toda la app sin
+   tocar cada página. Ver también los colores `ff.*` en tailwind.config.ts,
+   recalibrados para contraste sobre fondo claro (antes eran neón para
+   fondo negro). ──────────────────────────────────────────────────────── */
 @layer base {
   :root {
-    /* Surfaces */
-    --bg: 7 8 10;
-    --s1: 15 17 23;
-    --s2: 22 25 34;
-    --s3: 28 33 48;
-    --border: 255 255 255 / 0.07;
-    --border-2: 255 255 255 / 0.12;
-
-    /* Brand */
-    --g: 0 229 160;        /* green primary */
-    --b: 91 110 255;       /* blue accent */
-    --r: 255 107 107;      /* red alert */
-    --y: 255 209 102;      /* yellow warning */
-    --o: 255 159 67;       /* orange */
-    --p: 192 132 252;      /* purple */
-
-    /* Text */
-    --text: 232 234 240;
-    --muted: 107 114 128;
-    --white: 255 255 255;
-
     /* shadcn tokens (mapeo HSL) */
-    --background: 220 13% 4%;
-    --foreground: 220 9% 92%;
-    --card: 220 14% 8%;
-    --card-foreground: 220 9% 92%;
-    --primary: 158 100% 45%;
-    --primary-foreground: 220 13% 4%;
-    --secondary: 232 100% 68%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 220 9% 19%;
-    --muted-foreground: 220 9% 56%;
-    --destructive: 0 100% 71%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 14%;
-    --input: 220 13% 14%;
-    --ring: 158 100% 45%;
+    --background: 42 38% 92%;        /* crema cálido */
+    --foreground: 25 25% 14%;        /* tinta cálida */
+    --card: 40 33% 96%;              /* superficie casi blanca, cálida */
+    --card-foreground: 25 25% 14%;
+    --primary: 16 55% 46%;           /* terracota */
+    --primary-foreground: 42 38% 96%;
+    --secondary: 137 17% 29%;        /* verde bosque apagado */
+    --secondary-foreground: 42 38% 96%;
+    --muted: 40 28% 87%;             /* papel */
+    --muted-foreground: 30 15% 38%;  /* tinta suave */
+    --destructive: 8 55% 40%;        /* rojo tierra, distinto de terracota */
+    --destructive-foreground: 42 38% 96%;
+    --border: 35 20% 82%;
+    --input: 35 20% 82%;
+    --ring: 16 55% 46%;
     --radius: 0.625rem;
   }
 }

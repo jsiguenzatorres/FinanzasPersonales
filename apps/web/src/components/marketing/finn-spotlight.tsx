@@ -48,12 +48,12 @@ export function FinnSpotlight() {
         </Reveal>
 
         <Reveal delay={0.15}>
-          <div className="rounded-2xl border border-white/10 bg-[rgb(15,17,23)] p-5 shadow-2xl shadow-landing-ink/20">
-            <div className="mb-4 flex items-center gap-2 border-b border-white/10 pb-4">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#DE9468]/20 font-mono text-[11px] text-[#DE9468]">
+          <div className="rounded-2xl border border-landing-ink/10 bg-landing-cream p-5 shadow-2xl shadow-landing-ink/10">
+            <div className="mb-4 flex items-center gap-2 border-b border-landing-ink/10 pb-4">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-landing-terracotta/15 font-mono text-[11px] text-landing-terracotta">
                 AI
               </span>
-              <p className="text-sm font-medium text-white">FINN</p>
+              <p className="text-sm font-medium text-landing-ink">FINN</p>
               <span className="ml-auto flex items-center gap-1.5 font-mono text-[11px] text-ff-green">
                 <span className="h-1.5 w-1.5 rounded-full bg-ff-green" />
                 en línea
@@ -73,8 +73,8 @@ export function FinnSpotlight() {
                   <p
                     className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-[13px] leading-relaxed ${
                       m.role === 'user'
-                        ? 'bg-[#DE9468]/20 text-white'
-                        : 'border border-white/10 bg-white/[0.04] text-white/75'
+                        ? 'bg-landing-terracotta/15 text-landing-ink'
+                        : 'border border-landing-ink/10 bg-landing-paper/50 text-landing-ink-soft'
                     }`}
                   >
                     {m.text}

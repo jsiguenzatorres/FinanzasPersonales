@@ -39,14 +39,18 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        // FlowFinance brand (app, dark)
+        // FlowFinance brand — semántica financiera (positivo/negativo/alerta).
+        // v2 (2026-07-16): recalibrados de neón (pensados para fondo negro)
+        // a tonos profundos con contraste real sobre el fondo crema —
+        // mantienen el significado (verde=positivo, rojo=negativo,
+        // amarillo=alerta) pero ya no son ilegibles en texto sobre claro.
         ff: {
-          green: '#00E5A0',
-          blue: '#5B6EFF',
-          red: '#FF6B6B',
-          yellow: '#FFD166',
-          orange: '#FF9F43',
-          purple: '#C084FC',
+          green: '#2F6B45',
+          blue: '#35578C',
+          red: '#A13A2C',
+          yellow: '#8F6D1F',
+          orange: '#B0631F',
+          purple: '#6B4A8A',
         },
         // Landing page — editorial, cálido. Deliberadamente distinto del
         // dark-mode-verde-neón de la app: la marca puede tener dos voces.

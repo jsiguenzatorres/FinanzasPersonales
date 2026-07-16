@@ -91,27 +91,27 @@ export function Hero() {
           </motion.p>
         </div>
 
-        {/* ── Mockup del dashboard real (oscuro adrede — es la app) ───── */}
+        {/* ── Mockup del dashboard real — el mismo tema cálido de la app ─── */}
         <motion.div
           initial={{ opacity: 0, y: 30, rotateX: -4 }}
           animate={{ opacity: 1, y: 0, rotateX: 0 }}
           transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
           className="relative"
         >
-          <TiltCard variant="dark" className="p-6 shadow-2xl shadow-landing-ink/20" glowColor="189, 90, 52">
+          <TiltCard className="p-6 shadow-2xl shadow-landing-ink/10" glowColor="189, 90, 52">
             <div className="mb-5 flex items-center justify-between">
-              <p className="font-mono text-xs uppercase tracking-widest text-white/40">
+              <p className="font-mono text-xs uppercase tracking-widest text-landing-ink-soft">
                 Patrimonio neto
               </p>
               <span className="flex items-center gap-1.5 rounded-full bg-ff-green/10 px-2.5 py-1 font-mono text-xs text-ff-green">
                 ↑ 4.2%
               </span>
             </div>
-            <p className="font-mono text-4xl font-medium tracking-tight text-white">
+            <p className="font-mono text-4xl font-medium tracking-tight text-landing-ink">
               <AnimatedNumber value={18420.37} format={{ kind: 'currency', currency: 'USD' }} duration={1400} />
             </p>
 
-            <svg viewBox="0 0 300 70" className="mt-6 w-full text-[#DE9468]" preserveAspectRatio="none">
+            <svg viewBox="0 0 300 70" className="mt-6 w-full text-landing-terracotta" preserveAspectRatio="none">
               <motion.path
                 d="M0,55 C30,50 45,20 75,28 C105,36 115,10 150,14 C180,17 195,45 225,38 C255,31 265,8 300,12"
                 fill="none"
@@ -124,26 +124,26 @@ export function Hero() {
               />
             </svg>
 
-            <div className="mt-6 grid grid-cols-2 gap-3 border-t border-white/10 pt-5">
-              <div className="rounded-xl bg-white/[0.04] p-3.5">
-                <p className="font-mono text-[11px] uppercase tracking-wide text-white/40">Préstamos activos</p>
+            <div className="mt-6 grid grid-cols-2 gap-3 border-t border-landing-ink/10 pt-5">
+              <div className="rounded-xl bg-landing-paper/60 p-3.5">
+                <p className="font-mono text-[11px] uppercase tracking-wide text-landing-ink-soft">Préstamos activos</p>
                 <p className="mt-1 font-mono text-lg text-ff-yellow">
                   <AnimatedNumber value={411.05} format={{ kind: 'currency', currency: 'USD' }} duration={1200} />
                 </p>
               </div>
-              <div className="rounded-xl bg-white/[0.04] p-3.5">
-                <p className="font-mono text-[11px] uppercase tracking-wide text-white/40">Tasa de ahorro</p>
+              <div className="rounded-xl bg-landing-paper/60 p-3.5">
+                <p className="font-mono text-[11px] uppercase tracking-wide text-landing-ink-soft">Tasa de ahorro</p>
                 <p className="mt-1 font-mono text-lg text-ff-blue">
                   <AnimatedNumber value={27} format={{ kind: 'percent' }} duration={1200} />
                 </p>
               </div>
             </div>
 
-            <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-[#DE9468]/20 bg-[#DE9468]/[0.08] p-3.5">
-              <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[#DE9468]/20 font-mono text-[10px] text-[#DE9468]">
+            <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-landing-terracotta/20 bg-landing-terracotta/[0.08] p-3.5">
+              <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-landing-terracotta/20 font-mono text-[10px] text-landing-terracotta">
                 AI
               </span>
-              <p className="text-xs leading-relaxed text-white/70">
+              <p className="text-xs leading-relaxed text-landing-ink-soft">
                 Mario no ha abonado su préstamo desde hace 12 días. ¿Le mando un recordatorio?
               </p>
             </div>
