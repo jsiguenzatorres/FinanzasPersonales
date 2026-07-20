@@ -36,6 +36,12 @@ interface Account {
   currency: string;
 }
 
+interface GoalOption {
+  id: string;
+  name: string;
+  auto_contribution_pct: number;
+}
+
 export interface IncomeInitialValues {
   id: string;
   type: string;
@@ -53,11 +59,13 @@ export interface IncomeInitialValues {
 export function IncomeForm({
   currencies,
   accounts,
+  goals,
   error,
   initialValues,
 }: {
   currencies: Currency[];
   accounts: Account[];
+  goals: GoalOption[];
   error?: string;
   initialValues?: IncomeInitialValues;
 }) {
@@ -73,6 +81,28 @@ export function IncomeForm({
     isr: number;
   } | null>(null);
   const [isCollected, setIsCollected] = useState(initialValues?.is_collected ?? true);
+  const [goalAllocation, setGoalAllocation] = useState<Record<string, string>>(() =>
+    Object.fromEntries(goals.map((g) => [g.id, ''])),
+  );
+  const [allocationTouched, setAllocationTouched] = useState<Record<string, boolean>>({});
+
+  function suggestedAmount(goal: GoalOption): string {
+    const net = Number(netAmount) || 0;
+    return net > 0 ? ((net * goal.auto_contribution_pct) / 100).toFixed(2) : '';
+  }
+
+  const allocationDisplay = (goalId: string, goal: GoalOption): string => {
+    if (allocationTouched[goalId]) return goalAllocation[goalId] ?? '';
+    return suggestedAmount(goal);
+  };
+
+  const allocationJson = JSON.stringify(
+    Object.fromEntries(
+      goals
+        .map((g) => [g.id, Number(allocationTouched[g.id] ? goalAllocation[g.id] : suggestedAmount(g)) || 0])
+        .filter(([, v]) => (v as number) > 0),
+    ),
+  );
 
   function handleCalculateSv() {
     const gross = Number(grossAmount);
@@ -101,6 +131,7 @@ export function IncomeForm({
         <form action={isEditing ? editIncomeAction : createIncomeAction} className="space-y-4">
           {isEditing && <input type="hidden" name="income_id" value={initialValues.id} />}
           <input type="hidden" name="deductions_total" value={deductionsTotal} />
+          {!isEditing && <input type="hidden" name="goal_allocation" value={allocationJson} />}
 
           <div className="space-y-1.5">
             <Label htmlFor="type">Tipo de ingreso</Label>
@@ -249,6 +280,34 @@ export function IncomeForm({
                 required
                 defaultValue={initialValues?.expected_date}
               />
+            </div>
+          )}
+
+          {!isEditing && isCollected && goals.length > 0 && (
+            <div className="space-y-2 rounded-md border border-border bg-card p-3">
+              <p className="text-sm font-medium">Distribuir a metas</p>
+              <p className="text-xs text-muted-foreground">
+                Sugerido según el % automático de cada meta — ajústalo o ponlo en 0 si no quieres aportar.
+              </p>
+              {goals.map((g) => (
+                <div key={g.id} className="flex items-center gap-3">
+                  <Label htmlFor={`goal_${g.id}`} className="flex-1 font-normal">
+                    {g.name} <span className="text-xs text-muted-foreground">({g.auto_contribution_pct}%)</span>
+                  </Label>
+                  <Input
+                    id={`goal_${g.id}`}
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    className="w-28"
+                    value={allocationDisplay(g.id, g)}
+                    onChange={(e) => {
+                      setAllocationTouched((prev) => ({ ...prev, [g.id]: true }));
+                      setGoalAllocation((prev) => ({ ...prev, [g.id]: e.target.value }));
+                    }}
+                  />
+                </div>
+              ))}
             </div>
           )}
 

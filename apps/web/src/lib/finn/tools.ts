@@ -152,6 +152,23 @@ export async function executeFinnTool(
       };
     }
 
+    case 'get_goals': {
+      const status = String(args.status ?? 'active');
+      let query = supabase
+        .from('goals')
+        .select('name, type, current_amount, target_amount, progress_pct, currency, target_date, auto_contribution_pct, status')
+        .eq('user_id', userId)
+        .is('deleted_at', null)
+        .order('priority', { ascending: true });
+
+      if (status !== 'all') {
+        query = query.eq('status', status as 'active' | 'paused' | 'completed' | 'abandoned');
+      }
+
+      const { data } = await query;
+      return { goals: data ?? [] };
+    }
+
     default:
       return { error: `Herramienta desconocida: ${toolName}` };
   }

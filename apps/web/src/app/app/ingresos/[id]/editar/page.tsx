@@ -30,6 +30,7 @@ export default async function EditIncomePage({
       <IncomeForm
         currencies={currencies ?? []}
         accounts={accounts ?? []}
+        goals={[]}
         error={error}
         initialValues={{
           id: income.id,

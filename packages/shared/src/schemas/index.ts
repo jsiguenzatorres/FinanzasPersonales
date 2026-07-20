@@ -7,3 +7,4 @@ export * from './credit-card';
 export * from './net-worth';
 export * from './budget';
 export * from './family-loan';
+export * from './goal';

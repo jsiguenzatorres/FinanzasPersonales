@@ -42,6 +42,7 @@ export default async function AppHomePage() {
     { data: cardsDebt },
     { data: activeBudget },
     { data: activeLoans },
+    { data: activeGoals },
   ] = await Promise.all([
     computeDashboardAlerts(supabase, userId),
     supabase.from('v_net_worth_current').select('net_worth').eq('user_id', userId).single(),
@@ -79,6 +80,12 @@ export default async function AppHomePage() {
       .gte('period_end', new Date().toISOString().slice(0, 10))
       .maybeSingle(),
     supabase.from('family_loans').select('balance').eq('user_id', userId).eq('status', 'active'),
+    supabase
+      .from('goals')
+      .select('current_amount, target_amount')
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .is('deleted_at', null),
   ]);
 
   const totalIncome = (monthIncomes ?? []).reduce((sum, i) => sum + i.net_amount, 0);
@@ -87,6 +94,8 @@ export default async function AppHomePage() {
   const totalCardDebt = (cardsDebt ?? []).reduce((sum, c) => sum + c.current_balance, 0);
   const netWorthDelta = lastSnapshot ? (netWorth?.net_worth ?? 0) - (lastSnapshot.net_worth ?? 0) : null;
   const totalLoansPending = (activeLoans ?? []).reduce((sum, l) => sum + l.balance, 0);
+  const goalsSaved = (activeGoals ?? []).reduce((sum, g) => sum + g.current_amount, 0);
+  const goalsCount = (activeGoals ?? []).length;
 
   let budgetExecutionPct: number | null = null;
   if (activeBudget) {
@@ -255,6 +264,24 @@ export default async function AppHomePage() {
             </div>
             <Button asChild variant="outline" size="sm">
               <Link href="/app/prestamos">Ver préstamos</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* ── 4c. Metas activas (solo si tiene) ────────────────────────── */}
+      {goalsCount > 0 && (
+        <Card className="animate-fade-in-up" style={{ animationDelay: '410ms' }}>
+          <CardContent className="flex items-center justify-between py-5">
+            <div>
+              <p className="font-medium">Metas activas ({goalsCount})</p>
+              <p className="font-mono text-sm text-ff-green">
+                <AnimatedNumber value={goalsSaved} format={{ kind: 'currency', currency }} />
+                <span className="ml-1 text-xs text-muted-foreground">ahorrado</span>
+              </p>
+            </div>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/app/metas">Ver metas</Link>
             </Button>
           </CardContent>
         </Card>

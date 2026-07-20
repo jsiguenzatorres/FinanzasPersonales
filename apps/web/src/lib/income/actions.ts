@@ -9,6 +9,21 @@ export async function createIncomeAction(formData: FormData) {
   const isCollected = formData.get('is_collected') === 'on';
   const deductionsTotal = Number(formData.get('deductions_total') || 0);
 
+  // Distribución a metas — solo tiene efecto si is_collected=true (§3 de
+  // docs/modules/mod-05-metas.md). Viene como JSON de un campo oculto porque
+  // FormData no soporta objetos anidados directamente.
+  const goalAllocationRaw = formData.get('goal_allocation');
+  let goalAllocation: Record<string, number> | undefined;
+  if (isCollected && typeof goalAllocationRaw === 'string' && goalAllocationRaw) {
+    try {
+      const parsed = JSON.parse(goalAllocationRaw) as Record<string, number>;
+      const nonZero = Object.fromEntries(Object.entries(parsed).filter(([, v]) => v > 0));
+      if (Object.keys(nonZero).length > 0) goalAllocation = nonZero;
+    } catch {
+      // Ignora un JSON malformado — no bloquea el registro del ingreso.
+    }
+  }
+
   const raw = {
     type: formData.get('type'),
     source_name: formData.get('source_name'),
@@ -24,6 +39,7 @@ export async function createIncomeAction(formData: FormData) {
       deductionsTotal > 0
         ? [{ name: 'Deducciones SV (ISSS + AFP + ISR)', amount: deductionsTotal, type: 'other' as const }]
         : undefined,
+    goal_allocation: goalAllocation,
   };
 
   const parsed = incomeCreateSchema.safeParse(raw);
@@ -57,6 +73,7 @@ export async function createIncomeAction(formData: FormData) {
       is_collected: parsed.data.is_collected,
       expected_date: parsed.data.expected_date ?? null,
       notes: parsed.data.notes ?? null,
+      goal_allocation: parsed.data.goal_allocation ?? {},
     })
     .select('id')
     .single();
@@ -65,6 +82,19 @@ export async function createIncomeAction(formData: FormData) {
     redirect(
       '/app/ingresos/nueva?error=' + encodeURIComponent(incomeError?.message ?? 'Error al guardar'),
     );
+  }
+
+  if (parsed.data.goal_allocation && Object.keys(parsed.data.goal_allocation).length > 0) {
+    const contributions = Object.entries(parsed.data.goal_allocation).map(([goalId, amount]) => ({
+      user_id: user.id,
+      goal_id: goalId,
+      income_entry_id: income.id,
+      amount,
+      currency: parsed.data.currency,
+      contribution_date: parsed.data.income_date,
+      source: 'auto_income',
+    }));
+    await supabase.from('goal_contributions').insert(contributions);
   }
 
   if (parsed.data.is_collected) {
@@ -228,6 +258,10 @@ export async function deleteIncomeAction(formData: FormData) {
   if (income?.transaction_id) {
     await supabase.from('transactions').update({ deleted_at: now }).eq('id', income.transaction_id);
   }
+
+  // goal_contributions no tiene soft-delete — se borra de verdad para que
+  // el trigger de saldo reverse current_amount en las metas afectadas.
+  await supabase.from('goal_contributions').delete().eq('income_entry_id', incomeId);
 
   revalidatePath('/app/ingresos');
   revalidatePath('/app/cuentas');

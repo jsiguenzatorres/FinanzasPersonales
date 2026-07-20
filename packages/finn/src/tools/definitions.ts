@@ -75,4 +75,20 @@ export const FINN_TOOLS: FunctionDeclaration[] = [
       },
     },
   },
+  {
+    name: 'get_goals',
+    description:
+      'Obtiene las metas de ahorro del usuario: nombre, tipo, cuánto lleva ahorrado vs. el objetivo, fecha límite y % de aporte automático desde ingresos.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        status: {
+          type: Type.STRING,
+          format: 'enum',
+          enum: ['active', 'paused', 'completed', 'abandoned', 'all'],
+          description: 'Filtro de estado, por defecto "active"',
+        },
+      },
+    },
+  },
 ];
