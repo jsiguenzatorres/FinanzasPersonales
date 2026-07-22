@@ -169,6 +169,33 @@ export async function executeFinnTool(
       return { goals: data ?? [] };
     }
 
+    case 'get_subscriptions': {
+      const activeOnly = args.active_only !== false;
+      let query = supabase
+        .from('subscriptions')
+        .select('service_name, plan, amount, currency, frequency, next_charge_date, usage_score, is_active')
+        .eq('user_id', userId)
+        .order('next_charge_date', { ascending: true });
+
+      if (activeOnly) query = query.eq('is_active', true);
+
+      const { data } = await query;
+      const subs = data ?? [];
+      const monthlyFactor: Record<string, number> = {
+        daily: 30,
+        weekly: 4.33,
+        biweekly: 2.17,
+        monthly: 1,
+        bimonthly: 0.5,
+        quarterly: 1 / 3,
+        semiannual: 1 / 6,
+        annual: 1 / 12,
+      };
+      const monthlyTotal = subs.reduce((sum, s) => sum + s.amount * (monthlyFactor[s.frequency] ?? 1), 0);
+
+      return { subscriptions: subs, monthly_total_approx: Math.round(monthlyTotal * 100) / 100 };
+    }
+
     default:
       return { error: `Herramienta desconocida: ${toolName}` };
   }

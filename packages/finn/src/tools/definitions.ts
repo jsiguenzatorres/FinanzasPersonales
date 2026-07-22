@@ -91,4 +91,18 @@ export const FINN_TOOLS: FunctionDeclaration[] = [
       },
     },
   },
+  {
+    name: 'get_subscriptions',
+    description:
+      'Obtiene las suscripciones recurrentes del usuario (Netflix, gimnasio, software, etc.): cuánto paga, cada cuándo, cuándo se renueva, y el total mensual aproximado.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        active_only: {
+          type: Type.BOOLEAN,
+          description: 'Si true (por defecto), solo suscripciones activas',
+        },
+      },
+    },
+  },
 ];

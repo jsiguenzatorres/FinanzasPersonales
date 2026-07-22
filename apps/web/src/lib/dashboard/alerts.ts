@@ -130,6 +130,29 @@ export async function computeDashboardAlerts(
     });
   }
 
+  // ─── Suscripciones por cobrarse pronto ─────────────────────────────────
+  const inThreeDays = new Date(today);
+  inThreeDays.setDate(inThreeDays.getDate() + 3);
+  const { data: upcomingSubs } = await supabase
+    .from('subscriptions')
+    .select('service_name')
+    .eq('user_id', userId)
+    .eq('is_active', true)
+    .gte('next_charge_date', todayStr)
+    .lte('next_charge_date', inThreeDays.toISOString().slice(0, 10));
+
+  if (upcomingSubs && upcomingSubs.length > 0) {
+    alerts.push({
+      severity: 'info',
+      title:
+        upcomingSubs.length === 1
+          ? `${upcomingSubs[0]!.service_name} se cobra en los próximos días`
+          : `${upcomingSubs.length} suscripciones se cobran en los próximos días`,
+      actionLabel: 'Ver suscripciones',
+      actionHref: '/app/suscripciones',
+    });
+  }
+
   // ─── Liquidez vs. gasto promedio ──────────────────────────────────────
   const { data: accounts } = await supabase
     .from('accounts')

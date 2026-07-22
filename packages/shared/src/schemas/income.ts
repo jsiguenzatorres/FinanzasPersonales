@@ -35,6 +35,8 @@ export const recurrenceFreqSchema = z.enum([
   'annual',
 ]);
 
+export type RecurrenceFreq = z.infer<typeof recurrenceFreqSchema>;
+
 export const incomeRecurrenceSchema = z.object({
   frequency: recurrenceFreqSchema,
   day_of_month: z.number().int().min(1).max(31).optional(),
