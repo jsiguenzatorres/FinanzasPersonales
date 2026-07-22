@@ -6,6 +6,8 @@ import { takeSnapshotAction } from '@/lib/net-worth/actions';
 interface AssetsBreakdown {
   cash: number;
   manual: number;
+  investments: number;
+  receivables: number;
 }
 
 interface LiabilitiesBreakdown {
@@ -42,6 +44,8 @@ export default async function NetWorthPage({
   const assetsBreakdown = (netWorth?.assets_breakdown as unknown as AssetsBreakdown | null) ?? {
     cash: 0,
     manual: 0,
+    investments: 0,
+    receivables: 0,
   };
   const liabilitiesBreakdown = (netWorth?.liabilities_breakdown as unknown as LiabilitiesBreakdown | null) ?? {
     credit_cards: 0,
@@ -98,6 +102,10 @@ export default async function NetWorthPage({
             <div className="mt-3 space-y-1 text-xs text-muted-foreground">
               <p>Efectivo / Cuentas: {fmt(assetsBreakdown.cash)}</p>
               <p>Activos manuales: {fmt(assetsBreakdown.manual)}</p>
+              {assetsBreakdown.investments > 0 && <p>Inversiones: {fmt(assetsBreakdown.investments)}</p>}
+              {assetsBreakdown.receivables > 0 && (
+                <p>Préstamos por cobrar: {fmt(assetsBreakdown.receivables)}</p>
+              )}
             </div>
             <Button asChild variant="outline" size="sm" className="mt-3">
               <Link href="/app/patrimonio/activos">Gestionar activos manuales</Link>

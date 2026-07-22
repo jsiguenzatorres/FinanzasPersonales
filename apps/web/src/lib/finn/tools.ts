@@ -196,6 +196,29 @@ export async function executeFinnTool(
       return { subscriptions: subs, monthly_total_approx: Math.round(monthlyTotal * 100) / 100 };
     }
 
+    case 'get_investments': {
+      const { data } = await supabase
+        .from('investments')
+        .select('name, ticker, type, currency, quantity, current_value, total_invested')
+        .eq('user_id', userId)
+        .eq('is_active', true)
+        .order('current_value', { ascending: false });
+
+      const investments = (data ?? []).map((i) => ({
+        ...i,
+        unrealized_pnl: (i.current_value ?? 0) - (i.total_invested ?? 0),
+      }));
+
+      const totalValue = investments.reduce((sum, i) => sum + (i.current_value ?? 0), 0);
+      const totalInvested = investments.reduce((sum, i) => sum + (i.total_invested ?? 0), 0);
+
+      return {
+        investments,
+        total_value: Math.round(totalValue * 100) / 100,
+        total_unrealized_pnl: Math.round((totalValue - totalInvested) * 100) / 100,
+      };
+    }
+
     default:
       return { error: `Herramienta desconocida: ${toolName}` };
   }

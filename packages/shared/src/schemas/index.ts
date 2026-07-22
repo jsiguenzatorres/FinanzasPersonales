@@ -9,3 +9,4 @@ export * from './budget';
 export * from './family-loan';
 export * from './goal';
 export * from './subscription';
+export * from './investment';

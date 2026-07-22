@@ -105,4 +105,10 @@ export const FINN_TOOLS: FunctionDeclaration[] = [
       },
     },
   },
+  {
+    name: 'get_investments',
+    description:
+      'Obtiene el portafolio de inversiones del usuario (acciones, ETFs, cripto, etc.): valor actual, cuánto invirtió, y ganancia o pérdida no realizada por posición y en total.',
+    parameters: { type: Type.OBJECT, properties: {} },
+  },
 ];
