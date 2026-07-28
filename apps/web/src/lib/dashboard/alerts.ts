@@ -130,6 +130,44 @@ export async function computeDashboardAlerts(
     });
   }
 
+  // ─── Mi Cartera: cuotas vencidas sin abonar ─────────────────────────────
+  const { data: activeLoanPortfolio } = await supabase
+    .from('loan_portfolio')
+    .select('id, borrower_name, amortization')
+    .eq('user_id', userId)
+    .eq('status', 'active')
+    .is('deleted_at', null);
+
+  if (activeLoanPortfolio && activeLoanPortfolio.length > 0) {
+    const { data: allPayments } = await supabase
+      .from('loan_payments')
+      .select('loan_id')
+      .in('loan_id', activeLoanPortfolio.map((l) => l.id));
+
+    const paidCountByLoan = new Map<string, number>();
+    for (const p of allPayments ?? []) {
+      paidCountByLoan.set(p.loan_id, (paidCountByLoan.get(p.loan_id) ?? 0) + 1);
+    }
+
+    const overdueLoanPortfolio = activeLoanPortfolio.filter((loan) => {
+      const schedule = (loan.amortization as unknown as Array<{ scheduled_date: string }>) ?? [];
+      const nextInstallment = schedule[paidCountByLoan.get(loan.id) ?? 0];
+      return nextInstallment && nextInstallment.scheduled_date < todayStr;
+    });
+
+    if (overdueLoanPortfolio.length > 0) {
+      alerts.push({
+        severity: 'warning',
+        title:
+          overdueLoanPortfolio.length === 1
+            ? `${overdueLoanPortfolio[0]!.borrower_name} tiene una cuota vencida sin abonar`
+            : `${overdueLoanPortfolio.length} préstamos de Mi Cartera con cuota vencida`,
+        actionLabel: 'Ver Mi Cartera',
+        actionHref: '/app/mi-cartera',
+      });
+    }
+  }
+
   // ─── Suscripciones por cobrarse pronto ─────────────────────────────────
   const inThreeDays = new Date(today);
   inThreeDays.setDate(inThreeDays.getDate() + 3);

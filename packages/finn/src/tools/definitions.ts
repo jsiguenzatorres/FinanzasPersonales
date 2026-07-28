@@ -111,4 +111,20 @@ export const FINN_TOOLS: FunctionDeclaration[] = [
       'Obtiene el portafolio de inversiones del usuario (acciones, ETFs, cripto, etc.): valor actual, cuánto invirtió, y ganancia o pérdida no realizada por posición y en total.',
     parameters: { type: Type.OBJECT, properties: {} },
   },
+  {
+    name: 'get_loan_portfolio',
+    description:
+      'Obtiene los préstamos CON interés que el usuario ha dado (Mi Cartera, distinto de Préstamos Familiares que no cobran interés): a quién, cuánto le deben, tasa, cuotas pagadas vs. pendientes, y si tiene cuotas vencidas.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        status: {
+          type: Type.STRING,
+          format: 'enum',
+          enum: ['active', 'paid', 'defaulted', 'restructured', 'written_off', 'all'],
+          description: 'Filtro de estado, por defecto "active"',
+        },
+      },
+    },
+  },
 ];

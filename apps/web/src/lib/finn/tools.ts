@@ -219,6 +219,66 @@ export async function executeFinnTool(
       };
     }
 
+    case 'get_loan_portfolio': {
+      const status = String(args.status ?? 'active');
+      let query = supabase
+        .from('loan_portfolio')
+        .select(
+          'id, borrower_name, principal, currency, interest_rate_monthly, interest_type, term_months, balance_pending, amount_collected, total_to_collect, late_count, status, amortization',
+        )
+        .eq('user_id', userId)
+        .is('deleted_at', null)
+        .order('balance_pending', { ascending: false });
+
+      if (status !== 'all') {
+        query = query.eq(
+          'status',
+          status as 'active' | 'paid' | 'defaulted' | 'restructured' | 'written_off',
+        );
+      }
+
+      const { data } = await query;
+      const loans = data ?? [];
+      const loanIds = loans.map((l) => l.id);
+
+      const { data: allPayments } =
+        loanIds.length > 0
+          ? await supabase.from('loan_payments').select('loan_id').in('loan_id', loanIds)
+          : { data: [] };
+
+      const paidCountByLoan = new Map<string, number>();
+      for (const p of allPayments ?? []) {
+        paidCountByLoan.set(p.loan_id, (paidCountByLoan.get(p.loan_id) ?? 0) + 1);
+      }
+
+      const today = new Date().toISOString().slice(0, 10);
+      const result = loans.map((loan) => {
+        const paidCount = paidCountByLoan.get(loan.id) ?? 0;
+        const schedule = (loan.amortization as unknown as Array<{ scheduled_date: string }>) ?? [];
+        const nextInstallment = schedule[paidCount];
+        return {
+          borrower_name: loan.borrower_name,
+          principal: loan.principal,
+          currency: loan.currency,
+          interest_rate_monthly: loan.interest_rate_monthly,
+          interest_type: loan.interest_type,
+          balance_pending: loan.balance_pending,
+          amount_collected: loan.amount_collected,
+          total_to_collect: loan.total_to_collect,
+          installments_paid: paidCount,
+          installments_total: loan.term_months,
+          late_count: loan.late_count,
+          status: loan.status,
+          is_overdue: loan.status === 'active' && !!nextInstallment && nextInstallment.scheduled_date < today,
+        };
+      });
+
+      return {
+        loans: result,
+        total_pending: result.filter((l) => l.status === 'active').reduce((sum, l) => sum + l.balance_pending, 0),
+      };
+    }
+
     default:
       return { error: `Herramienta desconocida: ${toolName}` };
   }
