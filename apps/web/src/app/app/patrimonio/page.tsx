@@ -14,6 +14,7 @@ interface LiabilitiesBreakdown {
   credit_cards: number;
   overdrafts: number;
   manual: number;
+  personal_debts: number;
 }
 
 export default async function NetWorthPage({
@@ -51,6 +52,7 @@ export default async function NetWorthPage({
     credit_cards: 0,
     overdrafts: 0,
     manual: 0,
+    personal_debts: 0,
   };
 
   const delta = lastSnapshot ? netWorthValue - (lastSnapshot.net_worth ?? 0) : null;
@@ -121,6 +123,9 @@ export default async function NetWorthPage({
               <p>Tarjetas de crédito: {fmt(liabilitiesBreakdown.credit_cards)}</p>
               <p>Sobregiros: {fmt(liabilitiesBreakdown.overdrafts)}</p>
               <p>Pasivos manuales: {fmt(liabilitiesBreakdown.manual)}</p>
+              {liabilitiesBreakdown.personal_debts > 0 && (
+                <p>Deudas propias: {fmt(liabilitiesBreakdown.personal_debts)}</p>
+              )}
             </div>
             <Button asChild variant="outline" size="sm" className="mt-3">
               <Link href="/app/patrimonio/pasivos">Gestionar pasivos manuales</Link>

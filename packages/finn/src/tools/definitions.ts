@@ -127,4 +127,20 @@ export const FINN_TOOLS: FunctionDeclaration[] = [
       },
     },
   },
+  {
+    name: 'get_debts',
+    description:
+      'Obtiene las deudas propias del usuario (préstamos personales, hipoteca, auto, estudiantil — NO tarjetas de crédito, esas van con get_account_balances/tarjetas): saldo, tasa, próximo pago, y la estrategia de pago (bola de nieve o avalancha) si ya la confirmó.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        status: {
+          type: Type.STRING,
+          format: 'enum',
+          enum: ['active', 'paid', 'defaulted', 'restructured', 'written_off', 'all'],
+          description: 'Filtro de estado, por defecto "active"',
+        },
+      },
+    },
+  },
 ];

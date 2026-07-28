@@ -279,6 +279,37 @@ export async function executeFinnTool(
       };
     }
 
+    case 'get_debts': {
+      const status = String(args.status ?? 'active');
+      let query = supabase
+        .from('debts')
+        .select(
+          'name, creditor, type, current_balance, currency, interest_rate_annual, next_payment_date, next_payment_amount, strategy, payoff_priority, status',
+        )
+        .eq('user_id', userId)
+        .is('deleted_at', null)
+        .order('payoff_priority', { ascending: true, nullsFirst: false });
+
+      if (status !== 'all') {
+        query = query.eq(
+          'status',
+          status as 'active' | 'paid' | 'defaulted' | 'restructured' | 'written_off',
+        );
+      }
+
+      const { data } = await query;
+      const debts = data ?? [];
+      const today = new Date().toISOString().slice(0, 10);
+
+      return {
+        debts: debts.map((d) => ({
+          ...d,
+          is_overdue: d.status === 'active' && !!d.next_payment_date && d.next_payment_date < today,
+        })),
+        total_owed: debts.filter((d) => d.status === 'active').reduce((sum, d) => sum + d.current_balance, 0),
+      };
+    }
+
     default:
       return { error: `Herramienta desconocida: ${toolName}` };
   }

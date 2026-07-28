@@ -11,3 +11,4 @@ export * from './goal';
 export * from './subscription';
 export * from './investment';
 export * from './loan-portfolio';
+export * from './debt';

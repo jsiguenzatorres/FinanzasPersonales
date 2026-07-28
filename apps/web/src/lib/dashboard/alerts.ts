@@ -168,6 +168,31 @@ export async function computeDashboardAlerts(
     }
   }
 
+  // ─── Deudas propias: próximo pago vencido o cercano ────────────────────
+  const inThreeDaysDebts = new Date(today);
+  inThreeDaysDebts.setDate(inThreeDaysDebts.getDate() + 3);
+  const { data: dueDebts } = await supabase
+    .from('debts')
+    .select('name, next_payment_date')
+    .eq('user_id', userId)
+    .eq('status', 'active')
+    .is('deleted_at', null)
+    .not('next_payment_date', 'is', null)
+    .lte('next_payment_date', inThreeDaysDebts.toISOString().slice(0, 10));
+
+  if (dueDebts && dueDebts.length > 0) {
+    const anyOverdue = dueDebts.some((d) => d.next_payment_date! < todayStr);
+    alerts.push({
+      severity: anyOverdue ? 'critical' : 'warning',
+      title:
+        dueDebts.length === 1
+          ? `Pago de "${dueDebts[0]!.name}" ${dueDebts[0]!.next_payment_date! < todayStr ? 'vencido' : 'próximo'}`
+          : `${dueDebts.length} pagos de deudas vencidos o próximos`,
+      actionLabel: 'Ver deudas',
+      actionHref: '/app/deudas',
+    });
+  }
+
   // ─── Suscripciones por cobrarse pronto ─────────────────────────────────
   const inThreeDays = new Date(today);
   inThreeDays.setDate(inThreeDays.getDate() + 3);
