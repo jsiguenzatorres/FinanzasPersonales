@@ -18,6 +18,7 @@ import {
   ChartCandlestick,
   BadgePercent,
   TrendingDown,
+  CalendarClock,
   Bot,
   ChevronLeft,
   Menu,
@@ -40,6 +41,7 @@ const NAV_ITEMS = [
   { href: '/app/suscripciones', label: 'Suscripciones', icon: Repeat },
   { href: '/app/inversiones', label: 'Inversiones', icon: ChartCandlestick },
   { href: '/app/patrimonio', label: 'Patrimonio', icon: LineChart },
+  { href: '/app/calendario', label: 'Calendario', icon: CalendarClock },
   { href: '/app/presupuesto', label: 'Presupuesto', icon: Target },
   { href: '/app/finn', label: 'Neto', icon: Bot },
 ];
