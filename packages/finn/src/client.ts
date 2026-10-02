@@ -36,12 +36,18 @@ export interface TranscribeAudioParams {
   model?: FinnModel;
 }
 
+export interface GroundedItineraryResult {
+  markdown: string;
+  sources: Array<{ title: string; uri: string }>;
+}
+
 export interface FinnClient {
   chat(prompt: string, model?: FinnModel): Promise<string>;
   classifyJson<T>(prompt: string, model?: FinnModel): Promise<T>;
   chatWithTools(params: ChatWithToolsParams): Promise<ChatWithToolsResult>;
   extractFromImage<T>(params: ExtractFromImageParams): Promise<T>;
   transcribeAudio(params: TranscribeAudioParams): Promise<string>;
+  generateGroundedItinerary(prompt: string, model?: FinnModel): Promise<GroundedItineraryResult>;
 }
 
 interface CreateOptions {
@@ -203,5 +209,30 @@ export function createFinnClient(opts: CreateOptions): FinnClient {
     return (result.text ?? '').trim();
   }
 
-  return { chat, classifyJson, chatWithTools, extractFromImage, transcribeAudio };
+  /**
+   * Genera texto grounded en datos reales de Google Maps (250M+ lugares) —
+   * MOD-18 WanderFinance. Se factura dentro de este mismo proyecto de
+   * Gemini, sin cuenta nueva de Google Cloud (decisión documentada en
+   * docs/modules/mod-18-wanderfinance.md §1.2). Sin cascada NIM: el
+   * grounding de Maps es exclusivo de Gemini, no hay equivalente en NIM.
+   */
+  async function generateGroundedItinerary(prompt: string, model?: FinnModel): Promise<GroundedItineraryResult> {
+    const result = await genAI.models.generateContent({
+      model: model ?? defaultModel,
+      contents: prompt,
+      config: {
+        tools: [{ googleMaps: {} }],
+      },
+    });
+
+    const chunks = result.candidates?.[0]?.groundingMetadata?.groundingChunks ?? [];
+    const sources = chunks
+      .map((c) => c.maps)
+      .filter((m): m is NonNullable<typeof m> => !!m?.title && !!m?.uri)
+      .map((m) => ({ title: m.title!, uri: m.uri! }));
+
+    return { markdown: result.text ?? '', sources };
+  }
+
+  return { chat, classifyJson, chatWithTools, extractFromImage, transcribeAudio, generateGroundedItinerary };
 }

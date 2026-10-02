@@ -193,6 +193,31 @@ export async function computeDashboardAlerts(
     });
   }
 
+  // ─── Viajes próximos ────────────────────────────────────────────────────
+  const inSevenDaysTrips = new Date(today);
+  inSevenDaysTrips.setDate(inSevenDaysTrips.getDate() + 7);
+  const { data: upcomingTrips } = await supabase
+    .from('trips')
+    .select('id, destination, start_date')
+    .eq('user_id', userId)
+    .in('status', ['planning', 'active'])
+    .gte('start_date', todayStr)
+    .lte('start_date', inSevenDaysTrips.toISOString().slice(0, 10));
+
+  if (upcomingTrips && upcomingTrips.length > 0) {
+    const next = upcomingTrips[0]!;
+    const daysUntil = Math.ceil((new Date(next.start_date).getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    alerts.push({
+      severity: 'info',
+      title:
+        upcomingTrips.length === 1
+          ? `Tu viaje a ${next.destination} empieza en ${daysUntil} día${daysUntil === 1 ? '' : 's'}`
+          : `${upcomingTrips.length} viajes próximos, el primero a ${next.destination}`,
+      actionLabel: 'Ver viaje',
+      actionHref: `/app/viajes/${next.id}`,
+    });
+  }
+
   // ─── Suscripciones por cobrarse pronto ─────────────────────────────────
   const inThreeDays = new Date(today);
   inThreeDays.setDate(inThreeDays.getDate() + 3);

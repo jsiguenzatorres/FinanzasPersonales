@@ -143,4 +143,20 @@ export const FINN_TOOLS: FunctionDeclaration[] = [
       },
     },
   },
+  {
+    name: 'get_trips',
+    description:
+      'Obtiene los viajes planeados del usuario (WanderFinance): destino, fechas, presupuesto vs. gastado, y el clima estimado si ya se consultó.',
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        status: {
+          type: Type.STRING,
+          format: 'enum',
+          enum: ['planning', 'active', 'completed', 'cancelled', 'all'],
+          description: 'Filtro de estado, por defecto incluye planning y active',
+        },
+      },
+    },
+  },
 ];

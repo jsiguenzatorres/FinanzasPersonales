@@ -310,6 +310,38 @@ export async function executeFinnTool(
       };
     }
 
+    case 'get_trips': {
+      const status = String(args.status ?? '');
+      let query = supabase
+        .from('trips')
+        .select('destination, start_date, end_date, budget, budget_currency, actual_spent, status, destination_info')
+        .eq('user_id', userId)
+        .order('start_date', { ascending: true });
+
+      if (status && status !== 'all') {
+        query = query.eq('status', status as 'planning' | 'active' | 'completed' | 'cancelled');
+      } else if (!status) {
+        query = query.in('status', ['planning', 'active']);
+      }
+
+      const { data } = await query;
+      const trips = (data ?? []).map((t) => {
+        const info = t.destination_info as { weather?: { avg_high_c: number; avg_low_c: number; is_forecast: boolean } } | null;
+        return {
+          destination: t.destination,
+          start_date: t.start_date,
+          end_date: t.end_date,
+          budget: t.budget,
+          budget_currency: t.budget_currency,
+          actual_spent: t.actual_spent,
+          status: t.status,
+          weather: info?.weather ?? null,
+        };
+      });
+
+      return { trips };
+    }
+
     default:
       return { error: `Herramienta desconocida: ${toolName}` };
   }
