@@ -19,6 +19,7 @@ export const familyLoanCreateSchema = z
   .object({
     person_name: z.string().min(1, 'Ingresa el nombre del deudor').max(100),
     relationship: z.string().max(100).optional(),
+    person_email: z.string().email('Correo inválido').max(255).optional().or(z.literal('')),
     original_amount: moneyAmountSchema.refine((v) => v > 0, { message: 'El monto debe ser mayor a 0' }),
     currency: currencyCodeSchema,
     delivery_date: isoDateSchema,
@@ -46,6 +47,7 @@ export type FamilyLoanCreateInput = z.infer<typeof familyLoanCreateSchema>;
 export const familyLoanUpdateSchema = z.object({
   person_name: z.string().min(1, 'Ingresa el nombre del deudor').max(100),
   relationship: z.string().max(100).optional(),
+  person_email: z.string().email('Correo inválido').max(255).optional().or(z.literal('')),
   category: z.string().max(50).optional(),
   agreed_payment_date: isoDateSchema.optional(),
   notes: z.string().max(2000).optional(),

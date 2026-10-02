@@ -112,6 +112,15 @@ export function LoanForm({
             <Input id="relationship" name="relationship" placeholder="Hermano, prima, amigo..." />
           </div>
 
+          <div className="space-y-1.5">
+            <Label htmlFor="person_email">Correo del deudor (opcional)</Label>
+            <Input id="person_email" name="person_email" type="email" placeholder="correo@ejemplo.com" />
+            <p className="text-xs text-muted-foreground">
+              Si lo agregas, le llegan recordatorios automáticos por correo antes y después de la
+              fecha de pago — no tienes que escribirle tú.
+            </p>
+          </div>
+
           {isRetroactive ? (
             <>
               <input type="hidden" name="existing_transaction_id" value={existingTransaction.id} />

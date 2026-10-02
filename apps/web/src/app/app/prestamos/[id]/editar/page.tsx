@@ -68,6 +68,20 @@ export default async function EditFamilyLoanPage({
               <Input id="relationship" name="relationship" defaultValue={loan.relationship ?? ''} />
             </div>
             <div className="space-y-1.5">
+              <Label htmlFor="person_email">Correo del deudor (opcional)</Label>
+              <Input
+                id="person_email"
+                name="person_email"
+                type="email"
+                placeholder="correo@ejemplo.com"
+                defaultValue={loan.person_email ?? ''}
+              />
+              <p className="text-xs text-muted-foreground">
+                Si lo agregas, le llegan recordatorios automáticos por correo antes y después de la
+                fecha de pago.
+              </p>
+            </div>
+            <div className="space-y-1.5">
               <Label htmlFor="category">Categoría de destino</Label>
               <select
                 id="category"

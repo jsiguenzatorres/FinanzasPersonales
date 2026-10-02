@@ -1364,6 +1364,7 @@ export type Database = {
           origin_account_id: string | null
           origin_card_id: string | null
           original_amount: number
+          person_email: string | null
           person_name: string
           relationship: string | null
           status: string
@@ -1386,6 +1387,7 @@ export type Database = {
           origin_account_id?: string | null
           origin_card_id?: string | null
           original_amount: number
+          person_email?: string | null
           person_name: string
           relationship?: string | null
           status?: string
@@ -1408,6 +1410,7 @@ export type Database = {
           origin_account_id?: string | null
           origin_card_id?: string | null
           original_amount?: number
+          person_email?: string | null
           person_name?: string
           relationship?: string | null
           status?: string

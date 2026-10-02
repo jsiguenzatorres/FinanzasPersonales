@@ -17,6 +17,7 @@ export async function createFamilyLoanAction(formData: FormData) {
   const raw = {
     person_name: formData.get('person_name'),
     relationship: formData.get('relationship') || undefined,
+    person_email: formData.get('person_email') || undefined,
     original_amount: Number(formData.get('original_amount')),
     currency: formData.get('currency'),
     delivery_date: formData.get('delivery_date'),
@@ -105,6 +106,7 @@ export async function createFamilyLoanAction(formData: FormData) {
     user_id: user.id,
     person_name: parsed.data.person_name,
     relationship: parsed.data.relationship ?? null,
+    person_email: parsed.data.person_email || null,
     original_amount: parsed.data.original_amount,
     balance: parsed.data.original_amount,
     currency: parsed.data.currency,
@@ -139,6 +141,7 @@ export async function editFamilyLoanAction(formData: FormData) {
   const parsed = familyLoanUpdateSchema.safeParse({
     person_name: formData.get('person_name'),
     relationship: formData.get('relationship') || undefined,
+    person_email: formData.get('person_email') || undefined,
     category: formData.get('category') || undefined,
     agreed_payment_date: formData.get('agreed_payment_date') || undefined,
     notes: formData.get('notes') || undefined,
@@ -155,6 +158,7 @@ export async function editFamilyLoanAction(formData: FormData) {
     .update({
       person_name: parsed.data.person_name,
       relationship: parsed.data.relationship ?? null,
+      person_email: parsed.data.person_email || null,
       category: parsed.data.category ?? null,
       agreed_payment_date: parsed.data.agreed_payment_date ?? null,
       notes: parsed.data.notes ?? null,
