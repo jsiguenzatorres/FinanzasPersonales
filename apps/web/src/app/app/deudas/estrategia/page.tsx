@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Card, CardContent } from '@flowfinance/ui';
+import { AlertCircle } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { StrategySimulator } from './strategy-simulator';
 
@@ -27,13 +28,12 @@ export default async function DebtStrategyPage() {
       </div>
 
       {withoutPayment.length > 0 && (
-        <Card>
-          <CardContent className="py-4 text-sm text-ff-yellow">
-            {withoutPayment.length === 1
-              ? `"${withoutPayment[0]!.name}" no tiene pago mínimo mensual definido — no entra en el simulador hasta que lo agregues.`
-              : `${withoutPayment.length} deudas no tienen pago mínimo mensual definido — no entran en el simulador hasta que lo agregues.`}
-          </CardContent>
-        </Card>
+        <p className="flex items-center gap-2 rounded-xl border border-ff-yellow/25 bg-ff-yellow/10 px-4 py-3 text-sm text-ff-yellow">
+          <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+          {withoutPayment.length === 1
+            ? `"${withoutPayment[0]!.name}" no tiene pago mínimo mensual definido — no entra en el simulador hasta que lo agregues.`
+            : `${withoutPayment.length} deudas no tienen pago mínimo mensual definido — no entran en el simulador hasta que lo agregues.`}
+        </p>
       )}
 
       {withPayment.length === 0 ? (

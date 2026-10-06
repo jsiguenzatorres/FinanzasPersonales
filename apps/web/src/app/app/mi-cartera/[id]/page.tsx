@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Button, Card, CardContent, Input, Label } from '@flowfinance/ui';
+import { BadgePercent, AlertCircle } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { deleteLoanPortfolioAction } from '@/lib/loan-portfolio/actions';
 import { createLoanPortfolioPaymentAction } from '@/lib/loan-portfolio/payments';
@@ -47,22 +48,28 @@ export default async function LoanPortfolioDetailPage({
       </Link>
 
       {error && (
-        <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+        <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+          <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
           {error}
         </p>
       )}
 
-      <Card>
+      <Card className="animate-fade-in-up">
         <CardContent className="space-y-3 py-5">
-          <div>
-            <p className="text-sm text-muted-foreground">
-              {loan.borrower_name} · {loan.interest_rate_monthly}% mensual{' '}
-              {loan.interest_type === 'compound' ? 'compuesto' : 'simple'} · {loan.term_months} meses
-            </p>
-            <p className="font-mono text-2xl text-ff-yellow">{fmt(loan.balance_pending)}</p>
-            <p className="text-xs text-muted-foreground">
-              de {fmt(loan.total_to_collect ?? 0)} totales · {STATUS_LABELS[loan.status] ?? loan.status}
-            </p>
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ff-yellow/10">
+              <BadgePercent className="h-5 w-5 text-ff-yellow" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">
+                {loan.borrower_name} · {loan.interest_rate_monthly}% mensual{' '}
+                {loan.interest_type === 'compound' ? 'compuesto' : 'simple'} · {loan.term_months} meses
+              </p>
+              <p className="font-mono text-2xl text-ff-yellow">{fmt(loan.balance_pending)}</p>
+              <p className="text-xs text-muted-foreground">
+                de {fmt(loan.total_to_collect ?? 0)} totales · {STATUS_LABELS[loan.status] ?? loan.status}
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">

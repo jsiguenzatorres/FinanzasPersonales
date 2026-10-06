@@ -1,6 +1,7 @@
 'use client';
 
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
+import { TrendingDown, AlertCircle } from 'lucide-react';
 import { createDebtAction, editDebtAction } from '@/lib/debts/actions';
 
 export interface DebtInitialValues {
@@ -34,8 +35,11 @@ export function DebtForm({ error, initialValues }: { error?: string; initialValu
   const today = new Date().toISOString().slice(0, 10);
 
   return (
-    <Card>
+    <Card className="animate-fade-in-up">
       <CardHeader>
+        <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-[10px] bg-ff-red/10">
+          <TrendingDown className="h-5 w-5 text-ff-red" aria-hidden="true" />
+        </div>
         <CardTitle>{isEditing ? 'Editar deuda' : 'Nueva deuda'}</CardTitle>
         <CardDescription>
           Préstamos personales, hipoteca, auto, estudiantil — la deuda de tarjetas de crédito ya se
@@ -44,7 +48,8 @@ export function DebtForm({ error, initialValues }: { error?: string; initialValu
       </CardHeader>
       <CardContent className="space-y-4">
         {error && (
-          <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+          <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
             {error}
           </p>
         )}

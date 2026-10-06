@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Button, Card, CardContent } from '@flowfinance/ui';
+import { HandCoins } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { listAttachments } from '@/lib/attachments/actions';
 import { AttachmentsSection } from '@/components/attachments-section';
@@ -47,14 +48,19 @@ export default async function FamilyLoanDetailPage({ params }: { params: Promise
         ← Préstamos
       </Link>
 
-      <Card>
+      <Card className="animate-fade-in-up">
         <CardContent className="space-y-3 py-5">
-          <div>
-            <p className="text-sm text-muted-foreground">
-              {loan.person_name} {loan.relationship ? `· ${loan.relationship}` : ''}
-            </p>
-            <p className="font-mono text-2xl text-ff-yellow">{fmt(loan.balance)}</p>
-            <p className="text-xs text-muted-foreground">de {fmt(loan.original_amount)} prestados</p>
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ff-yellow/10">
+              <HandCoins className="h-5 w-5 text-ff-yellow" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">
+                {loan.person_name} {loan.relationship ? `· ${loan.relationship}` : ''}
+              </p>
+              <p className="font-mono text-2xl text-ff-yellow">{fmt(loan.balance)}</p>
+              <p className="text-xs text-muted-foreground">de {fmt(loan.original_amount)} prestados</p>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
             <p>Entrega: {loan.delivery_date}</p>

@@ -1,6 +1,7 @@
 'use client';
 
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
+import { BadgePercent, AlertCircle } from 'lucide-react';
 import { createLoanPortfolioAction } from '@/lib/loan-portfolio/actions';
 
 interface AccountOption {
@@ -12,14 +13,18 @@ export function LoanPortfolioForm({ accounts, error }: { accounts: AccountOption
   const today = new Date().toISOString().slice(0, 10);
 
   return (
-    <Card>
+    <Card className="animate-fade-in-up">
       <CardHeader>
+        <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-[10px] bg-ff-yellow/10">
+          <BadgePercent className="h-5 w-5 text-ff-yellow" aria-hidden="true" />
+        </div>
         <CardTitle>Nuevo préstamo con interés</CardTitle>
         <CardDescription>Se genera la tabla de amortización completa al guardar</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {error && (
-          <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+          <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
             {error}
           </p>
         )}

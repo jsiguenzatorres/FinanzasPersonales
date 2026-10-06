@@ -11,6 +11,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
+import { HandCoins, AlertCircle } from 'lucide-react';
 import { createFamilyLoanAction } from '@/lib/loans/actions';
 
 const DELIVERY_METHODS = [
@@ -85,8 +86,11 @@ export function LoanForm({
   const isCashAdvance = deliveryMethod === 'credit_cash_advance';
 
   return (
-    <Card>
+    <Card className="animate-fade-in-up">
       <CardHeader>
+        <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-[10px] bg-ff-yellow/10">
+          <HandCoins className="h-5 w-5 text-ff-yellow" aria-hidden="true" />
+        </div>
         <CardTitle>{isRetroactive ? 'Vincular gasto a préstamo' : 'Nuevo préstamo familiar'}</CardTitle>
         <CardDescription>
           {isRetroactive
@@ -96,7 +100,8 @@ export function LoanForm({
       </CardHeader>
       <CardContent className="space-y-4">
         {error && (
-          <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+          <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
             {error}
           </p>
         )}
