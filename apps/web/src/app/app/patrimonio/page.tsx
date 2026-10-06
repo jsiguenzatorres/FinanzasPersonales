@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { Button, Card, CardContent } from '@flowfinance/ui';
+import { LineChart, Wallet, TrendingDown, ArrowUp, ArrowDown, AlertCircle } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { takeSnapshotAction } from '@/lib/net-worth/actions';
+import { AnimatedNumber } from '@/components/animated-number';
 
 interface AssetsBreakdown {
   cash: number;
@@ -69,26 +71,36 @@ export default async function NetWorthPage({
       </div>
 
       {error && (
-        <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+        <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+          <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
           {error}
         </p>
       )}
 
-      <Card>
+      <Card className="animate-fade-in-up">
         <CardContent className="py-8 text-center">
+          <div className="mx-auto mb-2 flex h-11 w-11 items-center justify-center rounded-full bg-ff-green/10">
+            <LineChart className={`h-5 w-5 ${netWorthValue >= 0 ? 'text-ff-green' : 'text-ff-red'}`} aria-hidden="true" />
+          </div>
           <p className="text-sm text-muted-foreground">Patrimonio neto</p>
-          <p
-            className={`font-mono text-4xl ${netWorthValue >= 0 ? 'text-ff-green' : 'text-ff-red'}`}
-          >
-            {fmt(netWorthValue)}
+          <p className={`font-mono text-4xl ${netWorthValue >= 0 ? 'text-ff-green' : 'text-ff-red'}`}>
+            <AnimatedNumber value={netWorthValue} format={{ kind: 'currency', currency }} />
           </p>
-          {delta !== null && lastSnapshot && (
-            <p className={`mt-2 text-sm ${delta >= 0 ? 'text-ff-green' : 'text-ff-red'}`}>
-              {delta >= 0 ? '↑' : '↓'} {fmt(Math.abs(delta))} desde el último snapshot (
-              {lastSnapshot.snapshot_date})
-            </p>
-          )}
-          {!lastSnapshot && (
+          {delta !== null && lastSnapshot ? (
+            <div className="mt-2 flex items-center justify-center gap-2">
+              <span
+                className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+                  delta >= 0 ? 'bg-ff-green/10 text-ff-green' : 'bg-ff-red/10 text-ff-red'
+                }`}
+              >
+                {delta >= 0 ? <ArrowUp className="h-3 w-3" aria-hidden="true" /> : <ArrowDown className="h-3 w-3" aria-hidden="true" />}
+                {fmt(Math.abs(delta))}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                desde el último snapshot ({lastSnapshot.snapshot_date})
+              </span>
+            </div>
+          ) : (
             <p className="mt-2 text-sm text-muted-foreground">
               Toma tu primer snapshot para empezar a ver la evolución
             </p>
@@ -97,9 +109,14 @@ export default async function NetWorthPage({
       </Card>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Card>
+        <Card className="animate-fade-in-up border-t-[3px] border-t-ff-green" style={{ animationDelay: '60ms' }}>
           <CardContent className="py-5">
-            <p className="text-sm text-muted-foreground">Activos</p>
+            <div className="mb-2 flex items-center gap-2">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-ff-green/10">
+                <Wallet className="h-4 w-4 text-ff-green" aria-hidden="true" />
+              </div>
+              <p className="text-sm text-muted-foreground">Activos</p>
+            </div>
             <p className="font-mono text-xl text-ff-green">{fmt(totalAssets)}</p>
             <div className="mt-3 space-y-1 text-xs text-muted-foreground">
               <p>Efectivo / Cuentas: {fmt(assetsBreakdown.cash)}</p>
@@ -115,9 +132,14 @@ export default async function NetWorthPage({
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="animate-fade-in-up border-t-[3px] border-t-ff-red" style={{ animationDelay: '100ms' }}>
           <CardContent className="py-5">
-            <p className="text-sm text-muted-foreground">Pasivos</p>
+            <div className="mb-2 flex items-center gap-2">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-ff-red/10">
+                <TrendingDown className="h-4 w-4 text-ff-red" aria-hidden="true" />
+              </div>
+              <p className="text-sm text-muted-foreground">Pasivos</p>
+            </div>
             <p className="font-mono text-xl text-ff-red">{fmt(totalLiabilities)}</p>
             <div className="mt-3 space-y-1 text-xs text-muted-foreground">
               <p>Tarjetas de crédito: {fmt(liabilitiesBreakdown.credit_cards)}</p>

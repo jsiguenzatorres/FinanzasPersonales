@@ -7,6 +7,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
+import { Wallet, AlertCircle } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createManualAssetAction, deleteManualAssetAction } from '@/lib/net-worth/actions';
 
@@ -39,13 +40,17 @@ export default async function ManualAssetsPage({
     <div className="mx-auto max-w-md space-y-6">
       <h1 className="font-display text-2xl">Activos manuales</h1>
 
-      <Card>
+      <Card className="animate-fade-in-up">
         <CardHeader>
+          <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-[10px] bg-ff-green/10">
+            <Wallet className="h-5 w-5 text-ff-green" aria-hidden="true" />
+          </div>
           <CardTitle className="text-base">Agregar activo</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {error && (
-            <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+            <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+              <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
               {error}
             </p>
           )}
@@ -98,40 +103,39 @@ export default async function ManualAssetsPage({
         </CardContent>
       </Card>
 
-      <div className="space-y-2">
-        {!assets || assets.length === 0 ? (
-          <p className="text-center text-sm text-muted-foreground">
-            Sin activos manuales registrados.
-          </p>
-        ) : (
-          assets.map((a) => (
-            <Card key={a.id}>
-              <CardContent className="flex items-center justify-between py-3">
-                <div>
-                  <p className="font-medium">{a.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {ASSET_TYPES.find((t) => t.value === a.type)?.label ?? a.type}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <p className="font-mono text-ff-green">
-                    {new Intl.NumberFormat('es-SV', {
-                      style: 'currency',
-                      currency: a.currency,
-                    }).format(a.value)}
-                  </p>
-                  <form action={deleteManualAssetAction}>
-                    <input type="hidden" name="asset_id" value={a.id} />
-                    <Button type="submit" variant="ghost" size="sm">
-                      Eliminar
-                    </Button>
-                  </form>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+      {!assets || assets.length === 0 ? (
+        <p className="text-center text-sm text-muted-foreground">Sin activos manuales registrados.</p>
+      ) : (
+        <div className="animate-fade-in-up overflow-hidden rounded-xl border border-border bg-card">
+          {assets.map((a, i) => (
+            <div
+              key={a.id}
+              className={`flex items-center justify-between px-4 py-3 ${i > 0 ? 'border-t border-border' : ''}`}
+            >
+              <div>
+                <p className="font-medium">{a.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {ASSET_TYPES.find((t) => t.value === a.type)?.label ?? a.type}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <p className="font-mono text-ff-green">
+                  {new Intl.NumberFormat('es-SV', {
+                    style: 'currency',
+                    currency: a.currency,
+                  }).format(a.value)}
+                </p>
+                <form action={deleteManualAssetAction}>
+                  <input type="hidden" name="asset_id" value={a.id} />
+                  <Button type="submit" variant="ghost" size="sm">
+                    Eliminar
+                  </Button>
+                </form>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -7,6 +7,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
+import { TrendingDown, AlertCircle } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createManualLiabilityAction, deleteManualLiabilityAction } from '@/lib/net-worth/actions';
 
@@ -39,13 +40,17 @@ export default async function ManualLiabilitiesPage({
     <div className="mx-auto max-w-md space-y-6">
       <h1 className="font-display text-2xl">Pasivos manuales</h1>
 
-      <Card>
+      <Card className="animate-fade-in-up">
         <CardHeader>
+          <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-[10px] bg-ff-red/10">
+            <TrendingDown className="h-5 w-5 text-ff-red" aria-hidden="true" />
+          </div>
           <CardTitle className="text-base">Agregar pasivo</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {error && (
-            <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+            <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+              <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
               {error}
             </p>
           )}
@@ -98,40 +103,39 @@ export default async function ManualLiabilitiesPage({
         </CardContent>
       </Card>
 
-      <div className="space-y-2">
-        {!liabilities || liabilities.length === 0 ? (
-          <p className="text-center text-sm text-muted-foreground">
-            Sin pasivos manuales registrados.
-          </p>
-        ) : (
-          liabilities.map((l) => (
-            <Card key={l.id}>
-              <CardContent className="flex items-center justify-between py-3">
-                <div>
-                  <p className="font-medium">{l.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {LIABILITY_TYPES.find((t) => t.value === l.type)?.label ?? l.type}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <p className="font-mono text-ff-red">
-                    {new Intl.NumberFormat('es-SV', {
-                      style: 'currency',
-                      currency: l.currency,
-                    }).format(l.amount)}
-                  </p>
-                  <form action={deleteManualLiabilityAction}>
-                    <input type="hidden" name="liability_id" value={l.id} />
-                    <Button type="submit" variant="ghost" size="sm">
-                      Eliminar
-                    </Button>
-                  </form>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+      {!liabilities || liabilities.length === 0 ? (
+        <p className="text-center text-sm text-muted-foreground">Sin pasivos manuales registrados.</p>
+      ) : (
+        <div className="animate-fade-in-up overflow-hidden rounded-xl border border-border bg-card">
+          {liabilities.map((l, i) => (
+            <div
+              key={l.id}
+              className={`flex items-center justify-between px-4 py-3 ${i > 0 ? 'border-t border-border' : ''}`}
+            >
+              <div>
+                <p className="font-medium">{l.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {LIABILITY_TYPES.find((t) => t.value === l.type)?.label ?? l.type}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <p className="font-mono text-ff-red">
+                  {new Intl.NumberFormat('es-SV', {
+                    style: 'currency',
+                    currency: l.currency,
+                  }).format(l.amount)}
+                </p>
+                <form action={deleteManualLiabilityAction}>
+                  <input type="hidden" name="liability_id" value={l.id} />
+                  <Button type="submit" variant="ghost" size="sm">
+                    Eliminar
+                  </Button>
+                </form>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
