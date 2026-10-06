@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Button, Card, CardContent } from '@flowfinance/ui';
+import { Target } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { deleteGoalAction } from '@/lib/goals/actions';
 import { ContributionForm } from './contribution-form';
@@ -52,14 +53,19 @@ export default async function GoalDetailPage({ params }: { params: Promise<{ id:
         ← Metas
       </Link>
 
-      <Card>
+      <Card className="animate-fade-in-up">
         <CardContent className="space-y-3 py-5">
-          <div>
-            <p className="text-sm text-muted-foreground">
-              {TYPE_LABELS[goal.type] ?? goal.type} · {STATUS_LABELS[goal.status] ?? goal.status}
-            </p>
-            <p className="font-mono text-2xl text-ff-green">{fmt(goal.current_amount)}</p>
-            <p className="text-xs text-muted-foreground">de {fmt(goal.target_amount)}</p>
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ff-green/10">
+              <Target className="h-5 w-5 text-ff-green" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">
+                {TYPE_LABELS[goal.type] ?? goal.type} · {STATUS_LABELS[goal.status] ?? goal.status}
+              </p>
+              <p className="font-mono text-2xl text-ff-green">{fmt(goal.current_amount)}</p>
+              <p className="text-xs text-muted-foreground">de {fmt(goal.target_amount)}</p>
+            </div>
           </div>
 
           <div className="h-2 w-full overflow-hidden rounded-full bg-muted">

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Button, Card, CardContent } from '@flowfinance/ui';
+import { ChartCandlestick, AlertCircle } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { deleteInvestmentAction } from '@/lib/investments/actions';
 import { updateCryptoPriceAction } from '@/lib/investments/coingecko';
@@ -43,25 +44,33 @@ export default async function InvestmentDetailPage({
       </Link>
 
       {error && (
-        <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+        <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+          <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
           {error}
         </p>
       )}
 
-      <Card>
+      <Card className="animate-fade-in-up">
         <CardContent className="space-y-3 py-5">
-          <div>
-            <p className="text-sm text-muted-foreground">
-              {inv.ticker && `${inv.ticker} · `}
-              {TYPE_LABELS[inv.type] ?? inv.type}
-              {inv.broker && ` · ${inv.broker}`}
+          <div className="flex items-center gap-3">
+            <div
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${pnl >= 0 ? 'bg-ff-green/10' : 'bg-ff-red/10'}`}
+            >
+              <ChartCandlestick className={`h-5 w-5 ${pnl >= 0 ? 'text-ff-green' : 'text-ff-red'}`} aria-hidden="true" />
+            </div>
+            <div>
+          <p className="text-sm text-muted-foreground">
+            {inv.ticker && `${inv.ticker} · `}
+            {TYPE_LABELS[inv.type] ?? inv.type}
+            {inv.broker && ` · ${inv.broker}`}
+          </p>
+          <p className="font-mono text-2xl">{fmt(inv.current_value ?? 0)}</p>
+          <p className={`text-sm ${pnl >= 0 ? 'text-ff-green' : 'text-ff-red'}`}>
+            {pnl >= 0 ? '+' : ''}
+            {fmt(pnl)} ({pnl >= 0 ? '+' : ''}
+            {pnlPct.toFixed(1)}%)
             </p>
-            <p className="font-mono text-2xl">{fmt(inv.current_value ?? 0)}</p>
-            <p className={`text-sm ${pnl >= 0 ? 'text-ff-green' : 'text-ff-red'}`}>
-              {pnl >= 0 ? '+' : ''}
-              {fmt(pnl)} ({pnl >= 0 ? '+' : ''}
-              {pnlPct.toFixed(1)}%)
-            </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">

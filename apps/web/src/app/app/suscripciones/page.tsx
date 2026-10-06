@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Button, Card, CardContent } from '@flowfinance/ui';
+import { Repeat, Sparkles } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { SubscriptionScanner } from '@/components/subscriptions/scanner';
 
@@ -47,7 +48,7 @@ export default async function SubscriptionsPage() {
       </div>
 
       {active.length > 0 && (
-        <Card>
+        <Card className="animate-fade-in-up border-t-[3px] border-t-ff-red">
           <CardContent className="py-5 text-center">
             <p className="text-sm text-muted-foreground">Total mensual aproximado</p>
             <p className="font-mono text-xl text-ff-red">
@@ -61,35 +62,46 @@ export default async function SubscriptionsPage() {
 
       {!subscriptions || subscriptions.length === 0 ? (
         <Card>
-          <CardContent className="py-10 text-center text-muted-foreground">
-            Aún no tienes suscripciones registradas. Agrega una a mano o usa &quot;Analizar mis
-            gastos&quot; para que Neto busque cargos recurrentes en tu historial.
+          <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ff-red/10">
+              <Repeat className="h-6 w-6 text-ff-red" aria-hidden="true" />
+            </div>
+            <p className="text-muted-foreground">
+              Aún no tienes suscripciones registradas. Agrega una a mano o usa &quot;Analizar mis
+              gastos&quot; para que Neto busque cargos recurrentes en tu historial.
+            </p>
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-2">
-          {subscriptions.map((sub) => (
-            <Link key={sub.id} href={`/app/suscripciones/${sub.id}`}>
-              <Card className={!sub.is_active ? 'opacity-50' : ''}>
-                <CardContent className="flex items-center justify-between py-4">
-                  <div>
-                    <p className="font-medium hover:underline">
-                      {sub.service_name}
-                      {sub.detected_automatically && (
-                        <span className="ml-2 text-xs text-ff-green">detectada</span>
-                      )}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {FREQ_LABELS[sub.frequency] ?? sub.frequency} · próximo cobro {sub.next_charge_date}
-                    </p>
-                  </div>
-                  <p className="font-mono text-sm">
-                    {new Intl.NumberFormat('es-SV', { style: 'currency', currency: sub.currency }).format(
-                      sub.amount,
-                    )}
-                  </p>
-                </CardContent>
-              </Card>
+        <div className="animate-fade-in-up overflow-hidden rounded-xl border border-border bg-card">
+          {subscriptions.map((sub, i) => (
+            <Link
+              key={sub.id}
+              href={`/app/suscripciones/${sub.id}`}
+              className={`flex items-center gap-3 px-4 py-3 transition-colors hover:bg-landing-terracotta/5 ${
+                i > 0 ? 'border-t border-border' : ''
+              } ${!sub.is_active ? 'opacity-50' : ''}`}
+            >
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ff-red/10">
+                <Repeat className="h-4 w-4 text-ff-red" aria-hidden="true" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium">
+                  {sub.service_name}
+                  {sub.detected_automatically && (
+                    <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-ff-green/10 px-2 py-0.5 text-xs text-ff-green">
+                      <Sparkles className="h-3 w-3" aria-hidden="true" />
+                      detectada
+                    </span>
+                  )}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {FREQ_LABELS[sub.frequency] ?? sub.frequency} · próximo cobro {sub.next_charge_date}
+                </p>
+              </div>
+              <p className="shrink-0 font-mono text-sm">
+                {new Intl.NumberFormat('es-SV', { style: 'currency', currency: sub.currency }).format(sub.amount)}
+              </p>
             </Link>
           ))}
         </div>
