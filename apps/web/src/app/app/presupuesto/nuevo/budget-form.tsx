@@ -89,7 +89,7 @@ export function BudgetForm({
                   key={m.value}
                   type="button"
                   onClick={() => setMode(m.value)}
-                  className={`rounded-md border p-3 text-left text-sm transition-colors ${
+                  className={`rounded-md border p-3 text-left text-sm transition-all duration-150 active:scale-95 ${
                     mode === m.value
                       ? 'border-primary bg-primary/10'
                       : 'border-border text-muted-foreground'

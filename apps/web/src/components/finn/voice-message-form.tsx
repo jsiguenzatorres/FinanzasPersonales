@@ -106,7 +106,7 @@ export function VoiceMessageForm({ conversationId }: { conversationId: string | 
           disabled={isProcessing}
           aria-label={isRecording ? 'Detener grabación' : 'Grabar nota de voz'}
           className={cn(
-            'inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md border transition-colors disabled:pointer-events-none disabled:opacity-50',
+            'inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md border transition-all duration-150 active:scale-90 disabled:pointer-events-none disabled:opacity-50',
             isRecording
               ? 'animate-pulse border-destructive bg-destructive text-destructive-foreground'
               : 'border-border bg-transparent hover:bg-card',

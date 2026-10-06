@@ -79,7 +79,7 @@ function NavLinks({
               href={item.href}
               onClick={onNavigate}
               className={cn(
-                'group relative flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-sm transition-colors',
+                'group relative flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-sm transition-all duration-150 active:scale-[0.97]',
                 active ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground',
               )}
             >
@@ -120,7 +120,7 @@ function LogoutButton({ collapsed }: { collapsed?: boolean }) {
     <form action={signOutAction}>
       <button
         type="submit"
-        className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+        className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted-foreground transition-all duration-150 hover:bg-destructive/10 hover:text-destructive active:scale-[0.98]"
       >
         <LogOut className="h-[18px] w-[18px] flex-shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5" />
         {!collapsed && <span>Cerrar sesión</span>}
@@ -147,7 +147,7 @@ export function AppNav() {
         </Link>
         <button
           onClick={() => setMobileOpen(true)}
-          className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="rounded-lg p-2 text-muted-foreground transition-all duration-150 hover:bg-muted hover:text-foreground active:scale-90"
           aria-label="Abrir menú"
         >
           <Menu className="h-5 w-5" />
@@ -178,7 +178,7 @@ export function AppNav() {
                 </span>
                 <button
                   onClick={() => setMobileOpen(false)}
-                  className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  className="rounded-lg p-1.5 text-muted-foreground transition-all duration-150 hover:bg-muted hover:text-foreground active:scale-90"
                   aria-label="Cerrar menú"
                 >
                   <X className="h-5 w-5" />
@@ -209,7 +209,7 @@ export function AppNav() {
           )}
           <button
             onClick={() => setCollapsed((c) => !c)}
-            className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="rounded-lg p-1.5 text-muted-foreground transition-all duration-150 hover:bg-muted hover:text-foreground active:scale-90"
             aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
           >
             <ChevronLeft className={cn('h-4 w-4 transition-transform duration-300', collapsed && 'rotate-180')} />

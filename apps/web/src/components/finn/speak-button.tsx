@@ -45,7 +45,7 @@ export function SpeakButton({ text }: { text: string }) {
       onClick={handleClick}
       title={error ?? undefined}
       className={cn(
-        'mt-1.5 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] transition-colors',
+        'mt-1.5 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] transition-all duration-150 active:scale-90',
         status === 'error' ? 'text-ff-red' : 'text-muted-foreground hover:text-foreground',
       )}
     >

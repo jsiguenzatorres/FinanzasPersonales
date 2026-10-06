@@ -111,7 +111,7 @@ export function AttachmentsSection({
                 type="button"
                 onClick={() => handleView(a)}
                 disabled={pendingViewId === a.id}
-                className="flex-1 truncate text-left hover:underline"
+                className="flex-1 truncate text-left transition-transform duration-150 hover:underline active:scale-[0.98]"
               >
                 {FILE_TYPE_ICON[a.file_type] ?? '📎'}{' '}
                 {pendingViewId === a.id ? 'Abriendo...' : (a.original_filename ?? 'Archivo')}

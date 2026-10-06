@@ -85,7 +85,7 @@ export default async function GoalsPage() {
             return (
               <Link key={goal.id} href={`/app/metas/${goal.id}`}>
                 <Card
-                  className="animate-fade-in-up transition-all duration-200 hover:-translate-y-0.5 hover:border-landing-terracotta/50"
+                  className="animate-fade-in-up transition-all duration-200 hover:-translate-y-0.5 hover:border-landing-terracotta/50 active:scale-[0.98] active:translate-y-0"
                   style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}
                 >
                   <CardContent className="space-y-3 py-5">

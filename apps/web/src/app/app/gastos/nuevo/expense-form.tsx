@@ -295,7 +295,7 @@ export function ExpenseForm({
               <button
                 type="button"
                 onClick={() => setPaymentMethod('account')}
-                className={`flex-1 rounded-md border px-3 py-2 text-sm transition-colors ${
+                className={`flex-1 rounded-md border px-3 py-2 text-sm transition-all duration-150 active:scale-95 ${
                   paymentMethod === 'account'
                     ? 'border-primary bg-primary/10 text-foreground'
                     : 'border-border text-muted-foreground'
@@ -307,7 +307,7 @@ export function ExpenseForm({
                 type="button"
                 onClick={() => setPaymentMethod('card')}
                 disabled={cards.length === 0}
-                className={`flex-1 rounded-md border px-3 py-2 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                className={`flex-1 rounded-md border px-3 py-2 text-sm transition-all duration-150 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 ${
                   paymentMethod === 'card'
                     ? 'border-primary bg-primary/10 text-foreground'
                     : 'border-border text-muted-foreground'

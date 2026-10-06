@@ -81,7 +81,7 @@ export default async function IncomePage() {
                     <input type="hidden" name="income_id" value={income.id} />
                     <button
                       type="submit"
-                      className="rounded-md p-1.5 text-muted-foreground opacity-0 transition-opacity hover:text-ff-red group-hover:opacity-100"
+                      className="rounded-md p-1.5 text-muted-foreground opacity-0 transition-all duration-150 hover:text-ff-red active:scale-90 group-hover:opacity-100"
                       aria-label="Eliminar ingreso"
                     >
                       <Trash2 className="h-4 w-4" aria-hidden="true" />

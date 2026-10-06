@@ -106,7 +106,7 @@ export default async function ExpensesPage() {
                             <input type="hidden" name="transaction_id" value={expense.id} />
                             <button
                               type="submit"
-                              className="rounded-md p-1.5 text-muted-foreground opacity-0 transition-opacity hover:text-ff-red group-hover:opacity-100"
+                              className="rounded-md p-1.5 text-muted-foreground opacity-0 transition-all duration-150 hover:text-ff-red active:scale-90 group-hover:opacity-100"
                               aria-label="Eliminar gasto"
                             >
                               <Trash2 className="h-4 w-4" aria-hidden="true" />

@@ -135,7 +135,7 @@ export default async function AppHomePage() {
         </div>
         <Link
           href="/app/finn"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-landing-forest text-landing-cream transition-transform hover:scale-105"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-landing-forest text-landing-cream transition-transform duration-150 hover:scale-105 active:scale-95"
           aria-label="Hablar con Neto"
         >
           <Bot className="h-5 w-5" aria-hidden="true" />
@@ -151,7 +151,7 @@ export default async function AppHomePage() {
               <Link
                 key={i}
                 href={alert.actionHref}
-                className={`flex items-center justify-between rounded-xl border ${style.border} ${style.bg} px-4 py-3 transition-colors hover:bg-landing-terracotta/5`}
+                className={`flex items-center justify-between rounded-xl border ${style.border} ${style.bg} px-4 py-3 transition-colors hover:bg-landing-terracotta/5 active:bg-landing-terracotta/10`}
               >
                 <p className="flex items-center gap-2 text-sm">
                   <Bell className={`h-4 w-4 shrink-0 ${style.icon}`} aria-hidden="true" />
@@ -315,7 +315,7 @@ export default async function AppHomePage() {
       {/* ── CTA a Neto ───────────────────────────────────────────────── */}
       <Link
         href="/app/finn"
-        className="animate-fade-in-up flex items-center justify-between rounded-xl bg-landing-forest px-5 py-4 transition-opacity hover:opacity-90"
+        className="animate-fade-in-up flex items-center justify-between rounded-xl bg-landing-forest px-5 py-4 transition-all duration-150 hover:opacity-90 active:scale-[0.99]"
         style={{ animationDelay: '320ms' }}
       >
         <div className="flex items-center gap-3">

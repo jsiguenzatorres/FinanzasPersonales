@@ -20,7 +20,7 @@ export function ContributionForm({ goalId, currency }: { goalId: string; currenc
           type="button"
           onClick={() => setDirection('deposit')}
           className={cn(
-            'flex-1 rounded-md border px-3 py-1.5 text-sm transition-colors',
+            'flex-1 rounded-md border px-3 py-1.5 text-sm transition-all duration-150 active:scale-95',
             direction === 'deposit'
               ? 'border-ff-green/40 bg-ff-green/10 text-ff-green'
               : 'border-border text-muted-foreground',
@@ -32,7 +32,7 @@ export function ContributionForm({ goalId, currency }: { goalId: string; currenc
           type="button"
           onClick={() => setDirection('withdraw')}
           className={cn(
-            'flex-1 rounded-md border px-3 py-1.5 text-sm transition-colors',
+            'flex-1 rounded-md border px-3 py-1.5 text-sm transition-all duration-150 active:scale-95',
             direction === 'withdraw'
               ? 'border-ff-red/40 bg-ff-red/10 text-ff-red'
               : 'border-border text-muted-foreground',

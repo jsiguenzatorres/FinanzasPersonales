@@ -305,7 +305,10 @@ export default async function TripDetailPage({
                     <form action={deleteTripExpenseAction}>
                       <input type="hidden" name="expense_id" value={exp.id} />
                       <input type="hidden" name="trip_id" value={id} />
-                      <button type="submit" className="text-xs text-muted-foreground hover:text-ff-red">
+                      <button
+                        type="submit"
+                        className="text-xs text-muted-foreground transition-all duration-150 hover:text-ff-red active:scale-90"
+                      >
                         ✕
                       </button>
                     </form>
