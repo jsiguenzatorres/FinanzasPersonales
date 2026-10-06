@@ -11,6 +11,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
+import { PieChart, AlertCircle } from 'lucide-react';
 import { createBudgetAction, editBudgetAction } from '@/lib/budgets/actions';
 
 interface CategoryOption {
@@ -60,14 +61,18 @@ export function BudgetForm({
   const monthLabel = new Date().toLocaleDateString('es-SV', { month: 'long', year: 'numeric' });
 
   return (
-    <Card>
+    <Card className="animate-fade-in-up">
       <CardHeader>
+        <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-[10px] bg-ff-green/10">
+          <PieChart className="h-5 w-5 text-ff-green" aria-hidden="true" />
+        </div>
         <CardTitle>{isEditing ? 'Editar presupuesto' : 'Nuevo presupuesto'}</CardTitle>
         <CardDescription>Presupuesto de {monthLabel}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {error && (
-          <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+          <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
             {error}
           </p>
         )}
