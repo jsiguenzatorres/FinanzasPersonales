@@ -1,15 +1,28 @@
 import Link from 'next/link';
 import { Button, Card, CardContent } from '@flowfinance/ui';
+import {
+  Wallet,
+  CreditCard,
+  HandCoins,
+  Target,
+  Bell,
+  ChevronRight,
+  ArrowUp,
+  ArrowDown,
+  Bot,
+} from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { computeDashboardAlerts, type DashboardAlert } from '@/lib/dashboard/alerts';
 import { AnimatedNumber } from '@/components/animated-number';
 import { AnimatedRing } from '@/components/animated-ring';
+import { NetWorthSparkline } from '@/components/net-worth-sparkline';
+import { ModuleCard } from '@/components/module-card';
 import { computePersonalExpenseTotal } from '@/lib/expenses/personal-spend';
 
-const ALERT_STYLES: Record<DashboardAlert['severity'], { border: string; bg: string; text: string; icon: string }> = {
-  critical: { border: 'border-ff-red/30', bg: 'bg-ff-red/10', text: 'text-ff-red', icon: '🔴' },
-  warning: { border: 'border-ff-yellow/30', bg: 'bg-ff-yellow/10', text: 'text-ff-yellow', icon: '🟡' },
-  info: { border: 'border-border', bg: 'bg-card', text: 'text-muted-foreground', icon: 'ℹ️' },
+const ALERT_STYLES: Record<DashboardAlert['severity'], { bg: string; border: string; icon: string }> = {
+  critical: { bg: 'bg-ff-red/10', border: 'border-ff-red/25', icon: 'text-ff-red' },
+  warning: { bg: 'bg-ff-yellow/10', border: 'border-ff-yellow/25', icon: 'text-ff-yellow' },
+  info: { bg: 'bg-card', border: 'border-border', icon: 'text-muted-foreground' },
 };
 
 export default async function AppHomePage() {
@@ -35,7 +48,7 @@ export default async function AppHomePage() {
   const [
     alerts,
     { data: netWorth },
-    { data: lastSnapshot },
+    { data: recentSnapshots },
     { data: monthIncomes },
     totalExpenses,
     { data: liquidAccounts },
@@ -51,8 +64,7 @@ export default async function AppHomePage() {
       .select('net_worth, snapshot_date')
       .eq('user_id', userId)
       .order('snapshot_date', { ascending: false })
-      .limit(1)
-      .maybeSingle(),
+      .limit(6),
     supabase
       .from('income_entries')
       .select('net_amount')
@@ -92,6 +104,10 @@ export default async function AppHomePage() {
   const savingsRate = totalIncome > 0 ? ((totalIncome - totalExpenses) / totalIncome) * 100 : null;
   const liquidBalance = (liquidAccounts ?? []).reduce((sum, a) => sum + a.balance, 0);
   const totalCardDebt = (cardsDebt ?? []).reduce((sum, c) => sum + c.current_balance, 0);
+  const sparklinePoints = (recentSnapshots ?? [])
+    .map((s) => ({ date: s.snapshot_date, value: s.net_worth ?? 0 }))
+    .reverse();
+  const lastSnapshot = recentSnapshots?.[0];
   const netWorthDelta = lastSnapshot ? (netWorth?.net_worth ?? 0) - (lastSnapshot.net_worth ?? 0) : null;
   const totalLoansPending = (activeLoans ?? []).reduce((sum, l) => sum + l.balance, 0);
   const goalsSaved = (activeGoals ?? []).reduce((sum, g) => sum + g.current_amount, 0);
@@ -108,77 +124,134 @@ export default async function AppHomePage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1">
-        <h1 className="font-display text-2xl">Hola, {profile?.display_name ?? user?.email}</h1>
-        <p className="text-sm text-muted-foreground">
-          {new Date().toLocaleDateString('es-SV', { weekday: 'long', day: 'numeric', month: 'long' })}
-        </p>
+    <div className="space-y-4">
+      {/* ── Encabezado ──────────────────────────────────────────────── */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-2xl">Hola, {profile?.display_name ?? user?.email}</h1>
+          <p className="text-sm text-muted-foreground">
+            {new Date().toLocaleDateString('es-SV', { weekday: 'long', day: 'numeric', month: 'long' })}
+          </p>
+        </div>
+        <Link
+          href="/app/finn"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-landing-forest text-landing-cream transition-transform hover:scale-105"
+          aria-label="Hablar con Neto"
+        >
+          <Bot className="h-5 w-5" aria-hidden="true" />
+        </Link>
       </div>
 
-      {/* ── 1. Qué necesita tu atención hoy ─────────────────────────── */}
+      {/* ── Qué necesita tu atención hoy ────────────────────────────── */}
       {alerts.length > 0 && (
         <div className="animate-fade-in-up space-y-2" style={{ animationDelay: '0ms' }}>
           {alerts.map((alert, i) => {
             const style = ALERT_STYLES[alert.severity];
             return (
-              <div
+              <Link
                 key={i}
-                className={`flex items-center justify-between rounded-md border ${style.border} ${style.bg} px-4 py-3`}
+                href={alert.actionHref}
+                className={`flex items-center justify-between rounded-xl border ${style.border} ${style.bg} px-4 py-3 transition-colors hover:bg-landing-terracotta/5`}
               >
-                <p className="text-sm">
-                  {style.icon} {alert.title}
+                <p className="flex items-center gap-2 text-sm">
+                  <Bell className={`h-4 w-4 shrink-0 ${style.icon}`} aria-hidden="true" />
+                  {alert.title}
                 </p>
-                <Button asChild variant="ghost" size="sm">
-                  <Link href={alert.actionHref}>{alert.actionLabel}</Link>
-                </Button>
-              </div>
+                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+              </Link>
             );
           })}
         </div>
       )}
 
-      {/* ── 2. El número más importante: patrimonio neto ────────────── */}
-      <Card className="animate-fade-in-up" style={{ animationDelay: '60ms' }}>
-        <CardContent className="py-6 text-center">
-          <p className="text-sm text-muted-foreground">Patrimonio neto</p>
-          <p
-            className={`font-mono text-4xl ${(netWorth?.net_worth ?? 0) >= 0 ? 'text-ff-green' : 'text-ff-red'}`}
-          >
-            <AnimatedNumber value={netWorth?.net_worth ?? 0} format={{ kind: 'currency', currency }} />
-          </p>
-          {netWorthDelta !== null && (
-            <p className={`mt-1 text-xs ${netWorthDelta >= 0 ? 'text-ff-green' : 'text-ff-red'}`}>
-              {netWorthDelta >= 0 ? '↑' : '↓'} {fmt(Math.abs(netWorthDelta))} desde el último snapshot
+      {/* ── Héroe: patrimonio neto + anillo de presupuesto ──────────── */}
+      <div className="grid gap-4 sm:grid-cols-[1.6fr_1fr]">
+        <Card className="animate-fade-in-up" style={{ animationDelay: '60ms' }}>
+          <CardContent className="py-6">
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">Patrimonio neto</p>
+            <p
+              className={`font-mono text-4xl ${(netWorth?.net_worth ?? 0) >= 0 ? 'text-ff-green' : 'text-ff-red'}`}
+            >
+              <AnimatedNumber value={netWorth?.net_worth ?? 0} format={{ kind: 'currency', currency }} />
             </p>
-          )}
-          <Button asChild variant="outline" size="sm" className="mt-3">
-            <Link href="/app/patrimonio">Ver desglose</Link>
-          </Button>
-        </CardContent>
-      </Card>
+            {netWorthDelta !== null && (
+              <div className="mt-2 flex items-center gap-2">
+                <span
+                  className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+                    netWorthDelta >= 0 ? 'bg-ff-green/10 text-ff-green' : 'bg-ff-red/10 text-ff-red'
+                  }`}
+                >
+                  {netWorthDelta >= 0 ? (
+                    <ArrowUp className="h-3 w-3" aria-hidden="true" />
+                  ) : (
+                    <ArrowDown className="h-3 w-3" aria-hidden="true" />
+                  )}
+                  {fmt(Math.abs(netWorthDelta))}
+                </span>
+                <span className="text-xs text-muted-foreground">desde el último snapshot</span>
+              </div>
+            )}
+            <NetWorthSparkline points={sparklinePoints} />
+          </CardContent>
+        </Card>
 
-      {/* ── 3. Flujo del mes: ¿ganas más de lo que gastas? ──────────── */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card className="animate-fade-in-up" style={{ animationDelay: '120ms' }}>
-          <CardContent className="py-5 text-center">
-            <p className="text-sm text-muted-foreground">Ingresos del mes</p>
+        <Card className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+          <CardContent className="flex h-full flex-col items-center justify-center py-6">
+            {budgetExecutionPct !== null ? (
+              <>
+                <AnimatedRing percent={budgetExecutionPct} />
+                <p className="mt-4 text-center text-xs text-muted-foreground">presupuesto ejecutado</p>
+              </>
+            ) : (
+              <>
+                <p className="text-center text-sm text-muted-foreground">Sin presupuesto activo</p>
+                <Button asChild variant="outline" size="sm" className="mt-3">
+                  <Link href="/app/presupuesto/nuevo">Crear presupuesto</Link>
+                </Button>
+              </>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* ── Flujo del mes ────────────────────────────────────────────── */}
+      <div className="grid gap-3 sm:grid-cols-3">
+        <Card
+          className="animate-fade-in-up border-t-[3px] border-t-ff-green"
+          style={{ animationDelay: '150ms' }}
+        >
+          <CardContent className="py-4">
+            <p className="text-xs text-muted-foreground">Ingresos del mes</p>
             <p className="font-mono text-xl text-ff-green">
               <AnimatedNumber value={totalIncome} format={{ kind: 'currency', currency }} />
             </p>
           </CardContent>
         </Card>
-        <Card className="animate-fade-in-up" style={{ animationDelay: '170ms' }}>
-          <CardContent className="py-5 text-center">
-            <p className="text-sm text-muted-foreground">Gastos del mes</p>
+        <Card
+          className="animate-fade-in-up border-t-[3px] border-t-ff-red"
+          style={{ animationDelay: '190ms' }}
+        >
+          <CardContent className="py-4">
+            <p className="text-xs text-muted-foreground">Gastos del mes</p>
             <p className="font-mono text-xl text-ff-red">
               <AnimatedNumber value={totalExpenses} format={{ kind: 'currency', currency }} />
             </p>
           </CardContent>
         </Card>
-        <Card className="animate-fade-in-up" style={{ animationDelay: '220ms' }}>
-          <CardContent className="py-5 text-center">
-            <p className="text-sm text-muted-foreground">Tasa de ahorro</p>
+        <Card
+          className={`animate-fade-in-up border-t-[3px] ${
+            savingsRate === null
+              ? 'border-t-border'
+              : savingsRate >= 20
+                ? 'border-t-ff-green'
+                : savingsRate >= 0
+                  ? 'border-t-ff-yellow'
+                  : 'border-t-ff-red'
+          }`}
+          style={{ animationDelay: '230ms' }}
+        >
+          <CardContent className="py-4">
+            <p className="text-xs text-muted-foreground">Tasa de ahorro</p>
             <p
               className={`font-mono text-xl ${
                 savingsRate === null
@@ -190,117 +263,74 @@ export default async function AppHomePage() {
                       : 'text-ff-red'
               }`}
             >
-              {savingsRate === null ? (
-                '—'
-              ) : (
-                <AnimatedNumber value={savingsRate} format={{ kind: 'percent' }} />
-              )}
+              {savingsRate === null ? '—' : <AnimatedNumber value={savingsRate} format={{ kind: 'percent' }} />}
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* ── 4. Resumen por módulo ────────────────────────────────────── */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card className="animate-fade-in-up" style={{ animationDelay: '270ms' }}>
-          <CardContent className="flex items-center justify-between py-5">
-            <div>
-              <p className="font-medium">Liquidez disponible</p>
-              <p className="font-mono text-sm text-ff-green">
-                <AnimatedNumber value={liquidBalance} format={{ kind: 'currency', currency }} />
-              </p>
-            </div>
-            <Button asChild variant="outline" size="sm">
-              <Link href="/app/cuentas">Ver cuentas</Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="animate-fade-in-up" style={{ animationDelay: '320ms' }}>
-          <CardContent className="flex items-center justify-between py-5">
-            <div className="flex items-center gap-4">
-              {budgetExecutionPct !== null && <AnimatedRing percent={budgetExecutionPct} />}
-              <div>
-                <p className="font-medium">Presupuesto</p>
-                {budgetExecutionPct === null ? (
-                  <p className="text-sm text-muted-foreground">Sin presupuesto activo</p>
-                ) : (
-                  <p className="text-xs text-muted-foreground">ejecutado del mes</p>
-                )}
-              </div>
-            </div>
-            <Button asChild variant="outline" size="sm">
-              <Link href={activeBudget ? '/app/presupuesto' : '/app/presupuesto/nuevo'}>
-                {activeBudget ? 'Ver' : 'Crear'}
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="animate-fade-in-up" style={{ animationDelay: '370ms' }}>
-          <CardContent className="flex items-center justify-between py-5">
-            <div>
-              <p className="font-medium">Deuda en tarjetas</p>
-              <p className={`font-mono text-sm ${totalCardDebt > 0 ? 'text-ff-red' : 'text-ff-green'}`}>
-                <AnimatedNumber value={totalCardDebt} format={{ kind: 'currency', currency }} />
-              </p>
-            </div>
-            <Button asChild variant="outline" size="sm">
-              <Link href="/app/tarjetas">Ver tarjetas</Link>
-            </Button>
-          </CardContent>
-        </Card>
+      {/* ── Módulos (bento grid) ─────────────────────────────────────── */}
+      <div
+        className="grid animate-fade-in-up grid-cols-2 gap-3 sm:grid-cols-4"
+        style={{ animationDelay: '270ms' }}
+      >
+        <ModuleCard
+          href="/app/cuentas"
+          icon={Wallet}
+          tint="blue"
+          label="Liquidez disponible"
+          value={fmt(liquidBalance)}
+          valueClass="text-ff-green"
+        />
+        <ModuleCard
+          href="/app/tarjetas"
+          icon={CreditCard}
+          tint="red"
+          label="Deuda en tarjetas"
+          value={fmt(totalCardDebt)}
+          valueClass={totalCardDebt > 0 ? 'text-ff-red' : 'text-ff-green'}
+        />
+        {totalLoansPending > 0 && (
+          <ModuleCard
+            href="/app/prestamos"
+            icon={HandCoins}
+            tint="yellow"
+            label="Préstamos activos"
+            value={fmt(totalLoansPending)}
+            valueClass="text-ff-yellow"
+          />
+        )}
+        {goalsCount > 0 && (
+          <ModuleCard
+            href="/app/metas"
+            icon={Target}
+            tint="green"
+            label={`Metas activas (${goalsCount})`}
+            value={`${fmt(goalsSaved)} ahorrado`}
+            valueClass="text-ff-green"
+          />
+        )}
       </div>
 
-      {/* ── 4b. Préstamos activos (solo si tiene) ────────────────────── */}
-      {totalLoansPending > 0 && (
-        <Card className="animate-fade-in-up" style={{ animationDelay: '395ms' }}>
-          <CardContent className="flex items-center justify-between py-5">
-            <div>
-              <p className="font-medium">Préstamos activos</p>
-              <p className="font-mono text-sm text-ff-yellow">
-                <AnimatedNumber value={totalLoansPending} format={{ kind: 'currency', currency }} />
-              </p>
-            </div>
-            <Button asChild variant="outline" size="sm">
-              <Link href="/app/prestamos">Ver préstamos</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* ── 4c. Metas activas (solo si tiene) ────────────────────────── */}
-      {goalsCount > 0 && (
-        <Card className="animate-fade-in-up" style={{ animationDelay: '410ms' }}>
-          <CardContent className="flex items-center justify-between py-5">
-            <div>
-              <p className="font-medium">Metas activas ({goalsCount})</p>
-              <p className="font-mono text-sm text-ff-green">
-                <AnimatedNumber value={goalsSaved} format={{ kind: 'currency', currency }} />
-                <span className="ml-1 text-xs text-muted-foreground">ahorrado</span>
-              </p>
-            </div>
-            <Button asChild variant="outline" size="sm">
-              <Link href="/app/metas">Ver metas</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* ── 5. CTA a Neto ─────────────────────────────────────────────── */}
-      <Card className="animate-fade-in-up border-ff-green/20 bg-ff-green/5" style={{ animationDelay: '420ms' }}>
-        <CardContent className="flex items-center justify-between py-5">
+      {/* ── CTA a Neto ───────────────────────────────────────────────── */}
+      <Link
+        href="/app/finn"
+        className="animate-fade-in-up flex items-center justify-between rounded-xl bg-landing-forest px-5 py-4 transition-opacity hover:opacity-90"
+        style={{ animationDelay: '320ms' }}
+      >
+        <div className="flex items-center gap-3">
+          <Bot className="h-5 w-5 shrink-0 text-landing-cream" aria-hidden="true" />
           <div>
-            <p className="font-medium">🤖 ¿Dudas sobre tus finanzas?</p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm font-medium text-landing-cream">¿Dudas sobre tus finanzas?</p>
+            <p className="text-xs text-landing-cream/70">
               Pregúntale a Neto — conoce tus datos reales, no respuestas genéricas.
             </p>
           </div>
-          <Button asChild size="sm">
-            <Link href="/app/finn">Hablar con Neto</Link>
-          </Button>
-        </CardContent>
-      </Card>
+        </div>
+        <span className="shrink-0 rounded-full bg-landing-terracotta px-4 py-2 text-xs font-medium text-landing-cream">
+          Hablar con Neto
+        </span>
+      </Link>
     </div>
   );
 }
