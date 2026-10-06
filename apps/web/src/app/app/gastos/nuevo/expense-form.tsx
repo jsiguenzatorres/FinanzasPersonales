@@ -11,6 +11,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
+import { Receipt, AlertCircle } from 'lucide-react';
 import { createExpenseAction, editExpenseAction } from '@/lib/expenses/actions';
 import { classifyExpenseCategory } from '@/lib/expenses/classify';
 import { scanReceiptAction } from '@/lib/expenses/ocr';
@@ -141,8 +142,11 @@ export function ExpenseForm({
   }, {});
 
   return (
-    <Card>
+    <Card className="animate-fade-in-up">
       <CardHeader>
+        <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-[10px] bg-ff-red/10">
+          <Receipt className="h-5 w-5 text-ff-red" aria-hidden="true" />
+        </div>
         <CardTitle>{isEditing ? 'Editar gasto' : 'Nuevo gasto'}</CardTitle>
         <CardDescription>
           {isEditing
@@ -152,7 +156,8 @@ export function ExpenseForm({
       </CardHeader>
       <CardContent className="space-y-4">
         {error && (
-          <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+          <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
             {error}
           </p>
         )}

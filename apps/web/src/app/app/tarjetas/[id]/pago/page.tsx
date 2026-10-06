@@ -8,6 +8,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
+import { Banknote, AlertCircle } from 'lucide-react';
 import { registerPaymentAction } from '@/lib/credit-cards/actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
@@ -40,8 +41,11 @@ export default async function CardPaymentPage({
 
   return (
     <div className="mx-auto max-w-md">
-      <Card>
+      <Card className="animate-fade-in-up">
         <CardHeader>
+          <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-[10px] bg-ff-green/10">
+            <Banknote className="h-5 w-5 text-ff-green" aria-hidden="true" />
+          </div>
           <CardTitle>
             Registrar pago — {card.bank_name} {card.card_name}
           </CardTitle>
@@ -54,7 +58,8 @@ export default async function CardPaymentPage({
         </CardHeader>
         <CardContent className="space-y-4">
           {error && (
-            <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+            <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+              <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
               {error}
             </p>
           )}

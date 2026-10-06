@@ -8,6 +8,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
+import { Wallet, AlertCircle } from 'lucide-react';
 import { createAccountAction } from '@/lib/accounts/actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
@@ -34,14 +35,18 @@ export default async function NewAccountPage({
 
   return (
     <div className="mx-auto max-w-md">
-      <Card>
+      <Card className="animate-fade-in-up">
         <CardHeader>
+          <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-[10px] bg-ff-blue/10">
+            <Wallet className="h-5 w-5 text-ff-blue" aria-hidden="true" />
+          </div>
           <CardTitle>Nueva cuenta</CardTitle>
           <CardDescription>Registra dónde guardas tu dinero</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {error && (
-            <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+            <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
+              <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
               {error}
             </p>
           )}
