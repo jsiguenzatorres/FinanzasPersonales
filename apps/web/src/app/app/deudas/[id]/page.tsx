@@ -4,6 +4,7 @@ import { Button, Card, CardContent, Input, Label } from '@flowfinance/ui';
 import { TrendingDown, AlertCircle } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { deleteDebtAction, createDebtPaymentAction } from '@/lib/debts/actions';
+import { ConfettiBurst } from '@/components/confetti-burst';
 
 const TYPE_LABELS: Record<string, string> = {
   personal_loan: 'Préstamo personal',
@@ -26,10 +27,10 @@ export default async function DebtDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; celebrate?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
+  const { error, celebrate } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const { data: debt } = await supabase.from('debts').select('*').eq('id', id).single();
@@ -48,6 +49,8 @@ export default async function DebtDetailPage({
 
   return (
     <div className="mx-auto max-w-md space-y-6">
+      <ConfettiBurst active={celebrate === '1'} />
+
       <Link href="/app/deudas" className="text-sm text-muted-foreground hover:underline">
         ← Deudas
       </Link>

@@ -5,6 +5,7 @@ import { Target } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { deleteGoalAction } from '@/lib/goals/actions';
 import { ContributionForm } from './contribution-form';
+import { ConfettiBurst } from '@/components/confetti-burst';
 
 const TYPE_LABELS: Record<string, string> = {
   emergency_fund: 'Fondo de emergencia',
@@ -29,8 +30,15 @@ const SOURCE_LABELS: Record<string, string> = {
   auto_income: 'Automático desde ingreso',
 };
 
-export default async function GoalDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function GoalDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ celebrate?: string }>;
+}) {
   const { id } = await params;
+  const { celebrate } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const { data: goal } = await supabase.from('goals').select('*').eq('id', id).single();
@@ -47,8 +55,12 @@ export default async function GoalDetailPage({ params }: { params: Promise<{ id:
     new Intl.NumberFormat('es-SV', { style: 'currency', currency: goal.currency }).format(n);
   const pct = Math.min(goal.progress_pct ?? 0, 100);
 
+  const nearComplete = pct >= 90 && pct < 100;
+
   return (
     <div className="mx-auto max-w-md space-y-6">
+      <ConfettiBurst active={celebrate === '1'} />
+
       <Link href="/app/metas" className="text-sm text-muted-foreground hover:underline">
         ← Metas
       </Link>
@@ -56,7 +68,9 @@ export default async function GoalDetailPage({ params }: { params: Promise<{ id:
       <Card className="animate-fade-in-up">
         <CardContent className="space-y-3 py-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ff-green/10">
+            <div
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ff-green/10 ${nearComplete ? 'animate-target-pulse' : ''}`}
+            >
               <Target className="h-5 w-5 text-ff-green" aria-hidden="true" />
             </div>
             <div>

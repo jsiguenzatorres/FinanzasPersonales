@@ -90,7 +90,9 @@ export default async function GoalsPage() {
                 >
                   <CardContent className="space-y-3 py-5">
                     <div className="flex items-center gap-3">
-                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] ${meta.tint}`}>
+                      <div
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] ${meta.tint} ${pct >= 90 && pct < 100 ? 'animate-target-pulse' : ''}`}
+                      >
                         <Icon className={`h-5 w-5 ${meta.iconColor}`} aria-hidden="true" />
                       </div>
                       <div className="min-w-0">

@@ -6,6 +6,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { deleteLoanPortfolioAction } from '@/lib/loan-portfolio/actions';
 import { createLoanPortfolioPaymentAction } from '@/lib/loan-portfolio/payments';
 import type { AmortizationInstallment } from '@flowfinance/shared/utils';
+import { ConfettiBurst } from '@/components/confetti-burst';
 
 const STATUS_LABELS: Record<string, string> = {
   active: 'Activo',
@@ -20,10 +21,10 @@ export default async function LoanPortfolioDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; celebrate?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
+  const { error, celebrate } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const { data: loan } = await supabase.from('loan_portfolio').select('*').eq('id', id).single();
@@ -43,6 +44,8 @@ export default async function LoanPortfolioDetailPage({
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
+      <ConfettiBurst active={celebrate === '1'} />
+
       <Link href="/app/mi-cartera" className="text-sm text-muted-foreground hover:underline">
         ← Mi Cartera
       </Link>

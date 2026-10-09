@@ -116,7 +116,7 @@ export default async function BudgetPage() {
                 }`}
               >
                 <PieChart
-                  className={`h-5 w-5 ${
+                  className={`h-5 w-5 animate-bar-breathe ${
                     executionPct >= 100 ? 'text-ff-red' : executionPct >= 80 ? 'text-ff-yellow' : 'text-ff-green'
                   }`}
                   aria-hidden="true"

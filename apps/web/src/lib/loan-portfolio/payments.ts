@@ -105,5 +105,5 @@ export async function createLoanPortfolioPaymentAction(formData: FormData) {
   revalidatePath(`/app/mi-cartera/${loanId}`);
   revalidatePath('/app/patrimonio');
   revalidatePath('/app');
-  redirect(`/app/mi-cartera/${loanId}`);
+  redirect(`/app/mi-cartera/${loanId}${isLastInstallment ? '?celebrate=1' : ''}`);
 }

@@ -93,7 +93,11 @@ export default async function NetWorthPage({
                   delta >= 0 ? 'bg-ff-green/10 text-ff-green' : 'bg-ff-red/10 text-ff-red'
                 }`}
               >
-                {delta >= 0 ? <ArrowUp className="h-3 w-3" aria-hidden="true" /> : <ArrowDown className="h-3 w-3" aria-hidden="true" />}
+                {delta >= 0 ? (
+                  <ArrowUp className="h-3 w-3 animate-arrow-bounce" aria-hidden="true" />
+                ) : (
+                  <ArrowDown className="h-3 w-3" aria-hidden="true" />
+                )}
                 {fmt(Math.abs(delta))}
               </span>
               <span className="text-xs text-muted-foreground">

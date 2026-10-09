@@ -64,6 +64,52 @@
     animation: fade-in-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
+  /* ─── Íconos "vivos" con significado financiero ──────────────────────
+     Cada animación representa un estado real, no decoración constante:
+     coin-drop = ahorro activo, bar-breathe = actividad del presupuesto,
+     target-pulse = meta cerca de cumplirse, arrow-bounce = crecimiento. */
+  @keyframes coin-drop {
+    0% { transform: translateY(-8px) rotate(0deg); opacity: 0; }
+    20% { opacity: 1; }
+    60% { transform: translateY(5px) rotate(180deg); opacity: 1; }
+    75%, 100% { transform: translateY(5px); opacity: 0; }
+  }
+  .animate-coin-drop {
+    animation: coin-drop 2.2s ease-in-out infinite;
+  }
+
+  @keyframes bar-breathe {
+    0%, 100% { transform: scaleY(0.85); }
+    50% { transform: scaleY(1); }
+  }
+  .animate-bar-breathe {
+    animation: bar-breathe 2.4s ease-in-out infinite;
+  }
+
+  @keyframes target-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.14); }
+  }
+  .animate-target-pulse {
+    animation: target-pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes arrow-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  .animate-arrow-bounce {
+    animation: arrow-bounce 1.3s ease-in-out infinite;
+  }
+
+  @keyframes confetti-piece {
+    0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(var(--confetti-dx), var(--confetti-dy)) rotate(var(--confetti-rot)); opacity: 0; }
+  }
+  .animate-confetti-piece {
+    animation: confetti-piece var(--confetti-duration, 0.9s) ease-out forwards;
+  }
+
   /* ─── Marketing / landing page ────────────────────────────────────── */
   @keyframes drift {
     0%, 100% { transform: translate(0, 0) scale(1); }

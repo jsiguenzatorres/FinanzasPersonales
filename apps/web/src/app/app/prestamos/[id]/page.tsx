@@ -6,6 +6,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { listAttachments } from '@/lib/attachments/actions';
 import { AttachmentsSection } from '@/components/attachments-section';
 import { writeOffFamilyLoanAction, deleteFamilyLoanAction } from '@/lib/loans/actions';
+import { ConfettiBurst } from '@/components/confetti-burst';
 
 const DELIVERY_METHOD_LABELS: Record<string, string> = {
   cash: 'Efectivo',
@@ -23,8 +24,15 @@ const STATUS_LABELS: Record<string, string> = {
   written_off: 'Incobrable',
 };
 
-export default async function FamilyLoanDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function FamilyLoanDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ celebrate?: string }>;
+}) {
   const { id } = await params;
+  const { celebrate } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const { data: loan } = await supabase.from('family_loans').select('*').eq('id', id).single();
@@ -44,6 +52,8 @@ export default async function FamilyLoanDetailPage({ params }: { params: Promise
 
   return (
     <div className="mx-auto max-w-md space-y-6">
+      <ConfettiBurst active={celebrate === '1'} />
+
       <Link href="/app/prestamos" className="text-sm text-muted-foreground hover:underline">
         ← Préstamos
       </Link>

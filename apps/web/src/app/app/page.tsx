@@ -182,7 +182,7 @@ export default async function AppHomePage() {
                   }`}
                 >
                   {netWorthDelta >= 0 ? (
-                    <ArrowUp className="h-3 w-3" aria-hidden="true" />
+                    <ArrowUp className="h-3 w-3 animate-arrow-bounce" aria-hidden="true" />
                   ) : (
                     <ArrowDown className="h-3 w-3" aria-hidden="true" />
                   )}

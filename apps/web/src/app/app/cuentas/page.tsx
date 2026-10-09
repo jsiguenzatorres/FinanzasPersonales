@@ -94,8 +94,13 @@ export default async function AccountsPage({
               >
                 <CardContent className="space-y-3 py-5">
                   <div className="flex items-center gap-3">
-                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] ${meta.tint}`}>
+                    <div
+                      className={`relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[10px] ${meta.tint}`}
+                    >
                       <Icon className={`h-5 w-5 ${meta.iconColor}`} aria-hidden="true" />
+                      {(account.type === 'savings' || account.type === 'cash') && (
+                        <span className="animate-coin-drop absolute top-0.5 h-1.5 w-1.5 rounded-full bg-landing-gold" />
+                      )}
                     </div>
                     <div className="min-w-0">
                       <p className="truncate font-medium">{account.name}</p>

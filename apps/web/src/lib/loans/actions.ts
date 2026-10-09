@@ -294,7 +294,7 @@ export async function createFamilyLoanPaymentAction(formData: FormData) {
   revalidatePath('/app/prestamos');
   revalidatePath('/app/cuentas');
   revalidatePath('/app');
-  redirect(`/app/prestamos/${loanId}`);
+  redirect(`/app/prestamos/${loanId}${resultingBalance <= 0 ? '?celebrate=1' : ''}`);
 }
 
 /** Vincula retroactivamente un gasto ya existente a un préstamo (nuevo o existente). */

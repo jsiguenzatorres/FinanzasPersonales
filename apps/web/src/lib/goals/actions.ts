@@ -209,6 +209,8 @@ export async function createGoalContributionAction(formData: FormData) {
 
   if (!user) redirect('/login');
 
+  const { data: goalBefore } = await supabase.from('goals').select('status').eq('id', goalId).single();
+
   const { error } = await supabase.from('goal_contributions').insert({
     user_id: user.id,
     goal_id: parsed.data.goal_id,
@@ -226,5 +228,12 @@ export async function createGoalContributionAction(formData: FormData) {
   revalidatePath('/app/metas');
   revalidatePath(`/app/metas/${goalId}`);
   revalidatePath('/app');
-  redirect(`/app/metas/${goalId}`);
+
+  // El trigger de BD completa la meta automáticamente al llegar al monto —
+  // si justo acaba de pasar de 'active' a 'completed' con este abono,
+  // celebramos. No se dispara en retiros ni si ya estaba completada.
+  const { data: goalAfter } = await supabase.from('goals').select('status').eq('id', goalId).single();
+  const justCompleted = goalBefore?.status === 'active' && goalAfter?.status === 'completed';
+
+  redirect(`/app/metas/${goalId}${justCompleted ? '?celebrate=1' : ''}`);
 }

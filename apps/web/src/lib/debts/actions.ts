@@ -195,5 +195,5 @@ export async function createDebtPaymentAction(formData: FormData) {
   revalidatePath(`/app/deudas/${debtId}`);
   revalidatePath('/app/patrimonio');
   revalidatePath('/app');
-  redirect(`/app/deudas/${debtId}`);
+  redirect(`/app/deudas/${debtId}${newBalance <= 0 ? '?celebrate=1' : ''}`);
 }
