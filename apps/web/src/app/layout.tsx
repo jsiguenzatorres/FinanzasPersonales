@@ -1,5 +1,6 @@
 import '@flowfinance/ui/styles';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
+import { PwaRegister } from '@/components/pwa-register';
 
 export const metadata: Metadata = {
   title: {
@@ -9,6 +10,18 @@ export const metadata: Metadata = {
   description: 'Finanzas personales con IA — diseñado para LATAM.',
   applicationName: 'FlowFinance',
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'FlowFinance',
+  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#BD5A34',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -20,7 +33,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <PwaRegister />
+      </body>
     </html>
   );
 }
