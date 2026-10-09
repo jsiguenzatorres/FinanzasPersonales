@@ -64,7 +64,7 @@ export default async function FinnPage({
         {messages.length === 0 ? (
           <Card className="animate-fade-in-up">
             <CardContent className="flex flex-col items-center gap-4 py-10 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-landing-forest/10">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full animate-empty-breathe bg-landing-forest/10">
                 <Bot className="h-6 w-6 text-landing-forest" aria-hidden="true" />
               </div>
               <p className="text-muted-foreground">¡Hola! Soy {finnName}. Pregúntame cosas como:</p>

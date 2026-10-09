@@ -37,7 +37,7 @@ export default async function ExpensesPage() {
       {!expenses || expenses.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ff-red/10">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full animate-empty-breathe bg-ff-red/10">
               <Receipt className="h-6 w-6 text-ff-red" aria-hidden="true" />
             </div>
             <p className="text-muted-foreground">Aún no tienes gastos registrados.</p>

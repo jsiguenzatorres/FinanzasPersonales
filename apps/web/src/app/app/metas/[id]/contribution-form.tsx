@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { Input, Label } from '@flowfinance/ui';
-import { cn } from '@flowfinance/ui';
 import { createGoalContributionAction } from '@/lib/goals/actions';
 import { SubmitButton } from '@/components/submit-button';
+import { SegmentedToggle } from '@/components/segmented-toggle';
 
 export function ContributionForm({ goalId, currency }: { goalId: string; currency: string }) {
   const [direction, setDirection] = useState<'deposit' | 'withdraw'>('deposit');
@@ -16,32 +16,24 @@ export function ContributionForm({ goalId, currency }: { goalId: string; currenc
       <input type="hidden" name="currency" value={currency} />
       <input type="hidden" name="direction" value={direction} />
 
-      <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={() => setDirection('deposit')}
-          className={cn(
-            'flex-1 rounded-md border px-3 py-1.5 text-sm transition-all duration-150 active:scale-95',
-            direction === 'deposit'
-              ? 'border-ff-green/40 bg-ff-green/10 text-ff-green'
-              : 'border-border text-muted-foreground',
-          )}
-        >
-          Aportar
-        </button>
-        <button
-          type="button"
-          onClick={() => setDirection('withdraw')}
-          className={cn(
-            'flex-1 rounded-md border px-3 py-1.5 text-sm transition-all duration-150 active:scale-95',
-            direction === 'withdraw'
-              ? 'border-ff-red/40 bg-ff-red/10 text-ff-red'
-              : 'border-border text-muted-foreground',
-          )}
-        >
-          Retirar
-        </button>
-      </div>
+      <SegmentedToggle
+        value={direction}
+        onChange={setDirection}
+        options={[
+          {
+            value: 'deposit',
+            label: 'Aportar',
+            activeClassName: 'border-ff-green/40 text-ff-green',
+            pillClassName: 'bg-ff-green/10',
+          },
+          {
+            value: 'withdraw',
+            label: 'Retirar',
+            activeClassName: 'border-ff-red/40 text-ff-red',
+            pillClassName: 'bg-ff-red/10',
+          },
+        ]}
+      />
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">

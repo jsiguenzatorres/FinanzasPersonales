@@ -3,6 +3,7 @@ import { Button, Card, CardContent } from '@flowfinance/ui';
 import { Repeat, Sparkles } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { SubscriptionScanner } from '@/components/subscriptions/scanner';
+import { AnimatedNumber } from '@/components/animated-number';
 
 const FREQ_LABELS: Record<string, string> = {
   daily: 'Diaria',
@@ -52,7 +53,7 @@ export default async function SubscriptionsPage() {
           <CardContent className="py-5 text-center">
             <p className="text-sm text-muted-foreground">Total mensual aproximado</p>
             <p className="font-mono text-xl text-ff-red">
-              {new Intl.NumberFormat('es-SV', { style: 'currency', currency: 'USD' }).format(monthlyTotal)}
+              <AnimatedNumber value={monthlyTotal} format={{ kind: 'currency', currency: 'USD' }} />
             </p>
           </CardContent>
         </Card>
@@ -63,7 +64,7 @@ export default async function SubscriptionsPage() {
       {!subscriptions || subscriptions.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ff-red/10">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full animate-empty-breathe bg-ff-red/10">
               <Repeat className="h-6 w-6 text-ff-red" aria-hidden="true" />
             </div>
             <p className="text-muted-foreground">

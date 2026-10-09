@@ -3,6 +3,7 @@ import { Button, Card, CardContent } from '@flowfinance/ui';
 import { CreditCard as CreditCardIcon, AlertCircle } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { archiveCreditCardAction, deleteCreditCardAction } from '@/lib/credit-cards/actions';
+import { AnimatedNumber } from '@/components/animated-number';
 
 function utilizationColor(pct: number): string {
   if (pct < 30) return 'text-ff-green';
@@ -42,7 +43,7 @@ export default async function CreditCardsPage({
       {!cards || cards.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ff-red/10">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full animate-empty-breathe bg-ff-red/10">
               <CreditCardIcon className="h-6 w-6 text-ff-red" aria-hidden="true" />
             </div>
             <p className="text-muted-foreground">Aún no tienes tarjetas registradas.</p>
@@ -78,10 +79,7 @@ export default async function CreditCardsPage({
                   </div>
 
                   <p className="font-mono text-xl text-ff-red">
-                    {new Intl.NumberFormat('es-SV', {
-                      style: 'currency',
-                      currency: card.currency,
-                    }).format(card.current_balance)}
+                    <AnimatedNumber value={card.current_balance} format={{ kind: 'currency', currency: card.currency }} />
                   </p>
 
                   <div className="space-y-1">

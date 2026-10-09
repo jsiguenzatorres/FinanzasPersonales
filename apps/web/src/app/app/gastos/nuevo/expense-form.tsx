@@ -13,6 +13,7 @@ import {
 } from '@flowfinance/ui';
 import { Receipt, AlertCircle } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
+import { SegmentedToggle } from '@/components/segmented-toggle';
 import { createExpenseAction, editExpenseAction } from '@/lib/expenses/actions';
 import { classifyExpenseCategory } from '@/lib/expenses/classify';
 import { scanReceiptAction } from '@/lib/expenses/ocr';
@@ -292,31 +293,14 @@ export function ExpenseForm({
 
           <div className="space-y-1.5">
             <Label>Método de pago</Label>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('account')}
-                className={`flex-1 rounded-md border px-3 py-2 text-sm transition-all duration-150 active:scale-95 ${
-                  paymentMethod === 'account'
-                    ? 'border-primary bg-primary/10 text-foreground'
-                    : 'border-border text-muted-foreground'
-                }`}
-              >
-                Cuenta
-              </button>
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('card')}
-                disabled={cards.length === 0}
-                className={`flex-1 rounded-md border px-3 py-2 text-sm transition-all duration-150 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 ${
-                  paymentMethod === 'card'
-                    ? 'border-primary bg-primary/10 text-foreground'
-                    : 'border-border text-muted-foreground'
-                }`}
-              >
-                Tarjeta de crédito
-              </button>
-            </div>
+            <SegmentedToggle
+              value={paymentMethod}
+              onChange={setPaymentMethod}
+              options={[
+                { value: 'account', label: 'Cuenta' },
+                { value: 'card', label: 'Tarjeta de crédito', disabled: cards.length === 0 },
+              ]}
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">

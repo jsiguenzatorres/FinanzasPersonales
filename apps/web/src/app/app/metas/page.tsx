@@ -62,7 +62,7 @@ export default async function GoalsPage() {
       {!goals || goals.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ff-green/10">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full animate-empty-breathe bg-ff-green/10">
               <Target className="h-6 w-6 text-ff-green" aria-hidden="true" />
             </div>
             <p className="text-muted-foreground">

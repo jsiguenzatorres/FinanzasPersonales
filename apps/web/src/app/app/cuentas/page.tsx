@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { archiveAccountAction, deleteAccountAction } from '@/lib/accounts/actions';
+import { AnimatedNumber } from '@/components/animated-number';
 
 const ACCOUNT_TYPE_LABELS: Record<string, string> = {
   checking: 'Cuenta corriente',
@@ -69,7 +70,7 @@ export default async function AccountsPage({
       {!accounts || accounts.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ff-blue/10">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full animate-empty-breathe bg-ff-blue/10">
               <Wallet className="h-6 w-6 text-ff-blue" aria-hidden="true" />
             </div>
             <p className="text-muted-foreground">
@@ -112,10 +113,7 @@ export default async function AccountsPage({
                   </div>
 
                   <p className={`font-mono text-xl ${isNegative ? 'text-ff-red' : 'text-ff-green'}`}>
-                    {new Intl.NumberFormat('es-SV', {
-                      style: 'currency',
-                      currency: account.currency,
-                    }).format(account.balance)}
+                    <AnimatedNumber value={account.balance} format={{ kind: 'currency', currency: account.currency }} />
                   </p>
 
                   <div className="flex flex-wrap gap-2 border-t border-border pt-3">

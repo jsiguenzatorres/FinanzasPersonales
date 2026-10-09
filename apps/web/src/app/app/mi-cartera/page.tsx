@@ -54,7 +54,7 @@ export default async function LoanPortfolioPage() {
       {!loans || loans.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-ff-yellow/10">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full animate-empty-breathe bg-ff-yellow/10">
               <BadgePercent className="h-6 w-6 text-ff-yellow" aria-hidden="true" />
             </div>
             <p className="text-muted-foreground">

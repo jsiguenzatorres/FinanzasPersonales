@@ -12,6 +12,7 @@ import {
 } from '@flowfinance/ui';
 import { PieChart, AlertCircle } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
+import { SegmentedToggle } from '@/components/segmented-toggle';
 import { createBudgetAction, editBudgetAction } from '@/lib/budgets/actions';
 
 interface CategoryOption {
@@ -83,23 +84,12 @@ export function BudgetForm({
 
           <div className="space-y-1.5">
             <Label>Modo</Label>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-              {MODES.map((m) => (
-                <button
-                  key={m.value}
-                  type="button"
-                  onClick={() => setMode(m.value)}
-                  className={`rounded-md border p-3 text-left text-sm transition-all duration-150 active:scale-95 ${
-                    mode === m.value
-                      ? 'border-primary bg-primary/10'
-                      : 'border-border text-muted-foreground'
-                  }`}
-                >
-                  <p className="font-medium text-foreground">{m.label}</p>
-                  <p className="mt-1 text-xs">{m.description}</p>
-                </button>
-              ))}
-            </div>
+            <SegmentedToggle
+              value={mode}
+              onChange={setMode}
+              className="grid grid-cols-1 sm:grid-cols-3"
+              options={MODES}
+            />
           </div>
 
           <div className="space-y-1.5">

@@ -2,10 +2,12 @@
 
 import { useRef, useState } from 'react';
 import { Mic, Square, Loader2 } from 'lucide-react';
-import { Button, Input, cn } from '@flowfinance/ui';
+import { Input, cn } from '@flowfinance/ui';
 import { sendFinnMessageAction } from '@/lib/finn/chat';
 import { transcribeAudioAction } from '@/lib/finn/transcribe';
 import { blobToBase64, blobToMp3 } from '@/lib/audio/encode-mp3';
+import { SubmitButton } from '@/components/submit-button';
+import { TypingIndicator } from '@/components/finn/typing-indicator';
 
 /** MediaRecorder no puede grabar directo a un formato que Gemini acepte en
  * todos los navegadores — mp4/aac si el navegador lo soporta (Safari), si
@@ -89,40 +91,41 @@ export function VoiceMessageForm({ conversationId }: { conversationId: string | 
 
   return (
     <div className="mt-4 space-y-2">
-      <form action={sendFinnMessageAction} className="flex gap-2">
-        <input type="hidden" name="conversation_id" value={conversationId ?? ''} />
-        <Input
-          name="message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder={isRecording ? 'Escuchando...' : 'Escribe o graba una nota de voz...'}
-          required
-          disabled={isRecording}
-          className="flex-1"
-        />
-        <button
-          type="button"
-          onClick={toggleRecording}
-          disabled={isProcessing}
-          aria-label={isRecording ? 'Detener grabación' : 'Grabar nota de voz'}
-          className={cn(
-            'inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md border transition-all duration-150 active:scale-90 disabled:pointer-events-none disabled:opacity-50',
-            isRecording
-              ? 'animate-pulse border-destructive bg-destructive text-destructive-foreground'
-              : 'border-border bg-transparent hover:bg-card',
-          )}
-        >
-          {isProcessing ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : isRecording ? (
-            <Square className="h-4 w-4" />
-          ) : (
-            <Mic className="h-4 w-4" />
-          )}
-        </button>
-        <Button type="submit" disabled={isRecording || isProcessing}>
-          Enviar
-        </Button>
+      <form action={sendFinnMessageAction} className="space-y-2">
+        <TypingIndicator />
+        <div className="flex gap-2">
+          <input type="hidden" name="conversation_id" value={conversationId ?? ''} />
+          <Input
+            name="message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder={isRecording ? 'Escuchando...' : 'Escribe o graba una nota de voz...'}
+            required
+            disabled={isRecording}
+            className="flex-1"
+          />
+          <button
+            type="button"
+            onClick={toggleRecording}
+            disabled={isProcessing}
+            aria-label={isRecording ? 'Detener grabación' : 'Grabar nota de voz'}
+            className={cn(
+              'inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md border transition-all duration-150 active:scale-90 disabled:pointer-events-none disabled:opacity-50',
+              isRecording
+                ? 'animate-pulse border-destructive bg-destructive text-destructive-foreground'
+                : 'border-border bg-transparent hover:bg-card',
+            )}
+          >
+            {isProcessing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : isRecording ? (
+              <Square className="h-4 w-4" />
+            ) : (
+              <Mic className="h-4 w-4" />
+            )}
+          </button>
+          <SubmitButton disabled={isRecording || isProcessing}>Enviar</SubmitButton>
+        </div>
       </form>
       {isProcessing && <p className="text-xs text-muted-foreground">Transcribiendo tu nota de voz...</p>}
       {voiceError && <p className="text-xs text-ff-red">{voiceError}</p>}
