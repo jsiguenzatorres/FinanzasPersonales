@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -12,6 +11,7 @@ import {
   Label,
 } from '@flowfinance/ui';
 import { PieChart, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { createBudgetAction, editBudgetAction } from '@/lib/budgets/actions';
 
 interface CategoryOption {
@@ -157,9 +157,7 @@ export function BudgetForm({
             )}
           </div>
 
-          <Button type="submit" className="w-full">
-            {isEditing ? 'Guardar cambios' : 'Crear presupuesto'}
-          </Button>
+          <SubmitButton className="w-full">{isEditing ? 'Guardar cambios' : 'Crear presupuesto'}</SubmitButton>
         </form>
       </CardContent>
     </Card>

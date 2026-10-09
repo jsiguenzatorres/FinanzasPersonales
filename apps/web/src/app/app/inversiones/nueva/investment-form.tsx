@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -12,6 +11,7 @@ import {
   Label,
 } from '@flowfinance/ui';
 import { ChartCandlestick, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { COMMON_COINGECKO_IDS } from '@flowfinance/shared/schemas';
 import { createInvestmentAction, editInvestmentAction } from '@/lib/investments/actions';
 
@@ -197,9 +197,7 @@ export function InvestmentForm({
             <Input id="notes" name="notes" defaultValue={initialValues?.notes} />
           </div>
 
-          <Button type="submit" className="w-full">
-            {isEditing ? 'Guardar cambios' : 'Crear inversión'}
-          </Button>
+          <SubmitButton className="w-full">{isEditing ? 'Guardar cambios' : 'Crear inversión'}</SubmitButton>
         </form>
       </CardContent>
     </Card>

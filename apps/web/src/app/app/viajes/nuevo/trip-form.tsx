@@ -1,7 +1,8 @@
 'use client';
 
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
 import { Plane, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { createTripAction, editTripAction } from '@/lib/trips/actions';
 
 export interface TripInitialValues {
@@ -120,9 +121,7 @@ export function TripForm({ error, initialValues }: { error?: string; initialValu
             <Input id="notes" name="notes" defaultValue={initialValues?.notes} />
           </div>
 
-          <Button type="submit" className="w-full">
-            {isEditing ? 'Guardar cambios' : 'Crear viaje'}
-          </Button>
+          <SubmitButton className="w-full">{isEditing ? 'Guardar cambios' : 'Crear viaje'}</SubmitButton>
         </form>
       </CardContent>
     </Card>

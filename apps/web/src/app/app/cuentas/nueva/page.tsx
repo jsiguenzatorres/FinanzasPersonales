@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -11,6 +10,7 @@ import {
 import { Wallet, AlertCircle } from 'lucide-react';
 import { createAccountAction } from '@/lib/accounts/actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { SubmitButton } from '@/components/submit-button';
 
 const ACCOUNT_TYPES = [
   { value: 'checking', label: 'Cuenta corriente' },
@@ -104,9 +104,7 @@ export default async function NewAccountPage({
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full">
-              Crear cuenta
-            </Button>
+            <SubmitButton className="w-full">Crear cuenta</SubmitButton>
           </form>
         </CardContent>
       </Card>

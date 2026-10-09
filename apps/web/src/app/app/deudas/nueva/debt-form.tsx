@@ -1,7 +1,8 @@
 'use client';
 
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
 import { TrendingDown, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { createDebtAction, editDebtAction } from '@/lib/debts/actions';
 
 export interface DebtInitialValues {
@@ -195,9 +196,7 @@ export function DebtForm({ error, initialValues }: { error?: string; initialValu
             <Input id="notes" name="notes" defaultValue={initialValues?.notes} />
           </div>
 
-          <Button type="submit" className="w-full">
-            {isEditing ? 'Guardar cambios' : 'Crear deuda'}
-          </Button>
+          <SubmitButton className="w-full">{isEditing ? 'Guardar cambios' : 'Crear deuda'}</SubmitButton>
         </form>
       </CardContent>
     </Card>

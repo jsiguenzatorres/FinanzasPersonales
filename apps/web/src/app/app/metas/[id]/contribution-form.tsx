@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Button, Input, Label } from '@flowfinance/ui';
+import { Input, Label } from '@flowfinance/ui';
 import { cn } from '@flowfinance/ui';
 import { createGoalContributionAction } from '@/lib/goals/actions';
+import { SubmitButton } from '@/components/submit-button';
 
 export function ContributionForm({ goalId, currency }: { goalId: string; currency: string }) {
   const [direction, setDirection] = useState<'deposit' | 'withdraw'>('deposit');
@@ -53,9 +54,9 @@ export function ContributionForm({ goalId, currency }: { goalId: string; currenc
         </div>
       </div>
 
-      <Button type="submit" className="w-full" size="sm">
+      <SubmitButton className="w-full" size="sm">
         {direction === 'deposit' ? 'Registrar aporte' : 'Registrar retiro'}
-      </Button>
+      </SubmitButton>
     </form>
   );
 }

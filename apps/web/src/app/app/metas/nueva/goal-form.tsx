@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -12,6 +11,7 @@ import {
   Label,
 } from '@flowfinance/ui';
 import { Target, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { createGoalAction, editGoalAction } from '@/lib/goals/actions';
 
 interface AccountOption {
@@ -201,9 +201,7 @@ export function GoalForm({
             </div>
           )}
 
-          <Button type="submit" className="w-full">
-            {isEditing ? 'Guardar cambios' : 'Crear meta'}
-          </Button>
+          <SubmitButton className="w-full">{isEditing ? 'Guardar cambios' : 'Crear meta'}</SubmitButton>
         </form>
       </CardContent>
     </Card>

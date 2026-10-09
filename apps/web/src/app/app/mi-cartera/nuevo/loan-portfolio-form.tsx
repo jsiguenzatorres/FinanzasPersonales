@@ -1,7 +1,8 @@
 'use client';
 
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
 import { BadgePercent, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { createLoanPortfolioAction } from '@/lib/loan-portfolio/actions';
 
 interface AccountOption {
@@ -123,9 +124,7 @@ export function LoanPortfolioForm({ accounts, error }: { accounts: AccountOption
             <Input id="notes" name="notes" />
           </div>
 
-          <Button type="submit" className="w-full">
-            Crear préstamo y generar amortización
-          </Button>
+          <SubmitButton className="w-full">Crear préstamo y generar amortización</SubmitButton>
         </form>
       </CardContent>
     </Card>

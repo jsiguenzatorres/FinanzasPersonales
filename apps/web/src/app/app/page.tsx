@@ -151,13 +151,16 @@ export default async function AppHomePage() {
               <Link
                 key={i}
                 href={alert.actionHref}
-                className={`flex items-center justify-between rounded-xl border ${style.border} ${style.bg} px-4 py-3 transition-colors hover:bg-landing-terracotta/5 active:bg-landing-terracotta/10`}
+                className={`group flex items-center justify-between rounded-xl border ${style.border} ${style.bg} px-4 py-3 transition-colors hover:bg-landing-terracotta/5 active:bg-landing-terracotta/10`}
               >
                 <p className="flex items-center gap-2 text-sm">
                   <Bell className={`h-4 w-4 shrink-0 ${style.icon}`} aria-hidden="true" />
                   {alert.title}
                 </p>
-                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                <ChevronRight
+                  className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-150 group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
               </Link>
             );
           })}

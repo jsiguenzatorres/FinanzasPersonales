@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -9,6 +8,7 @@ import {
   Label,
 } from '@flowfinance/ui';
 import { Banknote, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { registerPaymentAction } from '@/lib/credit-cards/actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
@@ -131,9 +131,9 @@ export default async function CardPaymentPage({
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={!accounts || accounts.length === 0}>
+            <SubmitButton className="w-full" disabled={!accounts || accounts.length === 0}>
               Registrar pago
-            </Button>
+            </SubmitButton>
           </form>
         </CardContent>
       </Card>

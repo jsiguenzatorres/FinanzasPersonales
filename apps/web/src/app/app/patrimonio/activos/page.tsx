@@ -8,6 +8,7 @@ import {
   Label,
 } from '@flowfinance/ui';
 import { Wallet, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createManualAssetAction, deleteManualAssetAction } from '@/lib/net-worth/actions';
 
@@ -96,9 +97,7 @@ export default async function ManualAssetsPage({
                 </select>
               </div>
             </div>
-            <Button type="submit" className="w-full">
-              Agregar
-            </Button>
+            <SubmitButton className="w-full">Agregar</SubmitButton>
           </form>
         </CardContent>
       </Card>

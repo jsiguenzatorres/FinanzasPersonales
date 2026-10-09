@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
 import { BadgePercent, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { editLoanPortfolioAction } from '@/lib/loan-portfolio/actions';
 
@@ -79,9 +80,7 @@ export default async function EditLoanPortfolioPage({
               <Input id="notes" name="notes" defaultValue={loan.notes ?? ''} />
             </div>
 
-            <Button type="submit" className="w-full">
-              Guardar cambios
-            </Button>
+            <SubmitButton className="w-full">Guardar cambios</SubmitButton>
           </form>
         </CardContent>
       </Card>

@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -11,6 +10,7 @@ import {
   Label,
 } from '@flowfinance/ui';
 import { Repeat, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { createSubscriptionAction, editSubscriptionAction } from '@/lib/subscriptions/actions';
 
 interface CategoryOption {
@@ -210,9 +210,7 @@ export function SubscriptionForm({
             <Input id="notes" name="notes" defaultValue={initialValues?.notes} />
           </div>
 
-          <Button type="submit" className="w-full">
-            {isEditing ? 'Guardar cambios' : 'Crear suscripción'}
-          </Button>
+          <SubmitButton className="w-full">{isEditing ? 'Guardar cambios' : 'Crear suscripción'}</SubmitButton>
         </form>
       </CardContent>
     </Card>

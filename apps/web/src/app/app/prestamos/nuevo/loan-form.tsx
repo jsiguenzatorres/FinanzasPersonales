@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -13,6 +12,7 @@ import {
 } from '@flowfinance/ui';
 import { HandCoins, AlertCircle } from 'lucide-react';
 import { createFamilyLoanAction } from '@/lib/loans/actions';
+import { SubmitButton } from '@/components/submit-button';
 
 const DELIVERY_METHODS = [
   { value: 'cash', label: 'Efectivo' },
@@ -319,8 +319,7 @@ export function LoanForm({
             <Input id="notes" name="notes" placeholder="Notas adicionales" />
           </div>
 
-          <Button
-            type="submit"
+          <SubmitButton
             className="w-full"
             disabled={
               !isRetroactive &&
@@ -330,7 +329,7 @@ export function LoanForm({
             }
           >
             {isRetroactive ? 'Vincular préstamo' : 'Registrar préstamo'}
-          </Button>
+          </SubmitButton>
         </form>
       </CardContent>
     </Card>

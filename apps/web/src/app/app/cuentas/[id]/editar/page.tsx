@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -12,6 +11,7 @@ import {
 import { Wallet, AlertCircle } from 'lucide-react';
 import { editAccountAction } from '@/lib/accounts/actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { SubmitButton } from '@/components/submit-button';
 
 const ACCOUNT_TYPES = [
   { value: 'checking', label: 'Cuenta corriente' },
@@ -85,9 +85,7 @@ export default async function EditAccountPage({
               <Label htmlFor="bank_name">Banco (opcional)</Label>
               <Input id="bank_name" name="bank_name" defaultValue={account.bank_name ?? ''} />
             </div>
-            <Button type="submit" className="w-full">
-              Guardar cambios
-            </Button>
+            <SubmitButton className="w-full">Guardar cambios</SubmitButton>
           </form>
         </CardContent>
       </Card>

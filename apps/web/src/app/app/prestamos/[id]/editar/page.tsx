@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -10,6 +9,7 @@ import {
   Label,
 } from '@flowfinance/ui';
 import { HandCoins, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { editFamilyLoanAction } from '@/lib/loans/actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
@@ -115,9 +115,7 @@ export default async function EditFamilyLoanPage({
               <Label htmlFor="notes">Notas</Label>
               <Input id="notes" name="notes" defaultValue={loan.notes ?? ''} />
             </div>
-            <Button type="submit" className="w-full">
-              Guardar cambios
-            </Button>
+            <SubmitButton className="w-full">Guardar cambios</SubmitButton>
           </form>
         </CardContent>
       </Card>

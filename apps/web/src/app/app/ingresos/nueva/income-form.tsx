@@ -12,6 +12,7 @@ import {
   Label,
 } from '@flowfinance/ui';
 import { TrendingUp, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { calculateSvPayrollDeductions } from '@flowfinance/shared/utils';
 import { createIncomeAction, editIncomeAction } from '@/lib/income/actions';
 
@@ -326,9 +327,9 @@ export function IncomeForm({
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={accounts.length === 0}>
+          <SubmitButton className="w-full" disabled={accounts.length === 0}>
             {isEditing ? 'Guardar cambios' : 'Guardar ingreso'}
-          </Button>
+          </SubmitButton>
         </form>
       </CardContent>
     </Card>

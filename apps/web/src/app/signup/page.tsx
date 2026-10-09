@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { Button } from '@flowfinance/ui';
 import { User, Mail, Lock, AlertCircle } from 'lucide-react';
 import { signUpAction } from '@/lib/auth/actions';
 import { AuthShell } from '@/components/auth-shell';
 import { AuthField } from '@/components/auth-field';
+import { SubmitButton } from '@/components/submit-button';
 
 export default async function SignupPage({
   searchParams,
@@ -64,12 +64,9 @@ export default async function SignupPage({
           autoComplete="new-password"
           placeholder="Mínimo 8 caracteres"
         />
-        <Button
-          type="submit"
-          className="w-full rounded-full bg-landing-terracotta text-landing-cream hover:bg-landing-terracotta-deep"
-        >
+        <SubmitButton className="w-full rounded-full bg-landing-terracotta text-landing-cream hover:bg-landing-terracotta-deep">
           Crear cuenta
-        </Button>
+        </SubmitButton>
       </form>
     </AuthShell>
   );

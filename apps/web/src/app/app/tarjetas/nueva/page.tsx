@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -9,6 +8,7 @@ import {
   Label,
 } from '@flowfinance/ui';
 import { CreditCard as CreditCardIcon, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { createCreditCardAction } from '@/lib/credit-cards/actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
@@ -179,9 +179,7 @@ export default async function NewCreditCardPage({
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
-              Crear tarjeta
-            </Button>
+            <SubmitButton className="w-full">Crear tarjeta</SubmitButton>
           </form>
         </CardContent>
       </Card>

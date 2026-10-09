@@ -12,6 +12,7 @@ import {
   Label,
 } from '@flowfinance/ui';
 import { Receipt, AlertCircle } from 'lucide-react';
+import { SubmitButton } from '@/components/submit-button';
 import { createExpenseAction, editExpenseAction } from '@/lib/expenses/actions';
 import { classifyExpenseCategory } from '@/lib/expenses/classify';
 import { scanReceiptAction } from '@/lib/expenses/ocr';
@@ -373,8 +374,7 @@ export function ExpenseForm({
             </p>
           )}
 
-          <Button
-            type="submit"
+          <SubmitButton
             className="w-full"
             disabled={
               (paymentMethod === 'account' && accounts.length === 0) ||
@@ -382,7 +382,7 @@ export function ExpenseForm({
             }
           >
             {isEditing ? 'Guardar cambios' : 'Guardar gasto'}
-          </Button>
+          </SubmitButton>
         </form>
       </CardContent>
     </Card>

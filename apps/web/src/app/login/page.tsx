@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { Button } from '@flowfinance/ui';
 import { Mail, Lock, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { signInAction } from '@/lib/auth/actions';
 import { AuthShell } from '@/components/auth-shell';
 import { AuthField } from '@/components/auth-field';
+import { SubmitButton } from '@/components/submit-button';
 
 export default async function LoginPage({
   searchParams,
@@ -60,12 +60,9 @@ export default async function LoginPage({
           autoComplete="current-password"
           placeholder="••••••••"
         />
-        <Button
-          type="submit"
-          className="w-full rounded-full bg-landing-terracotta text-landing-cream hover:bg-landing-terracotta-deep"
-        >
+        <SubmitButton className="w-full rounded-full bg-landing-terracotta text-landing-cream hover:bg-landing-terracotta-deep">
           Iniciar sesión
-        </Button>
+        </SubmitButton>
       </form>
     </AuthShell>
   );
