@@ -1,6 +1,9 @@
 import Link from 'next/link';
-import { Button, Input, Label } from '@flowfinance/ui';
+import { Button } from '@flowfinance/ui';
+import { User, Mail, Lock, AlertCircle } from 'lucide-react';
 import { signUpAction } from '@/lib/auth/actions';
+import { AuthShell } from '@/components/auth-shell';
+import { AuthField } from '@/components/auth-field';
 
 export default async function SignupPage({
   searchParams,
@@ -10,88 +13,64 @@ export default async function SignupPage({
   const { error } = await searchParams;
 
   return (
-    <main className="bg-paper-grain flex min-h-screen items-center justify-center bg-landing-cream p-6">
-      <div className="w-full max-w-sm space-y-6">
-        <div className="text-center">
-          <Link href="/" className="font-display text-3xl text-landing-ink">
-            Flow<span className="text-landing-terracotta">Finance</span>
+    <AuthShell
+      title="Crea tu cuenta"
+      subtitle="Empieza a tomar control de tu dinero"
+      footer={
+        <p className="mt-6 text-center text-sm text-landing-ink-soft">
+          ¿Ya tienes cuenta?{' '}
+          <Link href="/login" className="text-landing-terracotta hover:underline">
+            Inicia sesión
           </Link>
-        </div>
+        </p>
+      }
+    >
+      {error && (
+        <p className="flex items-center gap-2 rounded-xl border border-red-700/25 bg-red-700/10 px-4 py-3 text-sm text-red-700">
+          <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+          {error}
+        </p>
+      )}
 
-        <div className="rounded-2xl border border-landing-ink/10 bg-white/60 p-6 shadow-sm">
-          <div className="mb-5">
-            <h1 className="font-display text-xl text-landing-ink">Crea tu cuenta</h1>
-            <p className="mt-1 text-sm text-landing-ink-soft">Empieza a tomar control de tu dinero</p>
-          </div>
-
-          <div className="space-y-4">
-            {error && (
-              <p className="rounded-md border border-red-700/25 bg-red-700/10 px-4 py-3 text-sm text-red-700">
-                {error}
-              </p>
-            )}
-
-            <form action={signUpAction} className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="displayName" className="text-landing-ink">
-                  Nombre
-                </Label>
-                <Input
-                  id="displayName"
-                  name="displayName"
-                  type="text"
-                  required
-                  autoComplete="name"
-                  placeholder="Tu nombre"
-                  className="border-landing-ink/15 bg-white text-landing-ink placeholder:text-landing-ink-soft/50"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-landing-ink">
-                  Correo
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="tu@correo.com"
-                  className="border-landing-ink/15 bg-white text-landing-ink placeholder:text-landing-ink-soft/50"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="password" className="text-landing-ink">
-                  Contraseña
-                </Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  minLength={8}
-                  autoComplete="new-password"
-                  placeholder="Mínimo 8 caracteres"
-                  className="border-landing-ink/15 bg-white text-landing-ink placeholder:text-landing-ink-soft/50"
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full rounded-full bg-landing-terracotta text-landing-cream hover:bg-landing-terracotta-deep"
-              >
-                Crear cuenta
-              </Button>
-            </form>
-
-            <p className="text-center text-sm text-landing-ink-soft">
-              ¿Ya tienes cuenta?{' '}
-              <Link href="/login" className="text-landing-terracotta hover:underline">
-                Inicia sesión
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
-    </main>
+      <form action={signUpAction} className="space-y-4">
+        <AuthField
+          id="displayName"
+          name="displayName"
+          type="text"
+          label="Nombre"
+          icon={User}
+          required
+          autoComplete="name"
+          placeholder="Tu nombre"
+        />
+        <AuthField
+          id="email"
+          name="email"
+          type="email"
+          label="Correo"
+          icon={Mail}
+          required
+          autoComplete="email"
+          placeholder="tu@correo.com"
+        />
+        <AuthField
+          id="password"
+          name="password"
+          type="password"
+          label="Contraseña"
+          icon={Lock}
+          required
+          minLength={8}
+          autoComplete="new-password"
+          placeholder="Mínimo 8 caracteres"
+        />
+        <Button
+          type="submit"
+          className="w-full rounded-full bg-landing-terracotta text-landing-cream hover:bg-landing-terracotta-deep"
+        >
+          Crear cuenta
+        </Button>
+      </form>
+    </AuthShell>
   );
 }
