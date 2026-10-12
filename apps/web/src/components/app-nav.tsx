@@ -49,6 +49,8 @@ const NAV_ITEMS = [
   { href: '/app/finn', label: 'Neto', icon: Bot },
 ];
 
+const BOTTOM_NAV_HREFS = ['/app', '/app/gastos', '/app/cuentas', '/app/tarjetas'];
+
 function isItemActive(pathname: string, href: string): boolean {
   return href === '/app' ? pathname === '/app' : pathname.startsWith(href);
 }
@@ -127,6 +129,51 @@ function LogoutButton({ collapsed }: { collapsed?: boolean }) {
         {!collapsed && <span>Cerrar sesión</span>}
       </button>
     </form>
+  );
+}
+
+function BottomNav({ onMore }: { onMore: () => void }) {
+  const pathname = usePathname();
+  const bottomItems = NAV_ITEMS.filter((item) => BOTTOM_NAV_HREFS.includes(item.href));
+
+  return (
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex items-stretch justify-around border-t border-border bg-background/90 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
+      {bottomItems.map((item) => {
+        const active = isItemActive(pathname, item.href);
+        const Icon = item.icon;
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="relative flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] transition-colors duration-150 active:scale-95"
+          >
+            {active && (
+              <motion.span
+                layoutId="nav-active-pill-bottom"
+                className="absolute inset-x-3 top-1 h-0.5 rounded-full bg-primary"
+                transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+              />
+            )}
+            <Icon
+              className={cn(
+                'h-5 w-5 transition-transform duration-200',
+                active ? 'scale-110 text-primary' : 'text-muted-foreground',
+              )}
+            />
+            <span className={cn('font-medium', active ? 'text-primary' : 'text-muted-foreground')}>
+              {item.label}
+            </span>
+          </Link>
+        );
+      })}
+      <button
+        onClick={onMore}
+        className="relative flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] text-muted-foreground transition-transform duration-150 active:scale-95"
+      >
+        <Menu className="h-5 w-5" />
+        <span className="font-medium">Más</span>
+      </button>
+    </nav>
   );
 }
 
@@ -227,6 +274,9 @@ export function AppNav() {
           <LogoutButton collapsed={collapsed} />
         </div>
       </motion.aside>
+
+      {/* ── Barra inferior móvil ────────────────────────────────────── */}
+      <BottomNav onMore={() => setMobileOpen(true)} />
     </>
   );
 }

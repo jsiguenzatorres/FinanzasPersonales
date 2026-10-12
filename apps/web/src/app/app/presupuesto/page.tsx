@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { Button, Card, CardContent } from '@flowfinance/ui';
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@flowfinance/ui';
 import { PieChart, Target } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { deleteBudgetAction } from '@/lib/budgets/actions';
+import { SpendingByCategoryChart } from '@/components/spending-by-category-chart';
 
 const STATUS_COLOR: Record<string, string> = {
   on_track: 'bg-ff-green',
@@ -65,7 +66,7 @@ export default async function BudgetPage() {
       .select('*')
       .eq('budget_id', budget.id)
       .order('allocated_amount', { ascending: false }),
-    supabase.from('categories').select('id, name, icon'),
+    supabase.from('categories').select('id, name, icon, color'),
   ]);
 
   const categoryMap = new Map((allCategories ?? []).map((c) => [c.id, c]));
@@ -83,6 +84,17 @@ export default async function BudgetPage() {
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('es-SV', { style: 'currency', currency: budget.currency }).format(n);
+
+  const chartData = categories.map((bc) => {
+    const cat = categoryMap.get(bc.category_id);
+    return {
+      id: bc.category_id,
+      name: cat?.name ?? 'Categoría',
+      icon: cat?.icon ?? '●',
+      color: cat?.color ?? '#8884d8',
+      value: bc.spent_amount,
+    };
+  });
 
   return (
     <div className="space-y-6">
@@ -156,6 +168,17 @@ export default async function BudgetPage() {
           </p>
         </CardContent>
       </Card>
+
+      {categories.length > 0 && (
+        <Card className="animate-fade-in-up">
+          <CardHeader>
+            <CardTitle className="text-base">Gastos por categoría</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <SpendingByCategoryChart data={chartData} currency={budget.currency} />
+          </CardContent>
+        </Card>
+      )}
 
       {categories.length === 0 ? (
         <p className="text-center text-sm text-muted-foreground">
