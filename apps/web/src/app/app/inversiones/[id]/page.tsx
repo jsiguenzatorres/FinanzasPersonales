@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Button, Card, CardContent } from '@flowfinance/ui';
-import { ChartCandlestick, AlertCircle } from 'lucide-react';
+import { ChartCandlestick } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { deleteInvestmentAction } from '@/lib/investments/actions';
 import { updateCryptoPriceAction } from '@/lib/investments/coingecko';
@@ -20,13 +20,10 @@ const TYPE_LABELS: Record<string, string> = {
 
 export default async function InvestmentDetailPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const { data: inv } = await supabase.from('investments').select('*').eq('id', id).single();
@@ -43,12 +40,6 @@ export default async function InvestmentDetailPage({
         ← Inversiones
       </Link>
 
-      {error && (
-        <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-          <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-          {error}
-        </p>
-      )}
 
       <Card className="animate-fade-in-up">
         <CardContent className="space-y-3 py-5">

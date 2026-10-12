@@ -1,12 +1,7 @@
 import { ExpenseForm } from './expense-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-export default async function NewExpensePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const { error } = await searchParams;
+export default async function NewExpensePage() {
   const supabase = await createSupabaseServerClient();
 
   const [{ data: rawCategories }, { data: accounts }, { data: currencies }, { data: cards }] =
@@ -59,7 +54,6 @@ export default async function NewExpensePage({
         accounts={accounts ?? []}
         cards={cardOptions}
         currencies={currencies ?? []}
-        error={error}
       />
     </div>
   );

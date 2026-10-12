@@ -69,13 +69,10 @@ function renderItineraryMarkdown(markdown: string) {
 
 export default async function TripDetailPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const { data: trip } = await supabase.from('trips').select('*').eq('id', id).single();
@@ -106,12 +103,6 @@ export default async function TripDetailPage({
       <Link href="/app/viajes" className="text-sm text-muted-foreground hover:underline">
         ← Viajes
       </Link>
-
-      {error && (
-        <p className="rounded-md border border-ff-red/30 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-          {error}
-        </p>
-      )}
 
       <Card>
         <CardContent className="space-y-3 py-5">

@@ -7,7 +7,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
-import { Wallet, AlertCircle } from 'lucide-react';
+import { Wallet } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createManualAssetAction, deleteManualAssetAction } from '@/lib/net-worth/actions';
@@ -20,12 +20,7 @@ const ASSET_TYPES = [
   { value: 'other', label: 'Otro' },
 ];
 
-export default async function ManualAssetsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const { error } = await searchParams;
+export default async function ManualAssetsPage() {
   const supabase = await createSupabaseServerClient();
 
   const [{ data: assets }, { data: currencies }] = await Promise.all([
@@ -49,12 +44,6 @@ export default async function ManualAssetsPage({
           <CardTitle className="text-base">Agregar activo</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {error && (
-            <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-              <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-              {error}
-            </p>
-          )}
           <form action={createManualAssetAction} className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="name">Nombre</Label>

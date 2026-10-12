@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Button, Card, CardContent, Input, Label } from '@flowfinance/ui';
-import { BadgePercent, AlertCircle } from 'lucide-react';
+import { BadgePercent } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { deleteLoanPortfolioAction } from '@/lib/loan-portfolio/actions';
 import { createLoanPortfolioPaymentAction } from '@/lib/loan-portfolio/payments';
@@ -21,10 +21,10 @@ export default async function LoanPortfolioDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string; celebrate?: string }>;
+  searchParams: Promise<{ celebrate?: string }>;
 }) {
   const { id } = await params;
-  const { error, celebrate } = await searchParams;
+  const { celebrate } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const { data: loan } = await supabase.from('loan_portfolio').select('*').eq('id', id).single();
@@ -50,12 +50,6 @@ export default async function LoanPortfolioDetailPage({
         ← Mi Cartera
       </Link>
 
-      {error && (
-        <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-          <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-          {error}
-        </p>
-      )}
 
       <Card className="animate-fade-in-up">
         <CardContent className="space-y-3 py-5">

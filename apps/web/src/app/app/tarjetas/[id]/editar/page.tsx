@@ -8,7 +8,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
-import { CreditCard as CreditCardIcon, AlertCircle } from 'lucide-react';
+import { CreditCard as CreditCardIcon } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { editCreditCardAction } from '@/lib/credit-cards/actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -28,13 +28,10 @@ const CARD_BRANDS = ['Visa', 'MasterCard', 'American Express', 'Discover'];
 
 export default async function EditCreditCardPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data: card } = await supabase.from('credit_cards').select('*').eq('id', id).single();
 
@@ -54,12 +51,6 @@ export default async function EditCreditCardPage({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {error && (
-            <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-              <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-              {error}
-            </p>
-          )}
 
           <form action={editCreditCardAction} className="space-y-4">
             <input type="hidden" name="card_id" value={card.id} />

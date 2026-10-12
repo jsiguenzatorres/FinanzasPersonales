@@ -10,7 +10,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
-import { ChartCandlestick, AlertCircle } from 'lucide-react';
+import { ChartCandlestick } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { COMMON_COINGECKO_IDS } from '@flowfinance/shared/schemas';
 import { createInvestmentAction, editInvestmentAction } from '@/lib/investments/actions';
@@ -43,10 +43,8 @@ const TYPES = [
 ];
 
 export function InvestmentForm({
-  error,
   initialValues,
 }: {
-  error?: string;
   initialValues?: InvestmentInitialValues;
 }) {
   const isEditing = !!initialValues;
@@ -64,12 +62,6 @@ export function InvestmentForm({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {error && (
-          <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-            {error}
-          </p>
-        )}
 
         <form action={isEditing ? editInvestmentAction : createInvestmentAction} className="space-y-4">
           {isEditing && <input type="hidden" name="investment_id" value={initialValues.id} />}

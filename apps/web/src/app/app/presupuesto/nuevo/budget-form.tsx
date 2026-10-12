@@ -10,7 +10,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
-import { PieChart, AlertCircle } from 'lucide-react';
+import { PieChart } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { SegmentedToggle } from '@/components/segmented-toggle';
 import { createBudgetAction, editBudgetAction } from '@/lib/budgets/actions';
@@ -38,12 +38,10 @@ const MODES = [
 export function BudgetForm({
   categories,
   suggestedIncome,
-  error,
   initialValues,
 }: {
   categories: CategoryOption[];
   suggestedIncome: number;
-  error?: string;
   initialValues?: BudgetInitialValues;
 }) {
   const isEditing = !!initialValues;
@@ -71,12 +69,6 @@ export function BudgetForm({
         <CardDescription>Presupuesto de {monthLabel}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {error && (
-          <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-            {error}
-          </p>
-        )}
 
         <form action={isEditing ? editBudgetAction : createBudgetAction} className="space-y-4">
           {isEditing && <input type="hidden" name="budget_id" value={initialValues.id} />}

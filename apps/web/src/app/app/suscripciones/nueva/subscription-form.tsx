@@ -9,7 +9,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
-import { Repeat, AlertCircle } from 'lucide-react';
+import { Repeat } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { createSubscriptionAction, editSubscriptionAction } from '@/lib/subscriptions/actions';
 
@@ -46,11 +46,9 @@ const FREQUENCIES = [
 
 export function SubscriptionForm({
   categories,
-  error,
   initialValues,
 }: {
   categories: CategoryOption[];
-  error?: string;
   initialValues?: SubscriptionInitialValues;
 }) {
   const isEditing = !!initialValues;
@@ -68,12 +66,6 @@ export function SubscriptionForm({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {error && (
-          <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-            {error}
-          </p>
-        )}
 
         <form action={isEditing ? editSubscriptionAction : createSubscriptionAction} className="space-y-4">
           {isEditing && <input type="hidden" name="subscription_id" value={initialValues.id} />}

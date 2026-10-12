@@ -1,12 +1,7 @@
 import { LoanPortfolioForm } from './loan-portfolio-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-export default async function NewLoanPortfolioPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const { error } = await searchParams;
+export default async function NewLoanPortfolioPage() {
   const supabase = await createSupabaseServerClient();
 
   const { data: accounts } = await supabase
@@ -17,7 +12,7 @@ export default async function NewLoanPortfolioPage({
 
   return (
     <div className="mx-auto max-w-lg">
-      <LoanPortfolioForm accounts={accounts ?? []} error={error} />
+      <LoanPortfolioForm accounts={accounts ?? []} />
     </div>
   );
 }

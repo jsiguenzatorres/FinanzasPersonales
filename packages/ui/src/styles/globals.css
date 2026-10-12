@@ -29,6 +29,41 @@
     --input: 35 20% 82%;
     --ring: 16 55% 46%;
     --radius: 0.625rem;
+
+    /* ff.* semánticos (verde/azul/rojo/amarillo/naranja/morado) — en vars
+       para que el modo oscuro los recalibre sin tocar ninguna de las
+       pantallas que ya los usan (text-ff-green, bg-ff-red/10, etc.). */
+    --ff-green: 142 39% 31%;
+    --ff-blue: 213 45% 36%;
+    --ff-red: 9 57% 41%;
+    --ff-yellow: 42 64% 34%;
+    --ff-orange: 30 68% 41%;
+    --ff-purple: 272 30% 42%;
+  }
+
+  .dark {
+    --background: 25 18% 9%;
+    --foreground: 42 25% 92%;
+    --card: 25 16% 13%;
+    --card-foreground: 42 25% 92%;
+    --primary: 16 58% 54%;
+    --primary-foreground: 25 18% 9%;
+    --secondary: 137 20% 40%;
+    --secondary-foreground: 42 25% 95%;
+    --muted: 25 14% 17%;
+    --muted-foreground: 35 12% 64%;
+    --destructive: 8 55% 52%;
+    --destructive-foreground: 42 25% 95%;
+    --border: 28 14% 20%;
+    --input: 28 14% 20%;
+    --ring: 16 58% 54%;
+
+    --ff-green: 142 40% 52%;
+    --ff-blue: 213 50% 58%;
+    --ff-red: 9 60% 58%;
+    --ff-yellow: 42 55% 55%;
+    --ff-orange: 30 60% 56%;
+    --ff-purple: 272 35% 62%;
   }
 }
 

@@ -4,13 +4,10 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export default async function EditIncomePage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const [{ data: income }, { data: currencies }, { data: accounts }] = await Promise.all([
@@ -31,7 +28,6 @@ export default async function EditIncomePage({
         currencies={currencies ?? []}
         accounts={accounts ?? []}
         goals={[]}
-        error={error}
         initialValues={{
           id: income.id,
           type: income.type,

@@ -4,13 +4,10 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export default async function EditTripPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const { data: trip } = await supabase.from('trips').select('*').eq('id', id).single();
@@ -19,7 +16,6 @@ export default async function EditTripPage({
   return (
     <div className="mx-auto max-w-lg">
       <TripForm
-        error={error}
         initialValues={{
           id: trip.id,
           destination: trip.destination,

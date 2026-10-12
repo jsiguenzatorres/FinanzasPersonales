@@ -1,12 +1,7 @@
 import { SubscriptionForm } from './subscription-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-export default async function NewSubscriptionPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const { error } = await searchParams;
+export default async function NewSubscriptionPage() {
   const supabase = await createSupabaseServerClient();
 
   const { data: categories } = await supabase
@@ -18,7 +13,7 @@ export default async function NewSubscriptionPage({
 
   return (
     <div className="mx-auto max-w-lg">
-      <SubscriptionForm categories={categories ?? []} error={error} />
+      <SubscriptionForm categories={categories ?? []} />
     </div>
   );
 }

@@ -1,12 +1,7 @@
 import { BudgetForm } from './budget-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-export default async function NewBudgetPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const { error } = await searchParams;
+export default async function NewBudgetPage() {
   const supabase = await createSupabaseServerClient();
 
   const { data: allCategories } = await supabase
@@ -58,7 +53,7 @@ export default async function NewBudgetPage({
 
   return (
     <div className="mx-auto max-w-lg">
-      <BudgetForm categories={categories} suggestedIncome={suggestedIncome} error={error} />
+      <BudgetForm categories={categories} suggestedIncome={suggestedIncome} />
     </div>
   );
 }

@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@flowfinance/ui';
 import { signOutAction } from '@/lib/auth/actions';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const NAV_ITEMS = [
   { href: '/app', label: 'Inicio', icon: Home },
@@ -187,7 +188,8 @@ export function AppNav() {
               <div className="flex-1 overflow-y-auto">
                 <NavLinks collapsed={false} pillId="nav-active-pill-mobile" onNavigate={() => setMobileOpen(false)} />
               </div>
-              <div className="mt-3 border-t border-border pt-3">
+              <div className="mt-3 space-y-1 border-t border-border pt-3">
+                <ThemeToggle />
                 <LogoutButton />
               </div>
             </motion.aside>
@@ -220,7 +222,8 @@ export function AppNav() {
           <NavLinks collapsed={collapsed} pillId="nav-active-pill-desktop" />
         </nav>
 
-        <div className="mt-3 border-t border-border pt-3">
+        <div className="mt-3 space-y-1 border-t border-border pt-3">
+          <ThemeToggle collapsed={collapsed} />
           <LogoutButton collapsed={collapsed} />
         </div>
       </motion.aside>

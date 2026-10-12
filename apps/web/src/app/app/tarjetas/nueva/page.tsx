@@ -7,7 +7,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
-import { CreditCard as CreditCardIcon, AlertCircle } from 'lucide-react';
+import { CreditCard as CreditCardIcon } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { createCreditCardAction } from '@/lib/credit-cards/actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -25,12 +25,7 @@ const SV_BANKS = [
 
 const CARD_BRANDS = ['Visa', 'MasterCard', 'American Express', 'Discover'];
 
-export default async function NewCreditCardPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const { error } = await searchParams;
+export default async function NewCreditCardPage() {
   const supabase = await createSupabaseServerClient();
   const { data: currencies } = await supabase
     .from('currencies')
@@ -49,12 +44,6 @@ export default async function NewCreditCardPage({
           <CardDescription>Registra tu tarjeta para trackear cargos y evitar intereses</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {error && (
-            <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-              <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-              {error}
-            </p>
-          )}
 
           <form action={createCreditCardAction} className="space-y-4">
             <div className="space-y-1.5">

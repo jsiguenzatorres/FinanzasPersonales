@@ -1,12 +1,7 @@
 import { IncomeForm } from './income-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-export default async function NewIncomePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const { error } = await searchParams;
+export default async function NewIncomePage() {
   const supabase = await createSupabaseServerClient();
 
   const [{ data: currencies }, { data: accounts }, { data: goals }] = await Promise.all([
@@ -31,7 +26,6 @@ export default async function NewIncomePage({
         currencies={currencies ?? []}
         accounts={accounts ?? []}
         goals={(goals ?? []).map((g) => ({ ...g, auto_contribution_pct: g.auto_contribution_pct ?? 0 }))}
-        error={error}
       />
     </div>
   );

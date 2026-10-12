@@ -1,6 +1,10 @@
 import '@flowfinance/ui/styles';
+import { Suspense } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { PwaRegister } from '@/components/pwa-register';
+import { ThemeProvider } from '@/components/theme-provider';
+import { ToastProvider } from '@/components/toast-provider';
+import { ToastFromParams } from '@/components/toast-from-params';
 
 export const metadata: Metadata = {
   title: {
@@ -34,8 +38,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        {children}
-        <PwaRegister />
+        <ThemeProvider>
+          {children}
+          <PwaRegister />
+          <ToastProvider />
+          <Suspense fallback={null}>
+            <ToastFromParams />
+          </Suspense>
+        </ThemeProvider>
       </body>
     </html>
   );

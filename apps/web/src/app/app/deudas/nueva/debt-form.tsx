@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
-import { TrendingDown, AlertCircle } from 'lucide-react';
+import { TrendingDown } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { createDebtAction, editDebtAction } from '@/lib/debts/actions';
 
@@ -31,7 +31,7 @@ const TYPES = [
   { value: 'other', label: 'Otra' },
 ];
 
-export function DebtForm({ error, initialValues }: { error?: string; initialValues?: DebtInitialValues }) {
+export function DebtForm({ initialValues }: { initialValues?: DebtInitialValues }) {
   const isEditing = !!initialValues;
   const today = new Date().toISOString().slice(0, 10);
 
@@ -48,12 +48,6 @@ export function DebtForm({ error, initialValues }: { error?: string; initialValu
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {error && (
-          <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-            {error}
-          </p>
-        )}
 
         <form action={isEditing ? editDebtAction : createDebtAction} className="space-y-4">
           {isEditing && <input type="hidden" name="debt_id" value={initialValues.id} />}

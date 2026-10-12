@@ -4,13 +4,10 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export default async function EditExpensePage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const [{ data: expense }, { data: rawCategories }, { data: accounts }, { data: currencies }, { data: cards }] =
@@ -66,7 +63,6 @@ export default async function EditExpensePage({
         accounts={accounts ?? []}
         cards={cardOptions}
         currencies={currencies ?? []}
-        error={error}
         initialValues={{
           id: expense.id,
           merchant_name: expense.merchant_name ?? '',

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button, Card, CardContent } from '@flowfinance/ui';
-import { LineChart, Wallet, TrendingDown, ArrowUp, ArrowDown, AlertCircle } from 'lucide-react';
+import { LineChart, Wallet, TrendingDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { takeSnapshotAction } from '@/lib/net-worth/actions';
 import { AnimatedNumber } from '@/components/animated-number';
@@ -19,12 +19,7 @@ interface LiabilitiesBreakdown {
   personal_debts: number;
 }
 
-export default async function NetWorthPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const { error } = await searchParams;
+export default async function NetWorthPage() {
   const supabase = await createSupabaseServerClient();
 
   const { data: netWorth } = await supabase.from('v_net_worth_current').select('*').single();
@@ -70,12 +65,6 @@ export default async function NetWorthPage({
         </form>
       </div>
 
-      {error && (
-        <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-          <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-          {error}
-        </p>
-      )}
 
       <Card className="animate-fade-in-up">
         <CardContent className="py-8 text-center">

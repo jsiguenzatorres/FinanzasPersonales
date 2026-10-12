@@ -7,20 +7,17 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
-import { Banknote, AlertCircle } from 'lucide-react';
+import { Banknote } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { registerPaymentAction } from '@/lib/credit-cards/actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export default async function CardPaymentPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const [{ data: card }, { data: accounts }] = await Promise.all([
@@ -57,12 +54,6 @@ export default async function CardPaymentPage({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {error && (
-            <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-              <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-              {error}
-            </p>
-          )}
 
           <div className="rounded-md border border-border bg-card px-4 py-3 text-sm">
             <p>

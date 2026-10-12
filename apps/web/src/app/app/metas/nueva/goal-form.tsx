@@ -10,7 +10,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
-import { Target, AlertCircle } from 'lucide-react';
+import { Target } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { createGoalAction, editGoalAction } from '@/lib/goals/actions';
 
@@ -46,12 +46,10 @@ const GOAL_TYPES = [
 export function GoalForm({
   accounts,
   currency,
-  error,
   initialValues,
 }: {
   accounts: AccountOption[];
   currency: string;
-  error?: string;
   initialValues?: GoalInitialValues;
 }) {
   const isEditing = !!initialValues;
@@ -69,12 +67,6 @@ export function GoalForm({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {error && (
-          <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-            {error}
-          </p>
-        )}
 
         <form action={isEditing ? editGoalAction : createGoalAction} className="space-y-4">
           {isEditing && <input type="hidden" name="goal_id" value={initialValues.id} />}

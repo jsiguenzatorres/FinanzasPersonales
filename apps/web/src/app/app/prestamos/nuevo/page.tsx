@@ -4,9 +4,9 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 export default async function NewFamilyLoanPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; existing_transaction_id?: string }>;
+  searchParams: Promise<{ existing_transaction_id?: string }>;
 }) {
-  const { error, existing_transaction_id: existingTransactionId } = await searchParams;
+  const { existing_transaction_id: existingTransactionId } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const [{ data: accounts }, { data: currencies }, { data: cards }, existingTxResult] = await Promise.all([
@@ -43,7 +43,6 @@ export default async function NewFamilyLoanPage({
         accounts={accounts ?? []}
         cards={cardOptions}
         currencies={currencies ?? []}
-        error={error}
         existingTransaction={existingTxResult.data ?? undefined}
       />
     </div>

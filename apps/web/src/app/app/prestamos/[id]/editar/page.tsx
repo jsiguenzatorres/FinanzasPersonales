@@ -8,7 +8,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
-import { HandCoins, AlertCircle } from 'lucide-react';
+import { HandCoins } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { editFamilyLoanAction } from '@/lib/loans/actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -30,13 +30,10 @@ const LOAN_CATEGORIES = [
 
 export default async function EditFamilyLoanPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const { data: loan } = await supabase.from('family_loans').select('*').eq('id', id).single();
 
@@ -56,12 +53,6 @@ export default async function EditFamilyLoanPage({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {error && (
-            <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-              <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-              {error}
-            </p>
-          )}
           <form action={editFamilyLoanAction} className="space-y-4">
             <input type="hidden" name="loan_id" value={loan.id} />
             <div className="space-y-1.5">

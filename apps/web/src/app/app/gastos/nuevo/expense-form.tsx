@@ -11,7 +11,7 @@ import {
   Input,
   Label,
 } from '@flowfinance/ui';
-import { Receipt, AlertCircle } from 'lucide-react';
+import { Receipt } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { SegmentedToggle } from '@/components/segmented-toggle';
 import { createExpenseAction, editExpenseAction } from '@/lib/expenses/actions';
@@ -60,14 +60,12 @@ export function ExpenseForm({
   accounts,
   cards,
   currencies,
-  error,
   initialValues,
 }: {
   categories: CategoryOption[];
   accounts: AccountOption[];
   cards: CardOption[];
   currencies: CurrencyOption[];
-  error?: string;
   initialValues?: ExpenseInitialValues;
 }) {
   const isEditing = !!initialValues;
@@ -157,12 +155,6 @@ export function ExpenseForm({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {error && (
-          <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-            {error}
-          </p>
-        )}
 
         <div className="space-y-2 rounded-md border border-border bg-card p-3">
           <input

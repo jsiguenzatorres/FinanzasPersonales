@@ -4,13 +4,10 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export default async function EditGoalPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const [{ data: goal }, { data: accounts }] = await Promise.all([
@@ -25,7 +22,6 @@ export default async function EditGoalPage({
       <GoalForm
         accounts={accounts ?? []}
         currency={goal.currency}
-        error={error}
         initialValues={{
           id: goal.id,
           name: goal.name,

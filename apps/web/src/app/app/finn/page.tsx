@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@flowfinance/ui';
-import { Bot, AlertCircle } from 'lucide-react';
+import { Bot } from 'lucide-react';
 import { FINN_NAME_BY_PLAN } from '@flowfinance/finn/prompts/system';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { VoiceMessageForm } from '@/components/finn/voice-message-form';
@@ -15,9 +15,9 @@ const SUGGESTED_QUESTIONS = [
 export default async function FinnPage({
   searchParams,
 }: {
-  searchParams: Promise<{ conversation_id?: string; error?: string }>;
+  searchParams: Promise<{ conversation_id?: string }>;
 }) {
-  const { conversation_id: conversationId, error } = await searchParams;
+  const { conversation_id: conversationId } = await searchParams;
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -53,12 +53,6 @@ export default async function FinnPage({
         </div>
       </div>
 
-      {error && (
-        <p className="mb-4 flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-          <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-          {error}
-        </p>
-      )}
 
       <div className="flex-1 space-y-3 overflow-y-auto">
         {messages.length === 0 ? (

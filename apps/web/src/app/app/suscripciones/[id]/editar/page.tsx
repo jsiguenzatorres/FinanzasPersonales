@@ -4,13 +4,10 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export default async function EditSubscriptionPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const [{ data: sub }, { data: categories }] = await Promise.all([
@@ -24,7 +21,6 @@ export default async function EditSubscriptionPage({
     <div className="mx-auto max-w-lg">
       <SubscriptionForm
         categories={categories ?? []}
-        error={error}
         initialValues={{
           id: sub.id,
           service_name: sub.service_name,

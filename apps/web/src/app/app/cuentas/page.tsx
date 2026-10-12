@@ -10,7 +10,6 @@ import {
   ArrowLeftRight,
   Layers,
   Wallet,
-  AlertCircle,
 } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { archiveAccountAction, deleteAccountAction } from '@/lib/accounts/actions';
@@ -38,12 +37,7 @@ const ACCOUNT_TYPE_META: Record<string, { icon: typeof Landmark; tint: string; i
   virtual: { icon: Layers, tint: 'bg-ff-purple/10', iconColor: 'text-ff-purple' },
 };
 
-export default async function AccountsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const { error } = await searchParams;
+export default async function AccountsPage() {
   const supabase = await createSupabaseServerClient();
   const { data: accounts } = await supabase
     .from('accounts')
@@ -60,12 +54,6 @@ export default async function AccountsPage({
         </Button>
       </div>
 
-      {error && (
-        <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-          <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-          {error}
-        </p>
-      )}
 
       {!accounts || accounts.length === 0 ? (
         <Card>

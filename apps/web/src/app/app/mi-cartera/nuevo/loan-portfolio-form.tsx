@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
-import { BadgePercent, AlertCircle } from 'lucide-react';
+import { BadgePercent } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { createLoanPortfolioAction } from '@/lib/loan-portfolio/actions';
 
@@ -10,7 +10,7 @@ interface AccountOption {
   name: string;
 }
 
-export function LoanPortfolioForm({ accounts, error }: { accounts: AccountOption[]; error?: string }) {
+export function LoanPortfolioForm({ accounts }: { accounts: AccountOption[] }) {
   const today = new Date().toISOString().slice(0, 10);
 
   return (
@@ -23,12 +23,6 @@ export function LoanPortfolioForm({ accounts, error }: { accounts: AccountOption
         <CardDescription>Se genera la tabla de amortización completa al guardar</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {error && (
-          <p className="flex items-center gap-2 rounded-xl border border-ff-red/25 bg-ff-red/10 px-4 py-3 text-sm text-ff-red">
-            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-            {error}
-          </p>
-        )}
 
         <form action={createLoanPortfolioAction} className="space-y-4">
           <div className="space-y-1.5">

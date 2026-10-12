@@ -1,12 +1,7 @@
 import { GoalForm } from './goal-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-export default async function NewGoalPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const { error } = await searchParams;
+export default async function NewGoalPage() {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -24,7 +19,7 @@ export default async function NewGoalPage({
 
   return (
     <div className="mx-auto max-w-lg">
-      <GoalForm accounts={accounts ?? []} currency={profile?.currency_default ?? 'USD'} error={error} />
+      <GoalForm accounts={accounts ?? []} currency={profile?.currency_default ?? 'USD'} />
     </div>
   );
 }

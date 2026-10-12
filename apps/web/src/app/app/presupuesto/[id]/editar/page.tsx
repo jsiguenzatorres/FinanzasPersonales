@@ -4,13 +4,10 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export default async function EditBudgetPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const { error } = await searchParams;
   const supabase = await createSupabaseServerClient();
 
   const [{ data: budget }, { data: budgetCategories }, { data: allCategories }] = await Promise.all([
@@ -59,7 +56,6 @@ export default async function EditBudgetPage({
       <BudgetForm
         categories={categories}
         suggestedIncome={budget.total_income_expected}
-        error={error}
         initialValues={{
           id: budget.id,
           mode: budget.mode,
