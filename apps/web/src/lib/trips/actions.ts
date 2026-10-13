@@ -15,6 +15,7 @@ function parseTripForm(formData: FormData) {
     budget: Number(formData.get('budget')),
     budget_currency: formData.get('budget_currency'),
     notes: formData.get('notes') || undefined,
+    collab_space_id: formData.get('collab_space_id') || undefined,
   };
 }
 
@@ -45,6 +46,7 @@ export async function createTripAction(formData: FormData) {
       budget: parsed.data.budget,
       budget_currency: parsed.data.budget_currency,
       notes: parsed.data.notes ?? null,
+      collab_space_id: parsed.data.collab_space_id ?? null,
     })
     .select('id')
     .single();
@@ -82,6 +84,7 @@ export async function editTripAction(formData: FormData) {
       budget: parsed.data.budget,
       budget_currency: parsed.data.budget_currency,
       notes: parsed.data.notes ?? null,
+      collab_space_id: parsed.data.collab_space_id ?? null,
       ...(parsed.data.status ? { status: parsed.data.status } : {}),
     })
     .eq('id', tripId);

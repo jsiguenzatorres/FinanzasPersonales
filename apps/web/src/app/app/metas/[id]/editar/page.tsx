@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { GoalForm } from '../../nueva/goal-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getMySpaces } from '@/lib/collab/get-my-spaces';
 
 export default async function EditGoalPage({
   params,
@@ -10,9 +11,10 @@ export default async function EditGoalPage({
   const { id } = await params;
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: goal }, { data: accounts }] = await Promise.all([
+  const [{ data: goal }, { data: accounts }, spaces] = await Promise.all([
     supabase.from('goals').select('*').eq('id', id).single(),
     supabase.from('accounts').select('id, name').eq('is_archived', false).order('name'),
+    getMySpaces(),
   ]);
 
   if (!goal) notFound();
@@ -22,6 +24,7 @@ export default async function EditGoalPage({
       <GoalForm
         accounts={accounts ?? []}
         currency={goal.currency}
+        spaces={spaces}
         initialValues={{
           id: goal.id,
           name: goal.name,
@@ -33,6 +36,7 @@ export default async function EditGoalPage({
           auto_contribution_pct: goal.auto_contribution_pct ? String(goal.auto_contribution_pct) : '',
           priority: goal.priority ? String(goal.priority) : '5',
           status: goal.status,
+          collab_space_id: goal.collab_space_id ?? undefined,
         }}
       />
     </div>

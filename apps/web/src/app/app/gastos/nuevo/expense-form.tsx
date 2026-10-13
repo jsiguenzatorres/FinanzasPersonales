@@ -14,10 +14,12 @@ import {
 import { Receipt } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { SegmentedToggle } from '@/components/segmented-toggle';
+import { SpaceSelect } from '@/components/space-select';
 import { createExpenseAction, editExpenseAction } from '@/lib/expenses/actions';
 import { classifyExpenseCategory } from '@/lib/expenses/classify';
 import { scanReceiptAction } from '@/lib/expenses/ocr';
 import { compressImageFile } from '@/lib/attachments/compress-image';
+import type { MySpace } from '@/lib/collab/get-my-spaces';
 
 interface CategoryOption {
   id: string;
@@ -53,6 +55,7 @@ export interface ExpenseInitialValues {
   account_id?: string;
   card_id?: string;
   receipt_url?: string;
+  collab_space_id?: string;
 }
 
 export function ExpenseForm({
@@ -60,12 +63,14 @@ export function ExpenseForm({
   accounts,
   cards,
   currencies,
+  spaces,
   initialValues,
 }: {
   categories: CategoryOption[];
   accounts: AccountOption[];
   cards: CardOption[];
   currencies: CurrencyOption[];
+  spaces: MySpace[];
   initialValues?: ExpenseInitialValues;
 }) {
   const isEditing = !!initialValues;
@@ -349,6 +354,8 @@ export function ExpenseForm({
               No tienes cuentas activas. Crea una primero en Cuentas.
             </p>
           )}
+
+          <SpaceSelect spaces={spaces} defaultValue={initialValues?.collab_space_id} />
 
           <SubmitButton
             className="w-full"

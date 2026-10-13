@@ -12,7 +12,9 @@ import {
 } from '@flowfinance/ui';
 import { Target } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
+import { SpaceSelect } from '@/components/space-select';
 import { createGoalAction, editGoalAction } from '@/lib/goals/actions';
+import type { MySpace } from '@/lib/collab/get-my-spaces';
 
 interface AccountOption {
   id: string;
@@ -30,6 +32,7 @@ export interface GoalInitialValues {
   auto_contribution_pct: string;
   priority: string;
   status: string;
+  collab_space_id?: string;
 }
 
 const GOAL_TYPES = [
@@ -46,10 +49,12 @@ const GOAL_TYPES = [
 export function GoalForm({
   accounts,
   currency,
+  spaces,
   initialValues,
 }: {
   accounts: AccountOption[];
   currency: string;
+  spaces: MySpace[];
   initialValues?: GoalInitialValues;
 }) {
   const isEditing = !!initialValues;
@@ -192,6 +197,8 @@ export function GoalForm({
               </select>
             </div>
           )}
+
+          <SpaceSelect spaces={spaces} defaultValue={initialValues?.collab_space_id} />
 
           <SubmitButton className="w-full">{isEditing ? 'Guardar cambios' : 'Crear meta'}</SubmitButton>
         </form>

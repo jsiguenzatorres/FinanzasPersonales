@@ -1,8 +1,10 @@
 import { BudgetForm } from './budget-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getMySpaces } from '@/lib/collab/get-my-spaces';
 
 export default async function NewBudgetPage() {
   const supabase = await createSupabaseServerClient();
+  const spaces = await getMySpaces();
 
   const { data: allCategories } = await supabase
     .from('categories')
@@ -53,7 +55,7 @@ export default async function NewBudgetPage() {
 
   return (
     <div className="mx-auto max-w-lg">
-      <BudgetForm categories={categories} suggestedIncome={suggestedIncome} />
+      <BudgetForm categories={categories} suggestedIncome={suggestedIncome} spaces={spaces} />
     </div>
   );
 }

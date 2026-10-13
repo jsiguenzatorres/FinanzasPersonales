@@ -32,6 +32,7 @@ export default async function BudgetPage() {
     .select('*')
     .lte('period_start', today)
     .gte('period_end', today)
+    .is('collab_space_id', null)
     .order('period_start', { ascending: false })
     .limit(1)
     .maybeSingle();

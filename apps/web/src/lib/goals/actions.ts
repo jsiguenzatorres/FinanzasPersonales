@@ -47,6 +47,7 @@ export async function createGoalAction(formData: FormData) {
       ? Number(formData.get('auto_contribution_pct'))
       : undefined,
     priority: formData.get('priority') ? Number(formData.get('priority')) : undefined,
+    collab_space_id: formData.get('collab_space_id') || undefined,
   };
 
   const parsed = goalCreateSchema.safeParse(raw);
@@ -87,6 +88,7 @@ export async function createGoalAction(formData: FormData) {
     monthly_contribution: parsed.data.monthly_contribution ?? null,
     auto_contribution_pct: parsed.data.auto_contribution_pct ?? null,
     priority: parsed.data.priority ?? 5,
+    collab_space_id: parsed.data.collab_space_id ?? null,
   });
 
   if (error) {
@@ -116,6 +118,7 @@ export async function editGoalAction(formData: FormData) {
       : undefined,
     priority: formData.get('priority') ? Number(formData.get('priority')) : undefined,
     status: formData.get('status') || undefined,
+    collab_space_id: formData.get('collab_space_id') || undefined,
   };
 
   const parsed = goalUpdateSchema.safeParse(raw);
@@ -155,6 +158,7 @@ export async function editGoalAction(formData: FormData) {
       monthly_contribution: parsed.data.monthly_contribution ?? null,
       auto_contribution_pct: parsed.data.auto_contribution_pct ?? null,
       priority: parsed.data.priority ?? 5,
+      collab_space_id: parsed.data.collab_space_id ?? null,
       ...(parsed.data.status ? { status: parsed.data.status } : {}),
     })
     .eq('id', goalId);

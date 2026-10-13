@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { BudgetForm } from '../../nuevo/budget-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getMySpaces } from '@/lib/collab/get-my-spaces';
 
 export default async function EditBudgetPage({
   params,
@@ -10,10 +11,11 @@ export default async function EditBudgetPage({
   const { id } = await params;
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: budget }, { data: budgetCategories }, { data: allCategories }] = await Promise.all([
+  const [{ data: budget }, { data: budgetCategories }, { data: allCategories }, spaces] = await Promise.all([
     supabase.from('budgets').select('*').eq('id', id).single(),
     supabase.from('budget_categories').select('category_id, allocated_amount').eq('budget_id', id),
     supabase.from('categories').select('id, name, icon, parent_id').is('archived_at', null),
+    getMySpaces(),
   ]);
 
   if (!budget) notFound();
@@ -56,11 +58,13 @@ export default async function EditBudgetPage({
       <BudgetForm
         categories={categories}
         suggestedIncome={budget.total_income_expected}
+        spaces={spaces}
         initialValues={{
           id: budget.id,
           mode: budget.mode,
           total_income_expected: String(budget.total_income_expected),
           allocations,
+          collab_space_id: budget.collab_space_id ?? undefined,
         }}
       />
     </div>

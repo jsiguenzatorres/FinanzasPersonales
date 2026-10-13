@@ -13,6 +13,7 @@ export const expenseCreateSchema = z
     description: z.string().max(500).optional(),
     notes: z.string().max(2000).optional(),
     receipt_url: z.string().max(500).optional(),
+    collab_space_id: uuidSchema.optional(),
   })
   .refine((data) => !!data.account_id || !!data.card_id, {
     message: 'Selecciona una cuenta o una tarjeta de crédito',

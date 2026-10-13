@@ -1,10 +1,11 @@
 import { ExpenseForm } from './expense-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getMySpaces } from '@/lib/collab/get-my-spaces';
 
 export default async function NewExpensePage() {
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: rawCategories }, { data: accounts }, { data: currencies }, { data: cards }] =
+  const [{ data: rawCategories }, { data: accounts }, { data: currencies }, { data: cards }, spaces] =
     await Promise.all([
       supabase
         .from('categories')
@@ -22,6 +23,7 @@ export default async function NewExpensePage() {
         .select('id, bank_name, card_name, currency')
         .eq('status', 'active')
         .order('created_at', { ascending: true }),
+      getMySpaces(),
     ]);
 
   const parentIds = Array.from(
@@ -54,6 +56,7 @@ export default async function NewExpensePage() {
         accounts={accounts ?? []}
         cards={cardOptions}
         currencies={currencies ?? []}
+        spaces={spaces}
       />
     </div>
   );

@@ -13,7 +13,9 @@ import {
 import { PieChart } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
 import { SegmentedToggle } from '@/components/segmented-toggle';
+import { SpaceSelect } from '@/components/space-select';
 import { createBudgetAction, editBudgetAction } from '@/lib/budgets/actions';
+import type { MySpace } from '@/lib/collab/get-my-spaces';
 
 interface CategoryOption {
   id: string;
@@ -27,6 +29,7 @@ export interface BudgetInitialValues {
   mode: string;
   total_income_expected: string;
   allocations: Record<string, string>;
+  collab_space_id?: string;
 }
 
 const MODES = [
@@ -38,10 +41,12 @@ const MODES = [
 export function BudgetForm({
   categories,
   suggestedIncome,
+  spaces,
   initialValues,
 }: {
   categories: CategoryOption[];
   suggestedIncome: number;
+  spaces: MySpace[];
   initialValues?: BudgetInitialValues;
 }) {
   const isEditing = !!initialValues;
@@ -138,6 +143,8 @@ export function BudgetForm({
               </p>
             )}
           </div>
+
+          <SpaceSelect spaces={spaces} defaultValue={initialValues?.collab_space_id} />
 
           <SubmitButton className="w-full">{isEditing ? 'Guardar cambios' : 'Crear presupuesto'}</SubmitButton>
         </form>

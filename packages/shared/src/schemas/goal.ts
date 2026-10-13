@@ -32,6 +32,7 @@ export const goalCreateSchema = z.object({
     .max(100, 'Debe ser entre 0 y 100')
     .optional(),
   priority: z.number().int().min(1).max(10).optional(),
+  collab_space_id: uuidSchema.optional(),
 });
 
 export type GoalCreateInput = z.infer<typeof goalCreateSchema>;
@@ -50,6 +51,7 @@ export const goalUpdateSchema = z.object({
     .optional(),
   priority: z.number().int().min(1).max(10).optional(),
   status: goalStatusSchema.optional(),
+  collab_space_id: uuidSchema.optional(),
 });
 
 export type GoalUpdateInput = z.infer<typeof goalUpdateSchema>;

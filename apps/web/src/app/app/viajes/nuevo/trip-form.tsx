@@ -3,7 +3,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label } from '@flowfinance/ui';
 import { Plane } from 'lucide-react';
 import { SubmitButton } from '@/components/submit-button';
+import { SpaceSelect } from '@/components/space-select';
 import { createTripAction, editTripAction } from '@/lib/trips/actions';
+import type { MySpace } from '@/lib/collab/get-my-spaces';
 
 export interface TripInitialValues {
   id: string;
@@ -16,9 +18,16 @@ export interface TripInitialValues {
   budget_currency: string;
   notes: string;
   status: string;
+  collab_space_id?: string;
 }
 
-export function TripForm({ initialValues }: { initialValues?: TripInitialValues }) {
+export function TripForm({
+  spaces,
+  initialValues,
+}: {
+  spaces: MySpace[];
+  initialValues?: TripInitialValues;
+}) {
   const isEditing = !!initialValues;
   const today = new Date().toISOString().slice(0, 10);
 
@@ -114,6 +123,8 @@ export function TripForm({ initialValues }: { initialValues?: TripInitialValues 
             <Label htmlFor="notes">Notas (opcional)</Label>
             <Input id="notes" name="notes" defaultValue={initialValues?.notes} />
           </div>
+
+          <SpaceSelect spaces={spaces} defaultValue={initialValues?.collab_space_id} />
 
           <SubmitButton className="w-full">{isEditing ? 'Guardar cambios' : 'Crear viaje'}</SubmitButton>
         </form>

@@ -20,6 +20,7 @@ export async function createBudgetAction(formData: FormData) {
     mode,
     total_income_expected: totalIncomeExpected,
     categories,
+    collab_space_id: formData.get('collab_space_id') || undefined,
   });
 
   if (!parsed.success) {
@@ -52,6 +53,7 @@ export async function createBudgetAction(formData: FormData) {
       total_income_expected: parsed.data.total_income_expected,
       total_allocated: totalAllocated,
       rollover_overspent: true,
+      collab_space_id: parsed.data.collab_space_id ?? null,
     })
     .select('id')
     .single();
@@ -122,7 +124,12 @@ export async function editBudgetAction(formData: FormData) {
     .map((id, i) => ({ category_id: id, allocated_amount: Number(allocatedAmounts[i] || 0) }))
     .filter((c) => c.allocated_amount > 0);
 
-  const parsed = budgetCreateSchema.safeParse({ mode, total_income_expected: totalIncomeExpected, categories });
+  const parsed = budgetCreateSchema.safeParse({
+    mode,
+    total_income_expected: totalIncomeExpected,
+    categories,
+    collab_space_id: formData.get('collab_space_id') || undefined,
+  });
 
   if (!parsed.success) {
     const message = parsed.error.issues[0]?.message ?? 'Datos inválidos.';
@@ -193,6 +200,7 @@ export async function editBudgetAction(formData: FormData) {
       mode: parsed.data.mode,
       total_income_expected: parsed.data.total_income_expected,
       total_allocated: totalAllocated,
+      collab_space_id: parsed.data.collab_space_id ?? null,
     })
     .eq('id', budgetId);
 

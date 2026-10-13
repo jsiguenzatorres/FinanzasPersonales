@@ -26,6 +26,7 @@ export const tripCreateSchema = z
     budget: moneyAmountSchema.refine((v) => v > 0, { message: 'El presupuesto debe ser mayor a 0' }),
     budget_currency: currencyCodeSchema,
     notes: z.string().max(2000).optional(),
+    collab_space_id: uuidSchema.optional(),
   })
   .refine((data) => data.end_date >= data.start_date, {
     message: 'La fecha de fin no puede ser antes que la de inicio',

@@ -14,6 +14,7 @@ export const budgetCreateSchema = z.object({
     message: 'El ingreso esperado debe ser mayor a 0',
   }),
   categories: z.array(budgetCategoryInputSchema).min(1, 'Asigna al menos una categoría'),
+  collab_space_id: uuidSchema.optional(),
 });
 
 export type BudgetCreateInput = z.infer<typeof budgetCreateSchema>;

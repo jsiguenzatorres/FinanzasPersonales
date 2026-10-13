@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { ExpenseForm } from '../../nuevo/expense-form';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getMySpaces } from '@/lib/collab/get-my-spaces';
 
 export default async function EditExpensePage({
   params,
@@ -10,7 +11,7 @@ export default async function EditExpensePage({
   const { id } = await params;
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: expense }, { data: rawCategories }, { data: accounts }, { data: currencies }, { data: cards }] =
+  const [{ data: expense }, { data: rawCategories }, { data: accounts }, { data: currencies }, { data: cards }, spaces] =
     await Promise.all([
       supabase.from('transactions').select('*').eq('id', id).is('deleted_at', null).single(),
       supabase
@@ -29,6 +30,7 @@ export default async function EditExpensePage({
         .select('id, bank_name, card_name, currency')
         .eq('status', 'active')
         .order('created_at', { ascending: true }),
+      getMySpaces(),
     ]);
 
   if (!expense) notFound();
@@ -63,6 +65,7 @@ export default async function EditExpensePage({
         accounts={accounts ?? []}
         cards={cardOptions}
         currencies={currencies ?? []}
+        spaces={spaces}
         initialValues={{
           id: expense.id,
           merchant_name: expense.merchant_name ?? '',
@@ -75,6 +78,7 @@ export default async function EditExpensePage({
           account_id: expense.account_id ?? undefined,
           card_id: expense.card_id ?? undefined,
           receipt_url: expense.receipt_url ?? undefined,
+          collab_space_id: expense.collab_space_id ?? undefined,
         }}
       />
     </div>

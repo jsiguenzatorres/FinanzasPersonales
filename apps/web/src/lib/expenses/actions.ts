@@ -21,6 +21,7 @@ export async function createExpenseAction(formData: FormData) {
     description: formData.get('description') || undefined,
     notes: formData.get('notes') || undefined,
     receipt_url: formData.get('receipt_url') || undefined,
+    collab_space_id: formData.get('collab_space_id') || undefined,
   };
 
   const parsed = expenseCreateSchema.safeParse(raw);
@@ -55,6 +56,7 @@ export async function createExpenseAction(formData: FormData) {
     notes: parsed.data.notes ?? null,
     receipt_url: parsed.data.receipt_url ?? null,
     capture_source: parsed.data.receipt_url ? 'ocr_receipt' : 'manual',
+    collab_space_id: parsed.data.collab_space_id ?? null,
   });
 
   if (error) {
@@ -87,6 +89,7 @@ export async function editExpenseAction(formData: FormData) {
     description: formData.get('description') || undefined,
     notes: formData.get('notes') || undefined,
     receipt_url: formData.get('receipt_url') || undefined,
+    collab_space_id: formData.get('collab_space_id') || undefined,
   };
 
   const parsed = expenseCreateSchema.safeParse(raw);
@@ -113,6 +116,7 @@ export async function editExpenseAction(formData: FormData) {
       description: parsed.data.description ?? null,
       notes: parsed.data.notes ?? null,
       receipt_url: parsed.data.receipt_url ?? null,
+      collab_space_id: parsed.data.collab_space_id ?? null,
     })
     .eq('id', expenseId);
 
