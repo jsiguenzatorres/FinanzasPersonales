@@ -29,6 +29,7 @@ async function collectFamilyLoanCandidates(
     .from('family_loans')
     .select('id, user_id, person_name, person_email, agreed_payment_date, balance, currency')
     .eq('status', 'active')
+    .eq('reminders_enabled', true)
     .not('person_email', 'is', null)
     .not('agreed_payment_date', 'is', null);
 
@@ -52,6 +53,7 @@ async function collectLoanPortfolioCandidates(
     .from('loan_portfolio')
     .select('id, user_id, borrower_name, borrower_email, amortization')
     .eq('status', 'active')
+    .eq('reminders_enabled', true)
     .is('deleted_at', null)
     .not('borrower_email', 'is', null);
 

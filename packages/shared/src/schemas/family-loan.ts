@@ -29,6 +29,7 @@ export const familyLoanCreateSchema = z
     category: z.string().max(50).optional(),
     agreed_payment_date: isoDateSchema.optional(),
     notes: z.string().max(2000).optional(),
+    reminders_enabled: z.boolean(),
     // Flujo B — vínculo retroactivo a un gasto ya registrado (opcional)
     existing_transaction_id: uuidSchema.optional(),
     linked_amount: moneyAmountSchema.optional(),
@@ -51,6 +52,7 @@ export const familyLoanUpdateSchema = z.object({
   category: z.string().max(50).optional(),
   agreed_payment_date: isoDateSchema.optional(),
   notes: z.string().max(2000).optional(),
+  reminders_enabled: z.boolean(),
 });
 
 export type FamilyLoanUpdateInput = z.infer<typeof familyLoanUpdateSchema>;

@@ -27,6 +27,7 @@ export async function createFamilyLoanAction(formData: FormData) {
     category: formData.get('category') || undefined,
     agreed_payment_date: formData.get('agreed_payment_date') || undefined,
     notes: formData.get('notes') || undefined,
+    reminders_enabled: formData.get('reminders_enabled') === 'on',
     existing_transaction_id: existingTxId || undefined,
     linked_amount: formData.get('linked_amount') ? Number(formData.get('linked_amount')) : undefined,
   };
@@ -119,6 +120,7 @@ export async function createFamilyLoanAction(formData: FormData) {
     category: parsed.data.category ?? null,
     agreed_payment_date: parsed.data.agreed_payment_date ?? null,
     notes: parsed.data.notes ?? null,
+    reminders_enabled: parsed.data.reminders_enabled,
   });
 
   if (loanError) {
@@ -145,6 +147,7 @@ export async function editFamilyLoanAction(formData: FormData) {
     category: formData.get('category') || undefined,
     agreed_payment_date: formData.get('agreed_payment_date') || undefined,
     notes: formData.get('notes') || undefined,
+    reminders_enabled: formData.get('reminders_enabled') === 'on',
   });
 
   if (!parsed.success) {
@@ -162,6 +165,7 @@ export async function editFamilyLoanAction(formData: FormData) {
       category: parsed.data.category ?? null,
       agreed_payment_date: parsed.data.agreed_payment_date ?? null,
       notes: parsed.data.notes ?? null,
+      reminders_enabled: parsed.data.reminders_enabled,
     })
     .eq('id', loanId);
 

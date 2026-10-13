@@ -50,6 +50,16 @@ export default async function EditLoanPortfolioPage({
               </div>
             </div>
 
+            <label className="flex items-center gap-2 text-xs text-muted-foreground">
+              <input
+                type="checkbox"
+                name="reminders_enabled"
+                defaultChecked={loan.reminders_enabled}
+                className="h-4 w-4 rounded border-border"
+              />
+              Enviarle recordatorios de pago
+            </label>
+
             <div className="space-y-1.5">
               <Label htmlFor="status">Estado</Label>
               <select

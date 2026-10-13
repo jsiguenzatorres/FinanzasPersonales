@@ -18,31 +18,60 @@ function formatMoney(amount: number, currency: string): string {
   return new Intl.NumberFormat('es-SV', { style: 'currency', currency }).format(amount);
 }
 
+/**
+ * Préstamo familiar (sin interés, sourceLabel 'préstamo') = tono cálido y
+ * breve. Cuota de Mi Cartera (con interés, 'cuota') = cordial pero más
+ * neutral — suele ser un préstamo más formal. Ambos lo más cortos posible.
+ */
 function buildSubjectAndBody(input: LoanReminderEmailInput): { subject: string; html: string } {
   const amountFmt = formatMoney(input.amount, input.currency);
+  const isFamily = input.sourceLabel === 'préstamo';
 
   if (input.trigger === 'preventive_3d' || input.trigger === 'preventive_2d') {
     const daysLeft = input.trigger === 'preventive_3d' ? 3 : 2;
+
+    if (isFamily) {
+      return {
+        subject: `${input.lenderName} te manda un recordatorio con cariño`,
+        html: `
+          <p>Hola ${input.personName} 💛</p>
+          <p>Con cariño, un empujoncito: tienes <strong>${amountFmt}</strong> pendientes con
+          <strong>${input.lenderName}</strong> — vence <strong>${input.dueDate}</strong> (en ${daysLeft} días).</p>
+          <p>¡Gracias!</p>
+        `,
+      };
+    }
+
     return {
-      subject: `Recordatorio: tu pago a ${input.lenderName} vence en ${daysLeft} días`,
+      subject: `Recordatorio: cuota con ${input.lenderName} vence en ${daysLeft} días`,
       html: `
         <p>Hola ${input.personName},</p>
-        <p>Este es un recordatorio amistoso de que tienes un ${input.sourceLabel} con
-        <strong>${input.lenderName}</strong> por <strong>${amountFmt}</strong>, con fecha de pago
-        el <strong>${input.dueDate}</strong> (en ${daysLeft} días).</p>
-        <p>¡Gracias por tu atención!</p>
+        <p>Tienes una cuota de <strong>${amountFmt}</strong> con <strong>${input.lenderName}</strong>,
+        vence el <strong>${input.dueDate}</strong> (en ${daysLeft} días).</p>
+        <p>Gracias.</p>
+      `,
+    };
+  }
+
+  if (isFamily) {
+    return {
+      subject: `${input.lenderName}: tu pago sigue pendiente`,
+      html: `
+        <p>Hola ${input.personName},</p>
+        <p>Tu pago de <strong>${amountFmt}</strong> a <strong>${input.lenderName}</strong> venció el
+        <strong>${input.dueDate}</strong>. Cuando puedas, ponte al día 🙏</p>
+        <p>¿Ya pagaste? Ignora este mensaje.</p>
       `,
     };
   }
 
   return {
-    subject: `Pago pendiente con ${input.lenderName}`,
+    subject: `Cuota pendiente con ${input.lenderName}`,
     html: `
       <p>Hola ${input.personName},</p>
-      <p>Tu ${input.sourceLabel} con <strong>${input.lenderName}</strong> por
-      <strong>${amountFmt}</strong> venció el <strong>${input.dueDate}</strong> y sigue pendiente
-      de pago.</p>
-      <p>Te agradecemos ponerte al día cuando puedas. Si ya pagaste, puedes ignorar este correo.</p>
+      <p>Tu cuota de <strong>${amountFmt}</strong> con <strong>${input.lenderName}</strong> venció el
+      <strong>${input.dueDate}</strong> y sigue pendiente.</p>
+      <p>Te agradecemos ponerte al día. Si ya pagaste, ignora este correo.</p>
     `,
   };
 }

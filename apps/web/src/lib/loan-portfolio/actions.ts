@@ -25,6 +25,7 @@ export async function createLoanPortfolioAction(formData: FormData) {
     payment_day: Number(formData.get('payment_day')),
     account_id: formData.get('account_id') || undefined,
     notes: formData.get('notes') || undefined,
+    reminders_enabled: formData.get('reminders_enabled') === 'on',
   };
 
   const parsed = loanPortfolioCreateSchema.safeParse(raw);
@@ -71,6 +72,7 @@ export async function createLoanPortfolioAction(formData: FormData) {
     amortization: amortization.schedule as unknown as Json,
     balance_pending: parsed.data.principal,
     notes: parsed.data.notes ?? null,
+    reminders_enabled: parsed.data.reminders_enabled,
   });
 
   if (error) {
@@ -94,6 +96,7 @@ export async function editLoanPortfolioAction(formData: FormData) {
     borrower_email: formData.get('borrower_email') || undefined,
     notes: formData.get('notes') || undefined,
     status: formData.get('status') || undefined,
+    reminders_enabled: formData.get('reminders_enabled') === 'on',
   };
 
   const parsed = loanPortfolioUpdateSchema.safeParse(raw);
@@ -111,6 +114,7 @@ export async function editLoanPortfolioAction(formData: FormData) {
       borrower_phone: parsed.data.borrower_phone ?? null,
       borrower_email: parsed.data.borrower_email || null,
       notes: parsed.data.notes ?? null,
+      reminders_enabled: parsed.data.reminders_enabled,
       ...(parsed.data.status ? { status: parsed.data.status } : {}),
     })
     .eq('id', loanId);

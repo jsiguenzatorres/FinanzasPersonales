@@ -41,6 +41,11 @@ export function LoanPortfolioForm({ accounts }: { accounts: AccountOption[] }) {
             </div>
           </div>
 
+          <label className="flex items-center gap-2 text-xs text-muted-foreground">
+            <input type="checkbox" name="reminders_enabled" defaultChecked className="h-4 w-4 rounded border-border" />
+            Enviarle recordatorios de pago
+          </label>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="principal">Monto prestado (capital)</Label>

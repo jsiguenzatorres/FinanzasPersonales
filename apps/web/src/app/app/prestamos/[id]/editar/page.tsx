@@ -76,6 +76,15 @@ export default async function EditFamilyLoanPage({
                 Si lo agregas, le llegan recordatorios automáticos por correo antes y después de la
                 fecha de pago.
               </p>
+              <label className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
+                <input
+                  type="checkbox"
+                  name="reminders_enabled"
+                  defaultChecked={loan.reminders_enabled}
+                  className="h-4 w-4 rounded border-border"
+                />
+                Enviarle recordatorios de pago
+              </label>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="category">Categoría de destino</Label>

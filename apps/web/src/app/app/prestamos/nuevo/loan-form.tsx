@@ -116,6 +116,15 @@ export function LoanForm({
               Si lo agregas, le llegan recordatorios automáticos por correo antes y después de la
               fecha de pago — no tienes que escribirle tú.
             </p>
+            <label className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
+              <input
+                type="checkbox"
+                name="reminders_enabled"
+                defaultChecked
+                className="h-4 w-4 rounded border-border"
+              />
+              Enviarle recordatorios de pago
+            </label>
           </div>
 
           {isRetroactive ? (

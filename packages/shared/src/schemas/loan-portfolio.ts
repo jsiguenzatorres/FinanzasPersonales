@@ -18,6 +18,7 @@ export const loanPortfolioCreateSchema = z.object({
   payment_day: z.number().int().min(1).max(31),
   account_id: uuidSchema.optional(),
   notes: z.string().max(2000).optional(),
+  reminders_enabled: z.boolean(),
 });
 
 export type LoanPortfolioCreateInput = z.infer<typeof loanPortfolioCreateSchema>;
@@ -28,6 +29,7 @@ export const loanPortfolioUpdateSchema = z.object({
   borrower_email: z.string().email('Correo inválido').max(150).optional().or(z.literal('')),
   notes: z.string().max(2000).optional(),
   status: z.enum(['active', 'paid', 'defaulted', 'restructured', 'written_off']).optional(),
+  reminders_enabled: z.boolean(),
 });
 
 export type LoanPortfolioUpdateInput = z.infer<typeof loanPortfolioUpdateSchema>;
