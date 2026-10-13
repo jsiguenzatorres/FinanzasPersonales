@@ -14,3 +14,4 @@ export * from './loan-portfolio';
 export * from './debt';
 export * from './trip';
 export * from './collab';
+export * from './portal';

@@ -123,6 +123,14 @@ export default async function FamilyLoansPage() {
           })}
         </div>
       )}
+
+      {(loans ?? []).length > 0 && (
+        <p className="text-center text-xs text-muted-foreground">
+          Comparte{' '}
+          <span className="font-mono">flowfinance.app/portal</span> con tus deudores para que consulten
+          su estado de cuenta.
+        </p>
+      )}
     </div>
   );
 }

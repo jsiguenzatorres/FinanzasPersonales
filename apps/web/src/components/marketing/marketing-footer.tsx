@@ -7,6 +7,9 @@ export function MarketingFooter() {
         <Link href="/" className="font-display text-base text-landing-ink">
           Flow<span className="text-landing-terracotta">Finance</span>
         </Link>
+        <Link href="/portal" className="text-xs text-landing-ink-soft hover:underline">
+          ¿Te prestaron dinero? Consulta tu préstamo
+        </Link>
         <p className="font-mono text-xs text-landing-ink-soft/70">
           © {new Date().getFullYear()} FlowFinance · Hecho en El Salvador 🇸🇻
         </p>
