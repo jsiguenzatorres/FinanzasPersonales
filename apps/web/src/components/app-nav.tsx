@@ -25,6 +25,7 @@ import {
   Menu,
   X,
   LogOut,
+  User,
 } from 'lucide-react';
 import { cn } from '@flowfinance/ui';
 import { signOutAction } from '@/lib/auth/actions';
@@ -115,6 +116,25 @@ function NavLinks({
         );
       })}
     </ul>
+  );
+}
+
+function ProfileLink({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: () => void }) {
+  const pathname = usePathname();
+  const active = pathname.startsWith('/app/perfil');
+
+  return (
+    <Link
+      href="/app/perfil"
+      onClick={onNavigate}
+      className={cn(
+        'group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150 active:scale-[0.98]',
+        active ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+      )}
+    >
+      <User className="h-[18px] w-[18px] flex-shrink-0" />
+      {!collapsed && <span>Perfil</span>}
+    </Link>
   );
 }
 
@@ -236,6 +256,7 @@ export function AppNav() {
                 <NavLinks collapsed={false} pillId="nav-active-pill-mobile" onNavigate={() => setMobileOpen(false)} />
               </div>
               <div className="mt-3 space-y-1 border-t border-border pt-3">
+                <ProfileLink onNavigate={() => setMobileOpen(false)} />
                 <ThemeToggle />
                 <LogoutButton />
               </div>
@@ -270,6 +291,7 @@ export function AppNav() {
         </nav>
 
         <div className="mt-3 space-y-1 border-t border-border pt-3">
+          <ProfileLink collapsed={collapsed} />
           <ThemeToggle collapsed={collapsed} />
           <LogoutButton collapsed={collapsed} />
         </div>

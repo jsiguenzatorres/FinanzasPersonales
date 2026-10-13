@@ -17,6 +17,8 @@ const mockSupabase = {
     signInWithPassword: vi.fn(),
     signUp: vi.fn(),
     signOut: vi.fn(),
+    resetPasswordForEmail: vi.fn(),
+    updateUser: vi.fn(),
   },
 };
 
@@ -24,7 +26,8 @@ vi.mock('@/lib/supabase/server', () => ({
   createSupabaseServerClient: vi.fn(() => Promise.resolve(mockSupabase)),
 }));
 
-const { signInAction, signUpAction, signOutAction } = await import('./actions');
+const { signInAction, signUpAction, signOutAction, requestPasswordResetAction, updatePasswordAction } =
+  await import('./actions');
 
 function formData(fields: Record<string, string>): FormData {
   const fd = new FormData();
@@ -126,5 +129,60 @@ describe('signOutAction', () => {
 
     expect(mockSupabase.auth.signOut).toHaveBeenCalled();
     expect(url).toBe('/login');
+  });
+});
+
+describe('requestPasswordResetAction', () => {
+  it('rechaza un correo con formato inválido antes de llamar a Supabase', async () => {
+    const url = await captureRedirect(() => requestPasswordResetAction(formData({ email: 'invalido' })));
+    expect(url).toContain('/forgot-password?error=');
+    expect(mockSupabase.auth.resetPasswordForEmail).not.toHaveBeenCalled();
+  });
+
+  it('siempre redirige al mismo mensaje, exista o no la cuenta', async () => {
+    mockSupabase.auth.resetPasswordForEmail.mockResolvedValue({ error: null });
+
+    const url = await captureRedirect(() =>
+      requestPasswordResetAction(formData({ email: 'user@test.com' })),
+    );
+
+    expect(url).toContain('/forgot-password?message=');
+    expect(mockSupabase.auth.resetPasswordForEmail).toHaveBeenCalledWith(
+      'user@test.com',
+      expect.objectContaining({ redirectTo: expect.stringContaining('/auth/callback?next=/reset-password') }),
+    );
+  });
+});
+
+describe('updatePasswordAction', () => {
+  it('rechaza contraseñas que no coinciden antes de llamar a Supabase', async () => {
+    const url = await captureRedirect(() =>
+      updatePasswordAction(formData({ password: 'password123', confirmPassword: 'otraClave123' })),
+    );
+    expect(url).toContain('/reset-password?error=');
+    expect(mockSupabase.auth.updateUser).not.toHaveBeenCalled();
+  });
+
+  it('actualiza la contraseña y redirige a /app por defecto', async () => {
+    mockSupabase.auth.updateUser.mockResolvedValue({ error: null });
+
+    const url = await captureRedirect(() =>
+      updatePasswordAction(formData({ password: 'password123', confirmPassword: 'password123' })),
+    );
+
+    expect(mockSupabase.auth.updateUser).toHaveBeenCalledWith({ password: 'password123' });
+    expect(url).toContain('/app?message=');
+  });
+
+  it('respeta redirect_to=/app/perfil cuando se cambia la contraseña desde el perfil', async () => {
+    mockSupabase.auth.updateUser.mockResolvedValue({ error: null });
+
+    const url = await captureRedirect(() =>
+      updatePasswordAction(
+        formData({ password: 'password123', confirmPassword: 'password123', redirect_to: '/app/perfil' }),
+      ),
+    );
+
+    expect(url).toContain('/app/perfil?message=');
   });
 });

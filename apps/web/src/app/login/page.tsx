@@ -42,6 +42,11 @@ export default function LoginPage() {
           autoComplete="current-password"
           placeholder="••••••••"
         />
+        <p className="-mt-1 text-right text-sm">
+          <Link href="/forgot-password" className="text-landing-terracotta hover:underline">
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </p>
         <SubmitButton className="w-full rounded-full bg-landing-terracotta text-landing-cream hover:bg-landing-terracotta-deep">
           Iniciar sesión
         </SubmitButton>
