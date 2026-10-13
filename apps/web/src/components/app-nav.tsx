@@ -27,6 +27,7 @@ import {
   LogOut,
   User,
   ShieldCheck,
+  Users,
 } from 'lucide-react';
 import { cn } from '@flowfinance/ui';
 import { signOutAction } from '@/lib/auth/actions';
@@ -48,6 +49,7 @@ const NAV_ITEMS = [
   { href: '/app/calendario', label: 'Calendario', icon: CalendarClock },
   { href: '/app/viajes', label: 'Viajes', icon: Plane },
   { href: '/app/presupuesto', label: 'Presupuesto', icon: Target },
+  { href: '/app/espacios', label: 'Espacios', icon: Users },
   { href: '/app/finn', label: 'Neto', icon: Bot },
 ];
 

@@ -3969,6 +3969,7 @@ export type Database = {
       }
     }
     Functions: {
+      accept_collab_invite: { Args: { p_member_id: string }; Returns: undefined }
       cc_balance_delta: {
         Args: {
           p_amount: number
@@ -3976,11 +3977,13 @@ export type Database = {
         }
         Returns: number
       }
+      decline_collab_invite: { Args: { p_member_id: string }; Returns: undefined }
       get_fx_rate: {
         Args: { p_date: string; p_from: string; p_to: string }
         Returns: number
       }
       is_collab_member: { Args: { p_space_id: string }; Returns: boolean }
+      leave_collab_space: { Args: { p_space_id: string }; Returns: undefined }
       resolve_budget_category_id: {
         Args: { p_category_id: string }
         Returns: string
