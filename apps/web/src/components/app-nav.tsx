@@ -26,6 +26,7 @@ import {
   X,
   LogOut,
   User,
+  ShieldCheck,
 } from 'lucide-react';
 import { cn } from '@flowfinance/ui';
 import { signOutAction } from '@/lib/auth/actions';
@@ -138,6 +139,25 @@ function ProfileLink({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
   );
 }
 
+function AdminLink({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: () => void }) {
+  const pathname = usePathname();
+  const active = pathname.startsWith('/app/admin');
+
+  return (
+    <Link
+      href="/app/admin"
+      onClick={onNavigate}
+      className={cn(
+        'group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150 active:scale-[0.98]',
+        active ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+      )}
+    >
+      <ShieldCheck className="h-[18px] w-[18px] flex-shrink-0" />
+      {!collapsed && <span>Administración</span>}
+    </Link>
+  );
+}
+
 function LogoutButton({ collapsed }: { collapsed?: boolean }) {
   return (
     <form action={signOutAction}>
@@ -197,7 +217,7 @@ function BottomNav({ onMore }: { onMore: () => void }) {
   );
 }
 
-export function AppNav() {
+export function AppNav({ isSuperadmin = false }: { isSuperadmin?: boolean }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
@@ -256,6 +276,7 @@ export function AppNav() {
                 <NavLinks collapsed={false} pillId="nav-active-pill-mobile" onNavigate={() => setMobileOpen(false)} />
               </div>
               <div className="mt-3 space-y-1 border-t border-border pt-3">
+                {isSuperadmin && <AdminLink onNavigate={() => setMobileOpen(false)} />}
                 <ProfileLink onNavigate={() => setMobileOpen(false)} />
                 <ThemeToggle />
                 <LogoutButton />
@@ -291,6 +312,7 @@ export function AppNav() {
         </nav>
 
         <div className="mt-3 space-y-1 border-t border-border pt-3">
+          {isSuperadmin && <AdminLink collapsed={collapsed} />}
           <ProfileLink collapsed={collapsed} />
           <ThemeToggle collapsed={collapsed} />
           <LogoutButton collapsed={collapsed} />

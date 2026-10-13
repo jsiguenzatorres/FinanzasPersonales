@@ -25,7 +25,15 @@ export const updatePasswordSchema = z
     path: ['confirmPassword'],
   });
 
+export const adminCreateUserSchema = z.object({
+  email: z.string().email('Correo inválido'),
+  password: z.string().min(8, 'Mínimo 8 caracteres'),
+  displayName: z.string().min(1, 'Ingresa un nombre').max(100),
+  isSuperadmin: z.boolean(),
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type SignupInput = z.infer<typeof signupSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;
+export type AdminCreateUserInput = z.infer<typeof adminCreateUserSchema>;
